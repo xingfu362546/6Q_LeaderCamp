@@ -1,0 +1,65 @@
+/**
+ * 6Q_leader_battalion · Ant Design + claude-design tokens
+ * Primary #1677ff · 白底后台 · 密表 · 轻描边
+ */
+:root {
+  --lb-primary: #1677ff;
+  --lb-primary-hover: #4096ff;
+  --lb-primary-active: #0958d9;
+  --lb-primary-bg: #e6f4ff;
+  --lb-text: rgba(0, 0, 0, 0.88);
+  --lb-text-2: rgba(0, 0, 0, 0.65);
+  --lb-text-3: rgba(0, 0, 0, 0.45);
+  --lb-text-disabled: rgba(0, 0, 0, 0.25);
+  --lb-border: #d9d9d9;
+  --lb-border-light: #f0f0f0;
+  --lb-fill: #fafafa;
+  --lb-bg: #f5f5f5;
+  --lb-white: #ffffff;
+  --lb-success: #52c41a;
+  --lb-success-bg: #f6ffed;
+  --lb-warning: #faad14;
+  --lb-error: #ff4d4f;
+  --lb-link: #1677ff;
+  --lb-radius: 6px;
+  --lb-radius-sm: 4px;
+  --lb-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08);
+  --lb-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+    "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --lb-header-h: 48px;
+  --lb-side-w: 220px;
+  --lb-control-h: 32px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--lb-font);
+  font-size: 14px;
+  line-height: 1.5714;
+  color: var(--lb-text);
+  background: var(--lb-bg);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--lb-link);
+  text-decoration: none;
+}
+
+button,
+input,
+select {
+  font-family: inherit;
+}

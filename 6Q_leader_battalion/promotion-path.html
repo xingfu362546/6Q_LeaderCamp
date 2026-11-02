@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>晋升路线配置 · 一办三团</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css?v=20261102a" />
+</head>
+<body class="lb-body" data-lb-page="promotion-path">
+  <div class="lb-app">
+    <header class="lb-header" id="lb-header-mount"></header>
+    <aside class="lb-side" id="lb-side-mount"></aside>
+    <div class="lb-main">
+      <div class="lb-crumb" id="lb-crumb-mount"></div>
+      <div class="lb-content">
+        <div class="lb-page">
+          <div class="lb-path">
+            <div class="lb-path__teams">
+              <h3>选择团队</h3>
+              <div id="team-list"></div>
+            </div>
+            <div class="lb-path__main">
+              <div class="lb-path__bar">
+                <div>
+                  <strong>晋升路线配置</strong>
+                  <span class="lb-ver">v3.5.0 · 跨岗位晋升</span>
+                  <button type="button" class="lb-num-btn lb-num-btn--static" data-note-key="promoPath" title="清单第45条 · 晋升路线"></button>
+                </div>
+                <div>
+                  <span class="lb-act"><button type="button" class="lb-btn" id="btn-add-path">新增路线</button><button type="button" class="lb-num-btn" data-note-key="promoPath"></button></span>
+                  <span class="lb-act"><button type="button" class="lb-btn lb-btn--primary" id="btn-save">保存</button><button type="button" class="lb-num-btn" data-note-key="promoPath"></button></span>
+                  <span class="lb-act"><span class="lb-ver">影响面</span><button type="button" class="lb-num-btn lb-num-btn--static" data-note-key="promoPathImpact" title="路线保存后影响哪些板块的校验"></button></span>
+                </div>
+              </div>
+              <div id="route-box"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="lb-mask" id="lb-mask"></div>
+  <aside class="lb-drawer" id="lb-drawer">
+    <div class="lb-drawer__head">
+      <span id="lb-drawer-title">详情</span>
+      <button type="button" class="lb-btn" data-close-drawer="1">关闭</button>
+    </div>
+    <div class="lb-drawer__body" id="lb-drawer-body"></div>
+  </aside>
+  <script src="js/menu-config.js?v=20261029c"></script>
+  <script src="js/shell.js?v=20261029c"></script>
+  <script src="js/post-salary-data.js"></script>
+  <script src="js/promotion-path-data.js?v=20261030j"></script>
+  <script src="js/promotion-path-page.js?v=20261030k"></script>
+  <script src="js/notes.js?v=20261102g"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+.sn-nav { height: 44px; display: flex; align-items: center; justify-content: center; background: #fff; position: relative; }
+.sn-nav h1 { margin: 0; font-size: 17px; font-weight: 600; }
+.sn-nav button { position: absolute; left: 8px; width: 32px; height: 32px; border: 0; background: none; }
+.sn-nav button::before { content: ""; display: block; width: 10px; height: 10px; margin: 0 auto; border-left: 2px solid #111; border-bottom: 2px solid #111; transform: rotate(45deg); }
+.sn-search { display: flex; align-items: center; gap: 10px; padding: 8px 12px 10px; background: #fff; }
+.sn-search input { flex: 1; height: 34px; border: 0; border-radius: 17px; background: #f3f4f6; padding: 0 14px; font-size: 14px; }
+.sn-search button { border: 0; background: none; color: #333; font-size: 15px; }
+.sn-body { flex: 1; background: #f7f8fa; padding: 12px; overflow: auto; }
+.sn-card { width: 100%; text-align: left; border: 0; background: #fff; border-radius: 10px; padding: 14px; }
+.sn-card b { display: block; font-size: 16px; color: #222; }
+.sn-card span { display: block; margin-top: 6px; color: #8a9099; font-size: 13px; line-height: 1.5; }
+.sn-card em { display: block; margin-top: 8px; color: #b0b4ba; font-style: normal; font-size: 12px; }
+.sn-empty { padding-top: 120px; text-align: center; color: #b7bcc4; }
+.sn-empty i { display: block; width: 88px; height: 88px; margin: 0 auto 12px; border-radius: 50%; background: radial-gradient(circle at 50% 42%, #ffd7a8 0 28px, #f4a35a 29px 46px, transparent 47px); }
+.sn-empty p { margin: 0; font-size: 14px; }
+.sn-sum { background: #fff7e8; color: #ad6800; border-radius: 8px; padding: 10px 12px; font-size: 13px; line-height: 1.5; }
+.sn-body h2 { margin: 14px 0 8px; font-size: 15px; }
+.sn-person { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+.sn-person-hd { display: flex; justify-content: space-between; align-items: center; }
+.sn-person-hd strong { font-size: 16px; }
+.sn-person-hd span { color: #09c382; font-size: 12px; background: #e8faf3; border-radius: 10px; padding: 2px 8px; }
+.sn-person p { margin: 6px 0 0; color: #696c69; font-size: 13px; }
+.sn-staff { color: #8a9099; font-size: 12px; }
+.sn-note { position: absolute; right: 12px; top: 96px; width: 18px; height: 18px; border: 0; border-radius: 50%; background: #ff4d4f; color: #fff; font-size: 12px; }
+.sn-notes { position: fixed; z-index: 50; right: 0; top: 0; width: min(420px, 92vw); height: 100%; overflow: auto; background: #fff; padding: 20px; box-shadow: -8px 0 24px rgba(0,0,0,.12); }
+.sn-notes h2 { margin: 0 0 8px; font-size: 18px; }
+.sn-notes h3 { font-size: 16px; }
+.sn-notes h3 span { display: inline-flex; width: 18px; height: 18px; border-radius: 50%; background: #ff4d4f; color: #fff; align-items: center; justify-content: center; font-size: 12px; margin-right: 6px; }
+.sn-notes h3 i { color: #1677ff; font-style: normal; font-size: 12px; margin-right: 6px; }
+.sn-notes h3 b { font-weight: 400; color: #8a908a; font-size: 12px; }
+.sn-notes h4 { margin: 0 0 4px; font-size: 13px; }
+.sn-notes p, .sn-rule { font-size: 13px; line-height: 1.6; color: #444; }
+.sn-notes div { background: #fafafa; border-radius: 8px; padding: 8px 10px; margin: 8px 0; }
+.sn-notes table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.sn-notes th, .sn-notes td { border: 1px solid #f0f0f0; padding: 8px; text-align: left; }
+.sn-notes button { margin-top: 12px; height: 32px; padding: 0 12px; border-radius: 6px; border: 1px solid #d9d9d9; background: #fff; }
+
+.role-dock { position: fixed; left: 16px; bottom: 16px; z-index: 40; width: 232px; background: #fff; border: 1px solid #e5e6eb; border-radius: 12px; padding: 12px; box-shadow: 0 10px 24px rgba(0,0,0,.12); }
+.role-dock h3 { margin: 0 0 4px; font-size: 14px; }
+.role-dock p { margin: 0 0 8px; color: #8a908a; font-size: 11px; line-height: 1.5; }
+.role-dock .role-list { display: flex; flex-direction: column; gap: 6px; max-height: 46vh; overflow: auto; }
+.role-dock button { text-align: left; border: 1px solid #e5e6eb; background: #fff; border-radius: 8px; padding: 7px 9px; font-size: 12px; color: #444c45; cursor: pointer; }
+.role-dock button.is-on { border-color: #09c382; background: #f3fff9; color: #067a52; font-weight: 600; }

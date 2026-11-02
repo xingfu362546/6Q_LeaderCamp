@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>未复刻</title>
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/shell.css" />
+</head>
+<body class="lb-body" data-lb-page="">
+  <div class="lb-app">
+    <header class="lb-header" id="lb-header-mount"></header>
+    <aside class="lb-side" id="lb-side-mount"></aside>
+    <div class="lb-main">
+      <div class="lb-crumb" id="lb-crumb-mount"></div>
+      <div class="lb-content">
+        <div class="lb-page">
+          <div class="lb-placeholder">
+            <h1 id="ph-title">其它业务线</h1>
+            <p>v3.4.0 只复刻「领袖营薪酬板块」。其它顶栏进此页。</p>
+            <p style="margin-top:16px">
+              <a class="lb-btn lb-btn--primary" href="replica.html?p=talent-pool" style="display:inline-block;line-height:32px">进入复刻后台</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var q = new URLSearchParams(location.search);
+      var id = q.get("m") || "";
+      var label = q.get("label") || "未复刻页面";
+      document.body.setAttribute("data-lb-page", id);
+      document.title = label;
+      document.getElementById("ph-title").textContent = label;
+    })();
+  </script>
+  <script src="js/menu-config.js"></script>
+  <script src="js/shell.js"></script>
+</body>
+</html>

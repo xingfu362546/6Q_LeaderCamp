@@ -1,0 +1,161 @@
+/* 第10条 离营总表（后台）—— 大屏密度优先 */
+.ls-page { padding-bottom: 20px; }
+
+/* 概览 */
+.ls-hero { margin: 12px 0 0; padding: 16px 18px; border-radius: 14px; background: linear-gradient(150deg, #0bbf83 0%, #09a86e 62%, #068a5c 100%); color: #fff; box-shadow: 0 8px 20px rgba(9, 168, 110, .2); }
+.ls-hero__top { display: flex; align-items: center; gap: 16px; }
+.ls-hero__top > div:first-child { flex: 1; min-width: 0; }
+.ls-hero__eye { margin: 0 0 2px; font-size: 12px; letter-spacing: .5px; opacity: .82; }
+.ls-hero h2 { margin: 0; font-size: 20px; font-weight: 600; line-height: 1.3; }
+.ls-hero__sub { margin: 4px 0 0; font-size: 13px; opacity: .9; }
+.ls-ring { position: relative; flex: none; width: 64px; height: 64px; border-radius: 50%; background: conic-gradient(#fff calc(var(--p) * 1%), rgba(255, 255, 255, .28) 0); display: grid; place-items: center; }
+.ls-ring::before { content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #0aa872; }
+.ls-ring b, .ls-ring span { position: relative; }
+.ls-ring b { font-size: 16px; font-weight: 600; line-height: 1; }
+.ls-ring span { font-size: 10px; opacity: .88; }
+
+.ls-bar { display: flex; gap: 2px; height: 8px; margin: 14px 0 10px; border-radius: 4px; overflow: hidden; background: rgba(255, 255, 255, .22); }
+.ls-bar__seg { display: block; height: 100%; }
+.ls-bar__seg--air { background: #ffe08a; }
+.ls-bar__seg--station { background: #a8e6ff; }
+.ls-bar__seg--bus { background: #ffc4a8; }
+.ls-bar__seg--self { background: #d6c9ff; }
+.ls-bar__seg--join { background: #b7f0d8; }
+.ls-bar__seg--none { background: rgba(255, 255, 255, .6); }
+
+.ls-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.ls-chip { display: inline-flex; align-items: center; gap: 4px; height: 22px; padding: 0 9px; border-radius: 11px; background: rgba(255, 255, 255, .18); font-size: 12px; color: #fff; }
+.ls-chip i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.ls-chip b { font-weight: 600; }
+.ls-chip--air i { background: #ffe08a; }
+.ls-chip--station i { background: #a8e6ff; }
+.ls-chip--bus i { background: #ffc4a8; }
+.ls-chip--self i { background: #d6c9ff; }
+.ls-chip--join i { background: #b7f0d8; }
+.ls-chip--none i { background: rgba(255, 255, 255, .75); }
+
+/* 计划紧凑切换 */
+.ls-planswitch { display: flex; gap: 6px; margin: 14px 0 0; overflow-x: auto; padding-bottom: 2px; }
+.ls-planswitch__item { flex: none; height: 30px; padding: 0 12px; border: 1px solid #e8ece9; border-radius: 15px; background: #fff; color: #444c45; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.ls-planswitch__item b { font-weight: 500; }
+.ls-planswitch__item em { font-style: normal; font-size: 12px; color: #09a86e; font-weight: 600; }
+.ls-planswitch__item.is-on { border-color: #09c382; background: #09c382; color: #fff; }
+.ls-planswitch__item.is-on em { color: #fff; }
+.ls-planswitch__dot { display: inline-block; width: 6px; height: 6px; margin-left: 4px; border-radius: 50%; background: #faad14; vertical-align: middle; }
+.ls-planswitch__item.is-on .ls-planswitch__dot { background: #fff; }
+
+/* 工具栏 */
+.ls-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 12px 0 10px; }
+.ls-toolbar .ls-input { flex: 0 1 260px; }
+.ls-input { height: 30px; border: 1px solid #e5e6eb; border-radius: 6px; background: #fff; padding: 0 10px; font-size: 13px; }
+.ls-btn { height: 30px; padding: 0 14px; border: 1px solid #d9d9d9; border-radius: 6px; background: #fff; color: #444; font-size: 13px; cursor: pointer; }
+.ls-btn--primary { border-color: #09c382; background: #09c382; color: #fff; font-weight: 500; }
+.ls-pill { height: 28px; padding: 0 12px; border: 1px solid #e8ece9; border-radius: 14px; background: #fff; color: #696c69; font-size: 12px; cursor: pointer; }
+.ls-pill.is-on { border-color: #09c382; background: #09c382; color: #fff; font-weight: 500; }
+.ls-count { margin-left: auto; font-size: 12px; color: #8a908a; }
+
+/* 大屏密度表 */
+.ls-tablewrap { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0, 0, 0, .05); overflow: auto; max-height: calc(100vh - 300px); }
+.ls-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+.ls-table th { position: sticky; top: 0; z-index: 1; padding: 9px 10px; background: #fafbfa; color: #696c69; font-weight: 500; text-align: left; white-space: nowrap; border-bottom: 1px solid #eef0ee; }
+.ls-table td { padding: 8px 10px; border-bottom: 1px solid #f4f6f4; color: #2f3d30; white-space: nowrap; }
+.ls-table tbody tr:hover td { background: #f7fffb; }
+.ls-table tbody tr:last-child td { border-bottom: 0; }
+.ls-table__empty { padding: 40px 0 !important; text-align: center; color: #b0b4ba; }
+.ls-row--air td:first-child { box-shadow: inset 3px 0 0 #f5b301; }
+.ls-row--station td:first-child { box-shadow: inset 3px 0 0 #29a3d1; }
+.ls-row--bus td:first-child { box-shadow: inset 3px 0 0 #f0783c; }
+.ls-row--self td:first-child { box-shadow: inset 3px 0 0 #8b6ff0; }
+.ls-row--join td:first-child { box-shadow: inset 3px 0 0 #09c382; }
+.ls-row.is-edited td { background: #fffdf5; }
+.ls-row.is-edited:hover td { background: #fff9e6; }
+.ls-cell-name b { font-weight: 600; }
+.ls-dot-edit { display: inline-block; width: 6px; height: 6px; margin-left: 6px; border-radius: 50%; background: #faad14; vertical-align: middle; }
+.ls-waytag { display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 8px; border-radius: 10px; background: #f5f7f5; font-size: 12px; color: #444c45; }
+.ls-waytag i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.ls-waytag--air i { background: #f5b301; }
+.ls-waytag--station i { background: #29a3d1; }
+.ls-waytag--bus i { background: #f0783c; }
+.ls-waytag--self i { background: #8b6ff0; }
+.ls-waytag--join i { background: #09c382; }
+.ls-waytag--none i { background: #c5c8c4; }
+.ls-flight { font-style: normal; color: #8a908a; font-size: 12px; }
+.ls-state { padding: 1px 8px; border-radius: 10px; background: #f2f5f3; color: #8a908a; font-size: 12px; }
+.ls-state.is-done { background: #e8faf3; color: #09a86e; }
+.ls-cell-ops { text-align: right; }
+.ls-mini { height: 24px; padding: 0 10px; margin-left: 6px; border: 1px solid #d9d9d9; border-radius: 12px; background: #fff; color: #444; font-size: 12px; cursor: pointer; }
+.ls-mini--primary { border-color: #09c382; background: #09c382; color: #fff; }
+
+/* 弹层 */
+.ls-mask { position: fixed; inset: 0; z-index: 60; background: rgba(0, 0, 0, .35); display: flex; align-items: center; justify-content: center; }
+.ls-sheet { width: min(520px, 94vw); max-height: 86vh; overflow: auto; padding: 20px 22px; border-radius: 10px; background: #fff; }
+.ls-sheet h3 { margin: 0 0 4px; font-size: 17px; }
+.ls-sheet__sub { margin: 0 0 16px; font-size: 13px; color: #8a908a; }
+.ls-field { margin-bottom: 14px; }
+.ls-field label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(0, 0, 0, .85); }
+.ls-field .ls-input { width: 100%; height: 34px; }
+.ls-ways { display: flex; flex-wrap: wrap; gap: 8px; }
+.ls-way { height: 30px; padding: 0 12px; border: 1px solid #d9d9d9; border-radius: 15px; background: #fff; font-size: 13px; color: #444; cursor: pointer; }
+.ls-way.is-on { border-color: #09c382; background: #f3fff9; color: #067a52; font-weight: 600; }
+.ls-tip { margin: 4px 0 0; padding: 8px 12px; border-radius: 6px; background: #e6f4ff; color: #0958d9; font-size: 12px; line-height: 1.65; }
+.ls-sheet__ops { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.ls-badge { display: inline-block; margin-bottom: 12px; padding: 2px 10px; border-radius: 10px; background: #fff7e6; color: #d48806; font-size: 12px; }
+.ls-detail__row { display: flex; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid #f2f2f2; font-size: 13px; }
+.ls-detail__row span { flex: none; width: 120px; color: #8a908a; }
+.ls-detail__row b { flex: 1; min-width: 0; font-weight: 400; color: #2f3d30; line-height: 1.5; }
+
+/* ===== 原型评审第二轮 第11-13、15-17条 ===== */
+
+/* 第11条：已修改可筛 */
+.ls-inline-link { border: 0; padding: 0; background: none; color: #d46b08; font: inherit; cursor: pointer; text-decoration: underline; }
+.ls-inline-link:hover { color: #ad4e00; }
+.ls-pill--edit.is-on { background: #fff7e6; border-color: #ffbb96; color: #d46b08; }
+
+/* 分段页签：总表 / 变更申请 */
+.ls-tabs { display: flex; align-items: center; gap: 8px; margin: 12px 0 4px; }
+.ls-tab {
+  position: relative;
+  height: 32px;
+  padding: 0 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 16px;
+  background: #fff;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 13px;
+  cursor: pointer;
+}
+.ls-tab.is-on { border-color: #1677ff; background: #e6f4ff; color: #1677ff; font-weight: 600; }
+.ls-tab__dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #ff4d4f;
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+}
+
+/* 第13条：列变多，表格允许横向滚动 */
+.ls-table--wide { min-width: 1680px; }
+.ls-table--wide th,
+.ls-table--wide td { white-space: nowrap; }
+.ls-cell-remark { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* 第15条：申请审批区 */
+.ls-apphead { margin: 12px 0 8px; }
+.ls-apphead h3 { margin: 0 0 4px; font-size: 15px; color: rgba(0, 0, 0, 0.85); }
+.ls-mini--danger { color: #cf1322; border-color: #ffccc7; }
+.ls-mini--danger:hover { background: #fff1f0; }
+
+/* 第17条：通知 */
+.ls-msgbtn { margin-left: auto; }
+.ls-msglist { display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow: auto; margin-top: 8px; }
+.ls-msg { padding: 10px 12px; background: #fafafa; border-left: 3px solid #1677ff; border-radius: 4px; }
+.ls-msg b { display: block; margin-bottom: 4px; color: rgba(0, 0, 0, 0.45); font-size: 12px; font-weight: 400; }
+.ls-msg p { margin: 0 0 4px; color: rgba(0, 0, 0, 0.85); font-size: 13px; }
+.ls-msg em { color: rgba(0, 0, 0, 0.45); font-size: 12px; font-style: normal; }

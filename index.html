@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>6Q 领袖营原型 · v3.5.0</title>
+  <style>
+    :root { --line: #e6e8ec; --text: #1f2329; --text2: #646a73; --pri: #2f6bff; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 14px/1.7 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; color: var(--text); background: #f7f8fa; }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 72px; }
+    h1 { margin: 0 0 8px; font-size: 26px; letter-spacing: .5px; }
+    .sub { color: var(--text2); margin: 0 0 32px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    a.card { display: block; padding: 20px; background: #fff; border: 1px solid var(--line); border-radius: 10px; text-decoration: none; color: inherit; transition: .15s; }
+    a.card:hover { border-color: var(--pri); box-shadow: 0 4px 16px rgba(47, 107, 255, .12); transform: translateY(-1px); }
+    .card b { display: block; font-size: 16px; margin-bottom: 6px; }
+    .card span { color: var(--text2); font-size: 13px; }
+    .tag { display: inline-block; margin-top: 12px; padding: 1px 8px; border-radius: 999px; background: #eef3ff; color: var(--pri); font-size: 12px; }
+    .note { margin-top: 32px; padding: 16px 20px; background: #fff; border: 1px solid var(--line); border-radius: 10px; color: var(--text2); font-size: 13px; }
+    code { background: #f2f3f5; padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>6Q 领袖营原型 · v3.5.0</h1>
+    <p class="sub">2027 冬令营需求原型。先看功能清单，再点序号进页面核对设计逻辑。</p>
+
+    <div class="grid">
+      <a class="card" href="6Q_leader_battalion/index.html">
+        <b>功能清单 + 后台复刻</b>
+        <span>63 条需求，序号可点，进页面自动展开对应注释</span>
+        <span class="tag">先看这里 · 端口 8766</span>
+      </a>
+      <a class="card" href="6Q_leader_app/index.html">
+        <b>助教 / 导师 APP</b>
+        <span>助教分组、学员成长、情绪档案、就医通知、离营总表</span>
+        <span class="tag">手机尺寸 · 端口 8812</span>
+      </a>
+      <a class="card" href="6Q_mentor_pc/index.html">
+        <b>导师磨课门户</b>
+        <span>我的课表、指导评分、试题考核、学习</span>
+        <span class="tag">PC · 端口 8820</span>
+      </a>
+      <a class="card" href="6Q_lsc_enroll/index.html">
+        <b>家长报读</b>
+        <span>报读流程、营服三选一与积分返还</span>
+        <span class="tag">手机尺寸 · 端口 8844</span>
+      </a>
+      <a class="card" href="6Q_lsc_recruit/index.html">
+        <b>招募与完善信息</b>
+        <span>招募详情、报名、完善信息带出银行卡</span>
+        <span class="tag">手机尺寸 · 端口 8845</span>
+      </a>
+    </div>
+
+    <div class="note">
+      各端是独立的静态页面，需要分别起服务（见 <code>README.md</code>）。<br />
+      后台复刻里的注释分「过往逻辑 · v3.4.0」和「现在的逻辑 · v3.5.0」两段，跨页改动会写清数据从哪个页面写到哪个页面。
+    </div>
+  </div>
+</body>
+</html>
