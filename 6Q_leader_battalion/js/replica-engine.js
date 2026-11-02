@@ -215,35 +215,254 @@
      4) 筛选改为 学员ID / 学员姓名 / 性别 + 红黄白。
      5) 创建档案改为「选中会员创建档案」：先从会员库选人，再补档案字段。
      6) 每次改红黄白必须填理由，理由连填写人一起进历史，可追溯。 */
+  /* 会员库：选择6q会员弹窗的数据源。弹窗与现网一致，只有编号 / 姓名 / 手机号三列，
+     选中确定后再把性别、居住地、出生日期、年龄带进建档表单。
+     其中 TBK32 夏钟畅、9BHKDD 丁梦瑶 已有学员档案，用来验证重复建档的拦截。 */
   var SA_MEMBERS = [
+    { sid: "GDURPN", name: "郑嘉佑", gender: "男", phone: "13802145678", city: "浙江省-杭州市-西湖区", birthday: "2015-03-18", age: 11 },
+    { sid: "DU8HB6", name: "陈思睿", gender: "男", phone: "13502917463", city: "广东省-广州市-天河区", birthday: "2014-11-02", age: 12 },
+    { sid: "23Y44K", name: "林语晨", gender: "女", phone: "13611802745", city: "上海市-浦东新区", birthday: "2016-01-09", age: 10 },
+    { sid: "4CZ7JH", name: "林嘉睿", gender: "男", phone: "15869322336", city: "广东省-深圳市-南山区", birthday: "2015-07-21", age: 11 },
+    { sid: "6BIBCD", name: "杨烨", gender: "女", phone: "18248188235", city: "广东省-佛山市-禅城区", birthday: "2013-12-30", age: 12 },
+    { sid: "C7NG3Q", name: "周宸", gender: "男", phone: "15305022066", city: "福建省-厦门市-思明区", birthday: "2016-05-14", age: 10 },
+    { sid: "1MUWJ7", name: "王若彤", gender: "女", phone: "13122098746", city: "江苏省-南京市-鼓楼区", birthday: "2015-09-03", age: 11 },
+    { sid: "L5QOA4", name: "苏亦辰", gender: "男", phone: "13761234509", city: "江苏省-苏州市-工业园区", birthday: "2014-04-27", age: 12 },
+    { sid: "B2MQD5", name: "何雨桐", gender: "女", phone: "18602347811", city: "重庆市-渝北区", birthday: "2016-08-12", age: 10 },
+    { sid: "NRT5LF", name: "丁丁", gender: "女", phone: "13728622776", city: "广东省-深圳市-福田区", birthday: "2015-02-25", age: 11 },
     { sid: "TBK32", name: "夏钟畅", gender: "男", phone: "15705115316", city: "浙江省-杭州市-滨江区", birthday: "2014-02-20", age: 12 },
-    { sid: "2K8HH4", name: "郑煜馨", gender: "女", phone: "13757778012", city: "浙江省-温州市-乐清市", birthday: "2017-08-29", age: 9 },
-    { sid: "HXH4K", name: "郑陈衍", gender: "男", phone: "13757778012", city: "浙江省-温州市-鹿城区", birthday: "2015-05-26", age: 11 },
     { sid: "9BHKDD", name: "丁梦瑶", gender: "女", phone: "13776021297", city: "江苏省-苏州市-虎丘区", birthday: "2017-06-22", age: 9 },
-    { sid: "8P1CKX", name: "王艺萱", gender: "女", phone: "18505816233", city: "河南省-郑州市-管城区", birthday: "2015-08-16", age: 11 },
-    { sid: "5A7W3D", name: "孙沐宸", gender: "男", phone: "15162644921", city: "上海市-徐汇区", birthday: "2017-08-28", age: 9 },
-    { sid: "ZYA7Q2", name: "周予安", gender: "女", phone: "13901234567", city: "浙江省-宁波市-鄞州区", birthday: "2015-11-03", age: 10 },
-    { sid: "LSY3M8", name: "林书瑶", gender: "女", phone: "13600998877", city: "福建省-厦门市-思明区", birthday: "2016-02-17", age: 10 }
+    { sid: "W3K9PA", name: "陈知远", gender: "男", phone: "13501234567", city: "湖南省-长沙市-岳麓区", birthday: "2015-10-08", age: 11 },
+    { sid: "Q8M2XZ", name: "吴若曦", gender: "女", phone: "13612345678", city: "湖北省-武汉市-武昌区", birthday: "2016-03-16", age: 10 },
+    { sid: "HJ4T7C", name: "黄一诺", gender: "女", phone: "13723456789", city: "河南省-郑州市-金水区", birthday: "2015-06-05", age: 11 },
+    { sid: "P2L9BN", name: "许清和", gender: "男", phone: "13834567890", city: "安徽省-合肥市-蜀山区", birthday: "2014-09-19", age: 12 },
+    { sid: "R7D3FK", name: "罗子谦", gender: "男", phone: "13945678901", city: "四川省-成都市-武侯区", birthday: "2016-11-28", age: 10 },
+    { sid: "T5V8QS", name: "谢语桐", gender: "女", phone: "15056789012", city: "云南省-昆明市-五华区", birthday: "2015-04-11", age: 11 },
+    { sid: "U9J2MW", name: "曾令仪", gender: "女", phone: "15167890123", city: "江西省-南昌市-东湖区", birthday: "2016-07-07", age: 10 },
+    { sid: "V4N6HY", name: "邓皓轩", gender: "男", phone: "15278901234", city: "福建省-福州市-鼓楼区", birthday: "2015-01-23", age: 11 },
+    { sid: "X1B8CP", name: "冯思远", gender: "男", phone: "15389012345", city: "天津市-和平区", birthday: "2014-06-14", age: 12 },
+    { sid: "Y6G3ZT", name: "韩欣妍", gender: "女", phone: "15590123456", city: "辽宁省-沈阳市-和平区", birthday: "2016-10-02", age: 10 },
+    { sid: "Z2K7LR", name: "蒋亦辰", gender: "男", phone: "15601234567", city: "陕西省-西安市-雁塔区", birthday: "2015-05-30", age: 11 },
+    { sid: "A8F5MD", name: "孔舒宁", gender: "女", phone: "15712345678", city: "山东省-济南市-历下区", birthday: "2016-12-09", age: 10 },
+    { sid: "C3P9XW", name: "梁书宁", gender: "女", phone: "15823456789", city: "山东省-青岛市-崂山区", birthday: "2015-08-21", age: 11 },
+    { sid: "E7R2JN", name: "马亦舒", gender: "女", phone: "15934567890", city: "辽宁省-大连市-中山区", birthday: "2014-12-17", age: 12 }
   ];
   var saPickMember = "";
   var saReasonTarget = "";
+  /* 选择6q会员弹窗的临时状态：page 当前页、size 每页条数、tmp 弹窗里勾选的会员、q 三个查询条件。 */
+  var saPick = { page: 1, size: 10, tmp: "", q: { sid: "", name: "", phone: "" } };
+
+  function saMemberOf(sid) {
+    return SA_MEMBERS.filter(function (m) { return m.sid === sid; })[0] || null;
+  }
+
+  function saPickerList() {
+    return SA_MEMBERS.filter(function (m) {
+      var q = saPick.q;
+      if (q.sid && String(m.sid).toUpperCase().indexOf(q.sid.toUpperCase()) < 0) return false;
+      if (q.name && String(m.name).indexOf(q.name) < 0) return false;
+      if (q.phone && String(m.phone || "").indexOf(q.phone) < 0) return false;
+      return true;
+    });
+  }
+
+  /* 选择6q会员：查询区（编号 / 姓名 / 手机号）+ 三列表格 + 分页 + 取消 / 确定。 */
+  function saPickerHtml() {
+    var list = saPickerList();
+    var size = saPick.size || 10;
+    var total = list.length;
+    var pages = Math.max(1, Math.ceil(total / size));
+    if (saPick.page > pages) saPick.page = pages;
+    if (saPick.page < 1) saPick.page = 1;
+    var start = (saPick.page - 1) * size;
+    var view = list.slice(start, start + size);
+
+    var html = '<div class="sa-modal__card">';
+    html += '<div class="sa-modal__head"><h3>选择6q会员</h3><button type="button" class="sa-modal__x" data-act="saPickCancel" aria-label="关闭">×</button></div>';
+    html += '<div class="sa-q">';
+    html += '<label class="sa-q__item"><span>编号</span><input class="lb-input" data-sa-q="sid" value="' + esc(saPick.q.sid) + '" placeholder="请输入编号" /></label>';
+    html += '<label class="sa-q__item"><span>姓名</span><input class="lb-input" data-sa-q="name" value="' + esc(saPick.q.name) + '" placeholder="请输入姓名" /></label>';
+    html += '<label class="sa-q__item"><span>手机号</span><input class="lb-input" data-sa-q="phone" value="' + esc(saPick.q.phone) + '" placeholder="请输入手机号" /></label>';
+    html += '<span class="sa-q__btns"><button type="button" class="lb-btn lb-btn--primary" data-act="saPickQuery">查询</button><button type="button" class="lb-btn" data-act="saPickReset">重置</button></span>';
+    html += "</div>";
+
+    html += '<div class="sa-modal__body"><table class="sa-table"><thead><tr><th>编号</th><th>姓名</th><th>手机号</th></tr></thead><tbody>';
+    if (!view.length) {
+      html += '<tr><td class="sa-table__empty" colspan="3">没有匹配的会员</td></tr>';
+    }
+    view.forEach(function (m) {
+      html += '<tr class="sa-row' + (saPick.tmp === m.sid ? " is-on" : "") + '" data-act="saPickRow" data-menu="' + esc(m.sid) + '">';
+      html += "<td>" + esc(m.sid) + "</td><td>" + esc(m.name) + '</td><td>' + esc(m.phone || "") + "</td></tr>";
+    });
+    html += "</tbody></table></div>";
+
+    html += '<div class="sa-pager"><span class="sa-pager__total">共 ' + total + " 条记录</span>";
+    html += '<span class="sa-pager__pages">';
+    html += '<button type="button" class="sa-page" data-act="saPickPage" data-menu="-1"' + (saPick.page <= 1 ? " disabled" : "") + ">‹</button>";
+    for (var i = 1; i <= pages; i++) {
+      if (pages > 7 && i > 3 && i < pages - 1 && Math.abs(i - saPick.page) > 1) {
+        if (i === 4) html += '<span class="sa-page__dots">…</span>';
+        continue;
+      }
+      html += '<button type="button" class="sa-page' + (i === saPick.page ? " is-on" : "") + '" data-act="saPickPage" data-menu="' + i + '">' + i + "</button>";
+    }
+    html += '<button type="button" class="sa-page" data-act="saPickPage" data-menu="0"' + (saPick.page >= pages ? " disabled" : "") + ">›</button>";
+    html += "</span>";
+    html += '<select class="sa-size" id="sa-size">' + [10, 20, 50].map(function (n) {
+      return '<option value="' + n + '"' + (n === size ? " selected" : "") + ">" + n + " 条/页</option>";
+    }).join("") + "</select>";
+    html += '<span class="sa-jump">跳至<input class="sa-jump__input" id="sa-jump" />页</span>';
+    html += "</div>";
+
+    html += '<div class="sa-modal__foot"><button type="button" class="lb-btn" data-act="saPickCancel">取消</button><button type="button" class="lb-btn lb-btn--primary" data-act="saPickOk"' + (saPick.tmp ? "" : " disabled") + ">确定</button></div>";
+    return html + "</div>";
+  }
+
+  function saPickerRender() {
+    var box = document.getElementById("sa-picker");
+    if (box) box.innerHTML = saPickerHtml();
+  }
+
+  function openSaPicker() {
+    var box = document.getElementById("sa-picker");
+    if (!box) {
+      box = document.createElement("div");
+      box.id = "sa-picker";
+      box.className = "sa-modal";
+      document.body.appendChild(box);
+      box.addEventListener("mousedown", function (e) { if (e.target === box) closeSaPicker(); });
+      box.addEventListener("change", function (e) {
+        if (e.target && e.target.id === "sa-size") {
+          saPick.size = parseInt(e.target.value, 10) || 10;
+          saPick.page = 1;
+          saPickerRender();
+        }
+      });
+      box.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") {
+          closeSaPicker();
+          return;
+        }
+        if (e.key !== "Enter" || !e.target) return;
+        if (e.target.id === "sa-jump") {
+          e.preventDefault();
+          saPickGo(parseInt(e.target.value, 10));
+        } else if (e.target.getAttribute("data-sa-q")) {
+          e.preventDefault();
+          saPickQuery();
+        }
+      });
+    }
+    saPick.page = 1;
+    saPick.tmp = saPickMember || "";
+    saPick.q = { sid: "", name: "", phone: "" };
+    saPick.size = saPick.size || 10;
+    box.classList.add("is-open");
+    saPickerRender();
+  }
+
+  function closeSaPicker() {
+    var box = document.getElementById("sa-picker");
+    if (box) box.classList.remove("is-open");
+  }
+
+  function saPickQuery() {
+    var read = function (k) {
+      var el = document.querySelector('[data-sa-q="' + k + '"]');
+      return el ? String(el.value || "").trim() : "";
+    };
+    saPick.q = { sid: read("sid"), name: read("name"), phone: read("phone") };
+    saPick.page = 1;
+    saPickerRender();
+  }
+
+  function saPickReset() {
+    saPick.q = { sid: "", name: "", phone: "" };
+    saPick.page = 1;
+    saPickerRender();
+  }
+
+  function saPickGo(page) {
+    var total = saPickerList().length;
+    var pages = Math.max(1, Math.ceil(total / (saPick.size || 10)));
+    if (!page || page < 1 || page > pages) {
+      window.LB.toast("请输入 1 - " + pages + " 之间的页码");
+      return;
+    }
+    saPick.page = page;
+    saPickerRender();
+  }
+
+  function saPickPage(menu) {
+    var total = saPickerList().length;
+    var pages = Math.max(1, Math.ceil(total / (saPick.size || 10)));
+    if (menu === "-1") saPick.page = Math.max(1, saPick.page - 1);
+    else if (menu === "0") saPick.page = Math.min(pages, saPick.page + 1);
+    else saPick.page = parseInt(menu, 10) || 1;
+    saPickerRender();
+  }
+
+  /* 点行即选中，只改类名和「确定」可用状态，不整块重渲染，避免列表跳动。 */
+  function saPickRowSelect(sid) {
+    saPick.tmp = sid || "";
+    var box = document.getElementById("sa-picker");
+    if (!box) return;
+    box.querySelectorAll(".sa-row").forEach(function (tr) {
+      tr.classList.toggle("is-on", tr.getAttribute("data-menu") === saPick.tmp);
+    });
+    var ok = box.querySelector('[data-act="saPickOk"]');
+    if (ok) {
+      if (saPick.tmp) ok.removeAttribute("disabled");
+      else ok.setAttribute("disabled", "disabled");
+    }
+  }
+
+  function confirmSaPick() {
+    if (!saPick.tmp) {
+      window.LB.toast("请选择会员");
+      return;
+    }
+    var member = saMemberOf(saPick.tmp);
+    if (!member) return;
+    saPickMember = member.sid;
+    closeSaPicker();
+    /* 选中后回填抽屉里的「已选会员」和带出的字段。重选会覆盖上一次带出的值。 */
+    var picked = document.querySelector("[data-sa-picked]");
+    if (picked) {
+      picked.classList.add("is-on");
+      var txt = picked.querySelector(".sa-picked__txt");
+      if (txt) txt.textContent = member.name + "（" + member.sid + "）· " + member.gender + " · " + member.phone;
+      var open = picked.querySelector('[data-act="saOpenPicker"]');
+      if (open) open.textContent = "重新选择";
+    }
+    var fill = function (id, val) {
+      var el = document.getElementById(id);
+      if (el) el.value = val == null ? "" : val;
+    };
+    fill("sa-phone", member.phone);
+    fill("sa-city", member.city);
+    fill("sa-birthday", member.birthday);
+    fill("sa-age", member.age);
+    window.LB.toast("已选择会员「" + member.name + "」，请补充档案信息");
+  }
 
   function openStudentCreate() {
-    var rows = SA_MEMBERS.map(function (m) {
-      var on = saPickMember === m.sid;
-      return '<button type="button" class="lb-pick-row' + (on ? " is-on" : "") + '" data-act="saPickMember" data-menu="' + esc(m.sid) + '">' +
-        '<b>' + esc(m.name) + '</b><span>会员ID ' + esc(m.sid) + ' · ' + esc(m.gender) + " · " + esc(m.phone) + " · " + esc(m.city) + "</span></button>";
-    }).join("");
+    /* 每次新建都从空表单开始，上一次没提交的会员不留在表单里。 */
+    saPickMember = "";
+    var m = saMemberOf(saPickMember);
     var html =
-      '<div class="lb-field"><label>从会员库选择会员</label><div class="lb-pick-list">' + rows + "</div></div>" +
-      '<div class="lb-field"><label>学员联系电话</label><input class="lb-input" id="sa-phone" placeholder="默认取会员手机号，可改" /></div>' +
-      '<div class="lb-field"><label>居住地</label><input class="lb-input" id="sa-city" placeholder="默认取会员居住地，可改" /></div>' +
-      '<div class="lb-field"><label>出生日期</label><input class="lb-input" id="sa-birthday" placeholder="如 2016-09-23" /></div>' +
-      '<div class="lb-field"><label>年龄</label><input class="lb-input" id="sa-age" placeholder="请输入年龄" /></div>' +
+      '<div class="lb-field"><label>从会员库选择会员</label>' +
+      '<div class="sa-picked' + (m ? " is-on" : "") + '" data-sa-picked>' +
+      '<span class="sa-picked__txt">' + (m ? esc(m.name + "（" + m.sid + "）· " + m.gender + " · " + m.phone) : "未选择会员，点右侧「选择会员」按编号 / 姓名 / 手机号检索") + "</span>" +
+      '<button type="button" class="lb-btn" data-act="saOpenPicker">' + (m ? "重新选择" : "选择会员") + "</button>" +
+      "</div></div>" +
+      '<div class="lb-field"><label>学员联系电话</label><input class="lb-input" id="sa-phone" value="' + (m ? esc(m.phone) : "") + '" placeholder="默认取会员手机号，可改" /></div>' +
+      '<div class="lb-field"><label>居住地</label><input class="lb-input" id="sa-city" value="' + (m ? esc(m.city) : "") + '" placeholder="默认取会员居住地，可改" /></div>' +
+      '<div class="lb-field"><label>出生日期</label><input class="lb-input" id="sa-birthday" value="' + (m ? esc(m.birthday) : "") + '" placeholder="如 2016-09-23" /></div>' +
+      '<div class="lb-field"><label>年龄</label><input class="lb-input" id="sa-age" value="' + (m ? esc(m.age) : "") + '" placeholder="请输入年龄" /></div>' +
       '<div class="lb-field"><label>母亲姓名</label><input class="lb-input" id="sa-mother" /></div>' +
       '<div class="lb-field"><label>父亲姓名</label><input class="lb-input" id="sa-father" /></div>' +
       '<div class="lb-field"><label>红黄白</label><input class="lb-input" value="白" disabled /></div>' +
-      '<p class="lb-hint">先选会员再建档。学员ID、姓名、性别、联系电话、居住地、出生日期、年龄从会员带出。新建档案默认白。</p>' +
+      '<p class="lb-hint">先选会员再建档。学员ID、姓名、性别、联系电话、居住地、出生日期、年龄从会员带出，可改。新建档案默认白。</p>' +
       '<div class="lb-drawer-foot"><button type="button" class="lb-btn" data-close-drawer="1">取消</button><button type="button" class="lb-btn lb-btn--primary" data-act="studentArchiveSave">确定</button></div>';
     window.LB.openDrawer("选中会员创建档案", html, { wide: true });
   }
@@ -2045,25 +2264,32 @@
       saveStudentArchive();
       return;
     }
-    if (pageId === "student-archive" && act === "saPickMember") {
-      saPickMember = menu || "";
-      var picked = SA_MEMBERS.filter(function (m) { return m.sid === saPickMember; })[0];
-      var wrap = document.querySelector(".lb-pick-list");
-      if (wrap) {
-        wrap.querySelectorAll(".lb-pick-row").forEach(function (b) {
-          b.classList.toggle("is-on", b.getAttribute("data-menu") === saPickMember);
-        });
-      }
-      if (picked) {
-        var setVal = function (id, val) {
-          var el = document.getElementById(id);
-          if (el && !el.value) el.value = val;
-        };
-        setVal("sa-phone", picked.phone);
-        setVal("sa-city", picked.city);
-        setVal("sa-birthday", picked.birthday);
-        setVal("sa-age", picked.age);
-      }
+    if (pageId === "student-archive" && act === "saOpenPicker") {
+      openSaPicker();
+      return;
+    }
+    if (pageId === "student-archive" && act === "saPickRow") {
+      saPickRowSelect(menu || "");
+      return;
+    }
+    if (pageId === "student-archive" && act === "saPickPage") {
+      saPickPage(menu || "");
+      return;
+    }
+    if (pageId === "student-archive" && act === "saPickQuery") {
+      saPickQuery();
+      return;
+    }
+    if (pageId === "student-archive" && act === "saPickReset") {
+      saPickReset();
+      return;
+    }
+    if (pageId === "student-archive" && act === "saPickOk") {
+      confirmSaPick();
+      return;
+    }
+    if (pageId === "student-archive" && act === "saPickCancel") {
+      closeSaPicker();
       return;
     }
     if (pageId === "student-archive" && act === "saLampConfirm") {
@@ -4000,7 +4226,8 @@
     var actBtn = t.closest("[data-act]");
     var pickerBox = document.getElementById("lb-picker");
     var studyBox = document.getElementById("lb-study");
-    if (actBtn && (mount.contains(actBtn) || (document.getElementById("lb-drawer") && document.getElementById("lb-drawer").contains(actBtn)) || (pickerBox && pickerBox.contains(actBtn)) || (studyBox && studyBox.contains(actBtn)))) {
+    var saPickerBox = document.getElementById("sa-picker");
+    if (actBtn && (mount.contains(actBtn) || (document.getElementById("lb-drawer") && document.getElementById("lb-drawer").contains(actBtn)) || (pickerBox && pickerBox.contains(actBtn)) || (studyBox && studyBox.contains(actBtn)) || (saPickerBox && saPickerBox.contains(actBtn)))) {
       var rid = actBtn.getAttribute("data-row");
       handleAct(actBtn.getAttribute("data-act"), rid ? findRow(rid) : null, actBtn.getAttribute("data-menu") || actBtn.getAttribute("data-name"));
       return;

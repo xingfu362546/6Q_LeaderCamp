@@ -2355,6 +2355,162 @@
 .lb-pick-row.is-on { border-color: #09c382; background: #eefaf4; }
 .lb-pick-row b { color: rgba(0, 0, 0, 0.85); font-size: 14px; }
 .lb-pick-row span { color: rgba(0, 0, 0, 0.45); font-size: 12px; }
+
+/* 建档抽屉里的「已选会员」行 */
+.sa-picked {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 40px;
+  padding: 6px 8px 6px 12px;
+  border: 1px solid var(--lb-border);
+  border-radius: var(--lb-radius-sm);
+  background: #fafafa;
+}
+.sa-picked.is-on { border-color: #91caff; background: var(--lb-primary-bg); }
+.sa-picked__txt { font-size: 13px; color: var(--lb-text-3); }
+.sa-picked.is-on .sa-picked__txt { color: var(--lb-text); }
+
+/* 选择6q会员弹窗：查询区 + 编号 / 姓名 / 手机号三列表格 + 分页 */
+.sa-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 62;
+  display: none;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.45);
+}
+.sa-modal.is-open { display: grid; }
+
+.sa-modal__card {
+  width: min(1040px, 94vw);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--lb-white);
+  border-radius: 2px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.18);
+}
+
+.sa-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--lb-border-light);
+}
+.sa-modal__head h3 { margin: 0; font-size: 15px; font-weight: 600; color: var(--lb-text); }
+.sa-modal__x {
+  border: 0;
+  background: none;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--lb-text-3);
+  cursor: pointer;
+}
+.sa-modal__x:hover { color: var(--lb-text); }
+
+.sa-q {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--lb-border-light);
+}
+.sa-q__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--lb-text-2);
+}
+.sa-q__item .lb-input { width: 168px; height: var(--lb-control-h); }
+.sa-q__btns { display: inline-flex; gap: 8px; margin-left: auto; }
+
+.sa-modal__body { padding: 12px 20px 0; overflow: auto; flex: 1; }
+
+.sa-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+.sa-table th,
+.sa-table td {
+  padding: 7px 10px;
+  border: 1px solid var(--lb-border-light);
+  text-align: center;
+  color: var(--lb-text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sa-table th {
+  background: #f2f6fd;
+  font-weight: 500;
+  color: var(--lb-text);
+}
+.sa-table__empty { padding: 40px 0; color: var(--lb-text-3); }
+.sa-row { cursor: pointer; }
+.sa-row:hover td { background: #fafcff; }
+.sa-row.is-on td { background: var(--lb-primary-bg); color: var(--lb-text); }
+
+.sa-pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 12px 20px;
+  font-size: 13px;
+  color: var(--lb-text-2);
+}
+.sa-pager__pages { display: inline-flex; align-items: center; gap: 4px; }
+.sa-page {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--lb-border);
+  border-radius: var(--lb-radius-sm);
+  background: var(--lb-white);
+  color: var(--lb-text-2);
+  font-size: 13px;
+  cursor: pointer;
+}
+.sa-page:hover:not(:disabled) { border-color: var(--lb-primary); color: var(--lb-primary); }
+.sa-page.is-on { border-color: var(--lb-primary); color: var(--lb-primary); }
+.sa-page:disabled { color: var(--lb-text-disabled); cursor: not-allowed; }
+.sa-page__dots { color: var(--lb-text-3); }
+.sa-size {
+  height: 28px;
+  border: 1px solid var(--lb-border);
+  border-radius: var(--lb-radius-sm);
+  background: var(--lb-white);
+  color: var(--lb-text-2);
+  font-size: 13px;
+  padding: 0 4px;
+}
+.sa-jump { display: inline-flex; align-items: center; gap: 4px; }
+.sa-jump__input {
+  width: 44px;
+  height: 28px;
+  border: 1px solid var(--lb-border);
+  border-radius: var(--lb-radius-sm);
+  text-align: center;
+  font-size: 13px;
+}
+
+.sa-modal__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--lb-border-light);
+}
+.sa-modal__foot .lb-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+
 .lb-req { color: #ff4d4f; font-style: normal; margin-right: 2px; }
 .lb-lamp-field { display: inline-flex; align-items: center; gap: 6px; }
 .lb-lamp-log { font-size: 12px; color: #1677ff; }
