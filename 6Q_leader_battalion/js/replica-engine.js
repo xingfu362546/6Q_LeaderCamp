@@ -219,32 +219,32 @@
      选中确定后再把性别、居住地、出生日期、年龄带进建档表单。
      其中 TBK32 夏钟畅、9BHKDD 丁梦瑶 已有学员档案，用来验证重复建档的拦截。 */
   var SA_MEMBERS = [
-    { sid: "GDURPN", name: "郑嘉佑", gender: "男", phone: "13802145678", city: "浙江省-杭州市-西湖区", birthday: "2015-03-18", age: 11 },
-    { sid: "DU8HB6", name: "陈思睿", gender: "男", phone: "13502917463", city: "广东省-广州市-天河区", birthday: "2014-11-02", age: 12 },
-    { sid: "23Y44K", name: "林语晨", gender: "女", phone: "13611802745", city: "上海市-浦东新区", birthday: "2016-01-09", age: 10 },
-    { sid: "4CZ7JH", name: "林嘉睿", gender: "男", phone: "15869322336", city: "广东省-深圳市-南山区", birthday: "2015-07-21", age: 11 },
-    { sid: "6BIBCD", name: "杨烨", gender: "女", phone: "18248188235", city: "广东省-佛山市-禅城区", birthday: "2013-12-30", age: 12 },
-    { sid: "C7NG3Q", name: "周宸", gender: "男", phone: "15305022066", city: "福建省-厦门市-思明区", birthday: "2016-05-14", age: 10 },
-    { sid: "1MUWJ7", name: "王若彤", gender: "女", phone: "13122098746", city: "江苏省-南京市-鼓楼区", birthday: "2015-09-03", age: 11 },
-    { sid: "L5QOA4", name: "苏亦辰", gender: "男", phone: "13761234509", city: "江苏省-苏州市-工业园区", birthday: "2014-04-27", age: 12 },
-    { sid: "B2MQD5", name: "何雨桐", gender: "女", phone: "18602347811", city: "重庆市-渝北区", birthday: "2016-08-12", age: 10 },
-    { sid: "NRT5LF", name: "丁丁", gender: "女", phone: "13728622776", city: "广东省-深圳市-福田区", birthday: "2015-02-25", age: 11 },
-    { sid: "TBK32", name: "夏钟畅", gender: "男", phone: "15705115316", city: "浙江省-杭州市-滨江区", birthday: "2014-02-20", age: 12 },
-    { sid: "9BHKDD", name: "丁梦瑶", gender: "女", phone: "13776021297", city: "江苏省-苏州市-虎丘区", birthday: "2017-06-22", age: 9 },
-    { sid: "W3K9PA", name: "陈知远", gender: "男", phone: "13501234567", city: "湖南省-长沙市-岳麓区", birthday: "2015-10-08", age: 11 },
-    { sid: "Q8M2XZ", name: "吴若曦", gender: "女", phone: "13612345678", city: "湖北省-武汉市-武昌区", birthday: "2016-03-16", age: 10 },
-    { sid: "HJ4T7C", name: "黄一诺", gender: "女", phone: "13723456789", city: "河南省-郑州市-金水区", birthday: "2015-06-05", age: 11 },
-    { sid: "P2L9BN", name: "许清和", gender: "男", phone: "13834567890", city: "安徽省-合肥市-蜀山区", birthday: "2014-09-19", age: 12 },
-    { sid: "R7D3FK", name: "罗子谦", gender: "男", phone: "13945678901", city: "四川省-成都市-武侯区", birthday: "2016-11-28", age: 10 },
-    { sid: "T5V8QS", name: "谢语桐", gender: "女", phone: "15056789012", city: "云南省-昆明市-五华区", birthday: "2015-04-11", age: 11 },
-    { sid: "U9J2MW", name: "曾令仪", gender: "女", phone: "15167890123", city: "江西省-南昌市-东湖区", birthday: "2016-07-07", age: 10 },
-    { sid: "V4N6HY", name: "邓皓轩", gender: "男", phone: "15278901234", city: "福建省-福州市-鼓楼区", birthday: "2015-01-23", age: 11 },
-    { sid: "X1B8CP", name: "冯思远", gender: "男", phone: "15389012345", city: "天津市-和平区", birthday: "2014-06-14", age: 12 },
-    { sid: "Y6G3ZT", name: "韩欣妍", gender: "女", phone: "15590123456", city: "辽宁省-沈阳市-和平区", birthday: "2016-10-02", age: 10 },
-    { sid: "Z2K7LR", name: "蒋亦辰", gender: "男", phone: "15601234567", city: "陕西省-西安市-雁塔区", birthday: "2015-05-30", age: 11 },
-    { sid: "A8F5MD", name: "孔舒宁", gender: "女", phone: "15712345678", city: "山东省-济南市-历下区", birthday: "2016-12-09", age: 10 },
-    { sid: "C3P9XW", name: "梁书宁", gender: "女", phone: "15823456789", city: "山东省-青岛市-崂山区", birthday: "2015-08-21", age: 11 },
-    { sid: "E7R2JN", name: "马亦舒", gender: "女", phone: "15934567890", city: "辽宁省-大连市-中山区", birthday: "2014-12-17", age: 12 }
+    { sid: "GDURPN", name: "郑嘉佑", gender: "男", phone: "13802145678", city: "浙江省-杭州市-西湖区", birthday: "2015-03-18", age: 11, father: "郑志强", mother: "李丽华" },
+    { sid: "DU8HB6", name: "陈思睿", gender: "男", phone: "13502917463", city: "广东省-广州市-天河区", birthday: "2014-11-02", age: 12, father: "陈建国", mother: "王秀英" },
+    { sid: "23Y44K", name: "林语晨", gender: "女", phone: "13611802745", city: "上海市-浦东新区", birthday: "2016-01-09", age: 10, father: "林伟明", mother: "张慧敏" },
+    { sid: "4CZ7JH", name: "林嘉睿", gender: "男", phone: "15869322336", city: "广东省-深圳市-南山区", birthday: "2015-07-21", age: 11, father: "林海涛", mother: "刘雅琴" },
+    { sid: "6BIBCD", name: "杨烨", gender: "女", phone: "18248188235", city: "广东省-佛山市-禅城区", birthday: "2013-12-30", age: 12, father: "杨俊杰", mother: "陈月娥" },
+    { sid: "C7NG3Q", name: "周宸", gender: "男", phone: "15305022066", city: "福建省-厦门市-思明区", birthday: "2016-05-14", age: 10, father: "周文斌", mother: "杨淑芬" },
+    { sid: "1MUWJ7", name: "王若彤", gender: "女", phone: "13122098746", city: "江苏省-南京市-鼓楼区", birthday: "2015-09-03", age: 11, father: "王立军", mother: "黄晓燕" },
+    { sid: "L5QOA4", name: "苏亦辰", gender: "男", phone: "13761234509", city: "江苏省-苏州市-工业园区", birthday: "2014-04-27", age: 12, father: "苏国强", mother: "周美玲" },
+    { sid: "B2MQD5", name: "何雨桐", gender: "女", phone: "18602347811", city: "重庆市-渝北区", birthday: "2016-08-12", age: 10, father: "何振华", mother: "吴婷婷" },
+    { sid: "NRT5LF", name: "丁丁", gender: "女", phone: "13728622776", city: "广东省-深圳市-福田区", birthday: "2015-02-25", age: 11, father: "丁永康", mother: "徐雪梅" },
+    { sid: "TBK32", name: "夏钟畅", gender: "男", phone: "15705115316", city: "浙江省-杭州市-滨江区", birthday: "2014-02-20", age: 12, father: "夏学军", mother: "孙红梅" },
+    { sid: "9BHKDD", name: "丁梦瑶", gender: "女", phone: "13776021297", city: "江苏省-苏州市-虎丘区", birthday: "2017-06-22", age: 9, father: "丁德明", mother: "马文静" },
+    { sid: "W3K9PA", name: "陈知远", gender: "男", phone: "13501234567", city: "湖南省-长沙市-岳麓区", birthday: "2015-10-08", age: 11, father: "陈家豪", mother: "朱巧玲" },
+    { sid: "Q8M2XZ", name: "吴若曦", gender: "女", phone: "13612345678", city: "湖北省-武汉市-武昌区", birthday: "2016-03-16", age: 10, father: "吴锦荣", mother: "胡海燕" },
+    { sid: "HJ4T7C", name: "黄一诺", gender: "女", phone: "13723456789", city: "河南省-郑州市-金水区", birthday: "2015-06-05", age: 11, father: "黄宏远", mother: "郭佳怡" },
+    { sid: "P2L9BN", name: "许清和", gender: "男", phone: "13834567890", city: "安徽省-合肥市-蜀山区", birthday: "2014-09-19", age: 12, father: "许少华", mother: "高梦洁" },
+    { sid: "R7D3FK", name: "罗子谦", gender: "男", phone: "13945678901", city: "四川省-成都市-武侯区", birthday: "2016-11-28", age: 10, father: "罗明辉", mother: "邓素芳" },
+    { sid: "T5V8QS", name: "谢语桐", gender: "女", phone: "15056789012", city: "云南省-昆明市-五华区", birthday: "2015-04-11", age: 11, father: "谢瑞祥", mother: "梁玉兰" },
+    { sid: "U9J2MW", name: "曾令仪", gender: "女", phone: "15167890123", city: "江西省-南昌市-东湖区", birthday: "2016-07-07", age: 10, father: "曾世杰", mother: "宋春梅" },
+    { sid: "V4N6HY", name: "邓皓轩", gender: "男", phone: "15278901234", city: "福建省-福州市-鼓楼区", birthday: "2015-01-23", age: 11, father: "邓春生", mother: "唐爱华" },
+    { sid: "X1B8CP", name: "冯思远", gender: "男", phone: "15389012345", city: "天津市-和平区", birthday: "2014-06-14", age: 12, father: "冯永强", mother: "肖小燕" },
+    { sid: "Y6G3ZT", name: "韩欣妍", gender: "女", phone: "15590123456", city: "辽宁省-沈阳市-和平区", birthday: "2016-10-02", age: 10, father: "韩开明", mother: "邓丽娟" },
+    { sid: "Z2K7LR", name: "蒋亦辰", gender: "男", phone: "15601234567", city: "陕西省-西安市-雁塔区", birthday: "2015-05-30", age: 11, father: "蒋云峰", mother: "曹晓红" },
+    { sid: "A8F5MD", name: "孔舒宁", gender: "女", phone: "15712345678", city: "山东省-济南市-历下区", birthday: "2016-12-09", age: 10, father: "孔天宇", mother: "彭静怡" },
+    { sid: "C3P9XW", name: "梁书宁", gender: "女", phone: "15823456789", city: "山东省-青岛市-崂山区", birthday: "2015-08-21", age: 11, father: "梁子豪", mother: "曾思颖" },
+    { sid: "E7R2JN", name: "马亦舒", gender: "女", phone: "15934567890", city: "辽宁省-大连市-中山区", birthday: "2014-12-17", age: 12, father: "马承志", mother: "肖宛婷" }
   ];
   var saPickMember = "";
   var saReasonTarget = "";
@@ -425,7 +425,8 @@
     if (!member) return;
     saPickMember = member.sid;
     closeSaPicker();
-    /* 选中后回填抽屉里的「已选会员」和带出的字段。重选会覆盖上一次带出的值。 */
+    /* 选中后只更新抽屉里的「已选会员」。联系电话、居住地、出生日期、年龄、父母
+       都取系统/会员库既有数据，建档时不再让用户填，也不再往表单回填。 */
     var picked = document.querySelector("[data-sa-picked]");
     if (picked) {
       picked.classList.add("is-on");
@@ -434,35 +435,24 @@
       var open = picked.querySelector('[data-act="saOpenPicker"]');
       if (open) open.textContent = "重新选择";
     }
-    var fill = function (id, val) {
-      var el = document.getElementById(id);
-      if (el) el.value = val == null ? "" : val;
-    };
-    fill("sa-phone", member.phone);
-    fill("sa-city", member.city);
-    fill("sa-birthday", member.birthday);
-    fill("sa-age", member.age);
-    window.LB.toast("已选择会员「" + member.name + "」，请补充档案信息");
+    window.LB.toast("已选择会员「" + member.name + "」");
   }
 
   function openStudentCreate() {
     /* 每次新建都从空表单开始，上一次没提交的会员不留在表单里。 */
     saPickMember = "";
     var m = saMemberOf(saPickMember);
+    /* 建档只确认两件事：选哪个会员、红黄白初始值。
+       其余字段（联系电话、居住地、出生日期、年龄、父母姓名）都在系统与会员库里，
+       建档时不再抄一遍，列表直接取既有数据。 */
     var html =
-      '<div class="lb-field"><label>从会员库选择会员</label>' +
+      '<div class="lb-field"><label><i class="lb-req">*</i>从会员库选择会员</label>' +
       '<div class="sa-picked' + (m ? " is-on" : "") + '" data-sa-picked>' +
       '<span class="sa-picked__txt">' + (m ? esc(m.name + "（" + m.sid + "）· " + m.gender + " · " + m.phone) : "未选择会员，点右侧「选择会员」按编号 / 姓名 / 手机号检索") + "</span>" +
       '<button type="button" class="lb-btn" data-act="saOpenPicker">' + (m ? "重新选择" : "选择会员") + "</button>" +
       "</div></div>" +
-      '<div class="lb-field"><label>学员联系电话</label><input class="lb-input" id="sa-phone" value="' + (m ? esc(m.phone) : "") + '" placeholder="默认取会员手机号，可改" /></div>' +
-      '<div class="lb-field"><label>居住地</label><input class="lb-input" id="sa-city" value="' + (m ? esc(m.city) : "") + '" placeholder="默认取会员居住地，可改" /></div>' +
-      '<div class="lb-field"><label>出生日期</label><input class="lb-input" id="sa-birthday" value="' + (m ? esc(m.birthday) : "") + '" placeholder="如 2016-09-23" /></div>' +
-      '<div class="lb-field"><label>年龄</label><input class="lb-input" id="sa-age" value="' + (m ? esc(m.age) : "") + '" placeholder="请输入年龄" /></div>' +
-      '<div class="lb-field"><label>母亲姓名</label><input class="lb-input" id="sa-mother" /></div>' +
-      '<div class="lb-field"><label>父亲姓名</label><input class="lb-input" id="sa-father" /></div>' +
       '<div class="lb-field"><label>红黄白</label><input class="lb-input" value="白" disabled /></div>' +
-      '<p class="lb-hint">先选会员再建档。学员ID、姓名、性别、联系电话、居住地、出生日期、年龄从会员带出，可改。新建档案默认白。</p>' +
+      '<p class="lb-hint">只选会员并建档案。学员ID、姓名、性别、联系电话、居住地、出生日期、年龄、父母姓名都取系统与会员库已有数据，不在此重复填写。新建档案默认白，之后按需调整并填理由。</p>' +
       '<div class="lb-drawer-foot"><button type="button" class="lb-btn" data-close-drawer="1">取消</button><button type="button" class="lb-btn lb-btn--primary" data-act="studentArchiveSave">确定</button></div>';
     window.LB.openDrawer("选中会员创建档案", html, { wide: true });
   }
@@ -533,10 +523,7 @@
   }
 
   function saveStudentArchive() {
-    var read = function (id) {
-      var el = document.getElementById(id);
-      return el ? String(el.value || "").trim() : "";
-    };
+    /* 建档不再读表单字段。除红黄白外，其余资料一律取会员库已有数据。 */
     var member = SA_MEMBERS.filter(function (m) { return m.sid === saPickMember; })[0];
     if (!member) {
       window.LB.toast("请先从会员库选择会员");
@@ -553,12 +540,12 @@
       name: member.name,
       avatar: member.name.slice(0, 1),
       gender: member.gender,
-      phone: read("sa-phone") || member.phone,
-      birthday: read("sa-birthday") || member.birthday,
-      age: read("sa-age") || member.age,
-      city: read("sa-city") || member.city,
-      mother: read("sa-mother") || "—",
-      father: read("sa-father") || "—",
+      phone: member.phone,
+      birthday: member.birthday,
+      age: member.age,
+      city: member.city,
+      mother: member.mother || "—",
+      father: member.father || "—",
       superior: ["—"],
       lamp: "白",
       lampLog: [],
