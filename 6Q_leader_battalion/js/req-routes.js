@@ -24,6 +24,14 @@
     return "placeholder.html?m=" + id + "&label=" + encodeURIComponent(label);
   }
 
+  /* 家长端（小程序）：课程详情 / 入营问卷 / 离营问卷 */
+  function parent(page, note) {
+    var q = [];
+    if (page) q.push("page=" + page);
+    if (note) q.push("note=" + note);
+    return "../6Q_lsc_parent/index.html" + (q.length ? "?" + q.join("&") : "");
+  }
+
   var ROUTES = {
     1: camp("基础信息", 1),
     2: "connect-camp.html?note=2",
@@ -44,7 +52,7 @@
     17: mentor("#/learning", 17),
     18: mentor("#/grindingLessons/myTask?id=p1", 18),
     19: mentor("#/leadershipCamp", 19),
-    20: camp("迎接欢送", 20),
+    20: parent("enter", 20),
     21: hold("biz-travel-task", "迎接欢送任务管理"),
     22: app("pages/work/signInTask/detail"),
     23: hold("biz-album", "品宣相册归档"),
@@ -72,7 +80,7 @@
     45: "promotion-path.html?note=45",
     46: page("perf-pre", 46),
     47: page("benchmark"),
-    48: camp("迎接欢送", 48),
+    48: parent("leave", 48),
     49: page("student-archive"),
     50: camp("迎接欢送"),
     51: camp("迎接欢送"),
@@ -83,7 +91,7 @@
     56: page("survey-config", 56),
     57: app("pages/work/signInTask/detail"),
     58: app("pages/work/signInTask/detail", 58),
-    59: camp("迎接欢送"),
+    59: parent("leave", 59),
     60: page("benchmark", 60),
     61: page("mentor-lesson-archive", 61),
     62: "index.html#req-62",

@@ -5,25 +5,24 @@
 
 ## 目录
 
-| 目录 | 说明 | 建议端口 |
-| --- | --- | --- |
-| `6Q_leader_battalion/` | 后台管理端复刻（功能清单 + 各业务页 + 页面注释） | 8766 |
-| `6Q_leader_app/` | 助教 / 导师 APP（手机尺寸） | 8812 |
-| `6Q_mentor_pc/` | 导师磨课门户（PC） | 8820 |
-| `6Q_lsc_enroll/` | 家长报读（手机尺寸） | 8844 |
-| `6Q_lsc_recruit/` | 招募详情 / 报名 / 完善信息（手机尺寸） | 8845 |
+| 目录 | 说明 |
+| --- | --- |
+| `6Q_leader_battalion/` | 后台管理端复刻（功能清单 + 各业务页 + 页面注释） |
+| `6Q_leader_app/` | 助教 / 导师 APP（手机尺寸） |
+| `6Q_mentor_pc/` | 导师磨课门户（PC） |
+| `6Q_lsc_enroll/` | 家长报读（手机尺寸） |
+| `6Q_lsc_parent/` | 家长端课程详情 + 入营 / 离营问卷（手机尺寸） |
+| `6Q_lsc_recruit/` | 招募详情 / 报名 / 完善信息（手机尺寸） |
 
 ## 怎么跑
 
+各端之间有相对跳转（例如功能清单第 48 条跳到家长端问卷），所以**从仓库根起一个服务**，不要单独起每个目录：
+
 ```bash
-cd 6Q_leader_battalion && python -m http.server 8766
-cd 6Q_leader_app      && python -m http.server 8812
-cd 6Q_mentor_pc       && python -m http.server 8820
-cd 6Q_lsc_enroll      && python -m http.server 8844
-cd 6Q_lsc_recruit     && python -m http.server 8845
+python -m http.server 8766
 ```
 
-浏览器打开 `http://localhost:8766/index.html` 是入口。
+打开 `http://localhost:8766/` 是入口页，`http://localhost:8766/6Q_leader_battalion/index.html` 是功能清单。
 
 ## 从功能清单开始看
 
@@ -33,6 +32,12 @@ cd 6Q_lsc_recruit     && python -m http.server 8845
 - 带 `note=N` 的链接：进页面后自动展开第 N 条注释
 - 红色序号：页面上的需求标记，点开是注释抽屉（过往逻辑 / 现在的逻辑 / 元素表 / 数据流）
 - 「全部注释」按钮：列出当前页全部需求
+
+几个常用入口：
+
+- 第 48、59 条 → 家长端离营问卷（截止时间）：`6Q_lsc_parent/index.html?page=leave&note=48`
+- 第 20 条 → 家长端入营问卷：`6Q_lsc_parent/index.html?page=enter&note=20`
+- 第 10 条 → 后台离营总表：`6Q_leader_battalion/replica.html?p=leave-summary&note=10`
 
 ## 注释怎么写
 
