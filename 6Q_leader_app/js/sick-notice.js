@@ -89,11 +89,8 @@
       '<button type="button" class="sn-note" data-note="44">1</button>';
   }
   function notes() {
-    var old = document.getElementById("sn-notes");
-    if (old) old.remove();
-    var panel = document.createElement("aside");
-    panel.id = "sn-notes";
-    panel.className = "sn-notes is-open";
+    /* 注释走手机右侧的侧栏，不覆盖原型画面。 */
+    var panel = window.NoteDock.host();
     panel.innerHTML =
       '<h2>消息通知 · 本页 1 条需求</h2>' +
       '<p class="sn-rule">一个红色序号对应一条需求。</p>' +
@@ -116,11 +113,10 @@
       "</div>" +
       '<table><tr><th>元素</th><th>说明</th></tr><tr><td>消息通知</td><td>所有岗位可见。有未读时展开带红点，无未读时收成细行。</td></tr><tr><td>消息列表</td><td>和 6Q商城通知同一套列表，先给人数。没有消息时显示暂无内容。</td></tr><tr><td>生病学员名单</td><td>通知详情。只列本班正常学员。可见岗位：助教团长、助教正团、助教副团、见习副团。</td></tr><tr><td>已读</td><td>上述四类岗位点开消息列表即已读，入口收回细行。</td></tr><tr><td>状态切换</td><td>本演示专用。有未读、已读、无消息、助教团长、其他岗位五种。</td></tr></table>' +
       '<button type="button" data-sick="close-note">关闭</button>';
-    document.body.appendChild(panel);
+    panel.classList.add("is-open");
   }
   function closeNotes() {
-    var panel = document.getElementById("sn-notes");
-    if (panel) panel.remove();
+    window.NoteDock.hide();
   }
   function applyDemo(demoKey) {
     if (demoKey === "unread") { demo.role = "chief"; demo.unread = 2; read = false; }

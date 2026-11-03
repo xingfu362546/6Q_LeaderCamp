@@ -467,19 +467,24 @@
   }
 
   function closeNotes() {
-    var panel = document.getElementById("ex-notes-panel");
-    var mask = document.getElementById("ex-notes-mask");
-    if (panel) panel.classList.remove("is-open");
-    if (mask) mask.classList.remove("is-open");
+    window.NoteDock.hide();
   }
 
   function openNotes() {
-    var panel = document.getElementById("ex-notes-panel");
-    var mask = document.getElementById("ex-notes-mask");
-    if (!panel) return;
+    /* 注释走手机右侧的侧栏，不覆盖原型画面。 */
+    var panel = window.NoteDock.host();
     panel.innerHTML = drawerHtml();
     panel.classList.add("is-open");
-    if (mask) mask.classList.add("is-open");
+  }
+
+  /* 助教分组页上的红点带 data-note="35 / 42 / 58"，按清单号分派到各自注释，
+     不再所有红点都显示优秀助教那一条。 */
+  function openNoteByReq(req) {
+    var api = window.APP || {};
+    if (req === "42" && api.openImprintNote) { api.openImprintNote(); return true; }
+    if (req === "58" && api.openFeedNote) { api.openFeedNote(); return true; }
+    if (req === "35" && api.openAwardNote) { api.openAwardNote(); return true; }
+    return false;
   }
 
   function prefillBtn() {
@@ -492,19 +497,8 @@
     var dock = document.getElementById("demo-dock");
     if (!dock) return;
     dock.innerHTML = "<h2>注释</h2>" + switcherHtml() + prefillBtn() + '<button type="button" data-note="1">字段说明</button>';
-    var panel = document.getElementById("ex-notes-panel");
-    if (panel && panel.classList.contains("is-open")) panel.innerHTML = drawerHtml();
-    if (!document.getElementById("ex-notes-panel")) {
-      var mask = document.createElement("div");
-      mask.id = "ex-notes-mask";
-      mask.className = "ex-notes-mask";
-      mask.setAttribute("data-ex", "close-notes");
-      var panel = document.createElement("aside");
-      panel.id = "ex-notes-panel";
-      panel.className = "ex-notes-panel";
-      document.body.appendChild(mask);
-      document.body.appendChild(panel);
-    }
+    /* 侧栏已经在显示时就地刷新内容，不再建 fixed 面板。 */
+    if (window.NoteDock.isOpen()) window.NoteDock.host().innerHTML = drawerHtml();
   }
 
   function readList(defs) {
@@ -662,7 +656,11 @@
     var act = el.getAttribute("data-ex") || (el.hasAttribute("data-note") ? "note" : "");
     if (!act) return false;
     if (act === "close-notes") { closeNotes(); return true; }
-    if (act === "note") { openNotes(); return true; }
+    if (act === "note") {
+      if (openNoteByReq(el.getAttribute("data-note"))) return true;
+      openNotes();
+      return true;
+    }
     if (act === "who") {
       ex.who = el.getAttribute("data-id");
       if (api.path && api.path() === HOME) api.go("pages/tabBar/pending");

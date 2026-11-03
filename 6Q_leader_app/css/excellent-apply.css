@@ -1,6 +1,6 @@
 .stage { display: flex; align-items: flex-start; justify-content: center; gap: 16px; overflow: auto; }
 .phone { flex: 0 0 auto; }
-.demo-dock, .note-dock {
+.demo-dock {
   flex: 0 0 280px;
   width: 280px;
   max-height: min(852px, calc(100vh - 28px));
@@ -11,6 +11,29 @@
   box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
 }
 .demo-dock { display: none; }
+
+/* 注释侧栏：放在手机右侧，手机始终完整可见，不用遮罩、不覆盖原型 */
+.note-dock {
+  display: none;
+  flex: 0 0 420px;
+  width: 420px;
+  max-height: min(852px, calc(100vh - 40px));
+  overflow: auto;
+  background: #fff;
+  border: 1px solid #eef0f2;
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
+  align-self: flex-start;
+}
+.note-dock.is-open { display: block; }
+.note-dock .ex-notes-head { margin: -20px -22px 14px; padding: 16px 22px; }
+.note-dock .ex-note-close { height: 30px; padding: 0 12px; font-size: 13px; }
+.note-dock table { font-size: 12.5px; }
+.note-dock #lb-notes-close,
+.note-dock [data-sick="close-note"] { margin-top: 12px; }
+/* 旧版覆盖式面板与遮罩，切到侧栏后不再出现 */
+.ex-notes-mask { display: none !important; }
 .ex-switch button {
   display: block;
   width: 100%;
@@ -89,7 +112,8 @@
   z-index: 70;
   display: none;
 }
-.ex-notes-mask.is-open { display: block; }
+/* 注释改到手机外侧栏后不再用遮罩，这条兜住任何残留节点 */
+.ex-notes-mask.is-open { display: none; }
 .ex-notes-head {
   position: sticky;
   top: 0;

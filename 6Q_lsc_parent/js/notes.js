@@ -240,6 +240,8 @@
   function mount(root, page) {
     if (!root) return;
     pageNow = page || "course";
+    /* 注释面板与「全部注释」按钮放在手机外侧的 .stage 里，不覆盖原型画面。 */
+    var outside = document.querySelector(".stage") || root;
 
     if (!btn) {
       btn = document.createElement("button");
@@ -248,23 +250,23 @@
       btn.type = "button";
       btn.textContent = "全部注释";
       btn.addEventListener("click", function () { open(); });
-      root.appendChild(btn);
-    } else if (btn.parentNode !== root) {
-      root.appendChild(btn);
+      outside.appendChild(btn);
+    } else if (btn.parentNode !== outside) {
+      outside.appendChild(btn);
     }
 
     if (!panel) {
       panel = document.createElement("aside");
       panel.id = "lb-notes-panel";
       panel.className = "lb-notes-panel";
-      root.appendChild(panel);
+      outside.appendChild(panel);
       panel.addEventListener("click", function (e) {
         if (e.target && e.target.getAttribute("data-parent-note") === "close") {
           panel.classList.remove("is-open");
         }
       });
-    } else if (panel.parentNode !== root) {
-      root.appendChild(panel);
+    } else if (panel.parentNode !== outside) {
+      outside.appendChild(panel);
     }
 
     paint(page);

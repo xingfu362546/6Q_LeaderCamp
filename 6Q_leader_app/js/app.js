@@ -358,19 +358,8 @@
   }
 
   function openSignNote() {
-    var panel = document.getElementById("sign-notes-panel");
-    var mask = document.getElementById("sign-notes-mask");
-    if (!panel) {
-      mask = document.createElement("div");
-      mask.id = "sign-notes-mask";
-      mask.className = "ex-notes-mask";
-      mask.setAttribute("data-sign-note", "close");
-      panel = document.createElement("aside");
-      panel.id = "sign-notes-panel";
-      panel.className = "ex-notes-panel";
-      document.body.appendChild(mask);
-      document.body.appendChild(panel);
-    }
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
     panel.innerHTML =
       '<div class="ex-notes-head"><h2>迎接欢送 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-sign-note="close">关闭</button></div>' +
       '<p class="ex-note-rule">一个红色序号对应一条需求。点开后列出本页需求。字段说明在表格里，不在每个字段上打红点。</p>' +
@@ -387,26 +376,12 @@
   }
 
   function closeSignNote() {
-    var panel = document.getElementById("sign-notes-panel");
-    var mask = document.getElementById("sign-notes-mask");
-    if (panel) panel.classList.remove("is-open");
-    if (mask) mask.classList.remove("is-open");
+    window.NoteDock.hide();
   }
 
   function openImprintNote() {
-    var panel = document.getElementById("gi-notes-panel");
-    var mask = document.getElementById("gi-notes-mask");
-    if (!panel) {
-      mask = document.createElement("div");
-      mask.id = "gi-notes-mask";
-      mask.className = "ex-notes-mask";
-      mask.setAttribute("data-gi-note", "close");
-      panel = document.createElement("aside");
-      panel.id = "gi-notes-panel";
-      panel.className = "ex-notes-panel";
-      document.body.appendChild(mask);
-      document.body.appendChild(panel);
-    }
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
     panel.innerHTML =
       '<div class="ex-notes-head"><h2>学员成长印记 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-gi-note="close">关闭</button></div>' +
       '<p class="ex-note-rule">一个红色序号对应一条需求。点开后列出本页需求。字段说明在表格里，不在每个字段上打红点。</p>' +
@@ -425,26 +400,12 @@
   }
 
   function closeImprintNote() {
-    var panel = document.getElementById("gi-notes-panel");
-    var mask = document.getElementById("gi-notes-mask");
-    if (panel) panel.classList.remove("is-open");
-    if (mask) mask.classList.remove("is-open");
+    window.NoteDock.hide();
   }
 
   function openFeedNote() {
-    var panel = document.getElementById("feed-notes-panel");
-    var mask = document.getElementById("feed-notes-mask");
-    if (!panel) {
-      mask = document.createElement("div");
-      mask.id = "feed-notes-mask";
-      mask.className = "ex-notes-mask";
-      mask.setAttribute("data-feed-note", "close");
-      panel = document.createElement("aside");
-      panel.id = "feed-notes-panel";
-      panel.className = "ex-notes-panel";
-      document.body.appendChild(mask);
-      document.body.appendChild(panel);
-    }
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
     panel.innerHTML =
       '<div class="ex-notes-head"><h2>签到入营 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-feed-note="close">关闭</button></div>' +
       '<p class="ex-note-rule">一个红色序号对应一条需求。点开后列出本页需求。字段说明在表格里，不在每个字段上打红点。</p>' +
@@ -466,19 +427,8 @@
   }
 
   function openAwardNote() {
-    var panel = document.getElementById("award-notes-panel");
-    var mask = document.getElementById("award-notes-mask");
-    if (!panel) {
-      mask = document.createElement("div");
-      mask.id = "award-notes-mask";
-      mask.className = "ex-notes-mask";
-      mask.setAttribute("data-award-note", "close");
-      panel = document.createElement("aside");
-      panel.id = "award-notes-panel";
-      panel.className = "ex-notes-panel";
-      document.body.appendChild(mask);
-      document.body.appendChild(panel);
-    }
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
     panel.innerHTML =
       '<div class="ex-notes-head"><h2>学员评优 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-award-note="close">关闭</button></div>' +
       '<p class="ex-note-rule">一个红色序号对应一条需求。点开后列出本页需求。字段说明在表格里，不在每个字段上打红点。</p>' +
@@ -496,33 +446,16 @@
   }
 
   function closeAwardNote() {
-    var panel = document.getElementById("award-notes-panel");
-    var mask = document.getElementById("award-notes-mask");
-    if (panel) panel.classList.remove("is-open");
-    if (mask) mask.classList.remove("is-open");
+    window.NoteDock.hide();
   }
 
   function closeFeedNote() {
-    var panel = document.getElementById("feed-notes-panel");
-    var mask = document.getElementById("feed-notes-mask");
-    if (panel) panel.classList.remove("is-open");
-    if (mask) mask.classList.remove("is-open");
+    window.NoteDock.hide();
   }
 
   function openLeaveSyncNote() {
-    var panel = document.getElementById("leave-sync-panel");
-    var mask = document.getElementById("leave-sync-mask");
-    if (!panel) {
-      mask = document.createElement("div");
-      mask.id = "leave-sync-mask";
-      mask.className = "ex-notes-mask";
-      mask.setAttribute("data-leave-note", "close");
-      panel = document.createElement("aside");
-      panel.id = "leave-sync-panel";
-      panel.className = "ex-notes-panel";
-      document.body.appendChild(mask);
-      document.body.appendChild(panel);
-    }
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
     panel.innerHTML =
       '<div class="ex-notes-head"><h2>欢送 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-leave-note="close">关闭</button></div>' +
       '<p class="ex-note-rule">一个红色序号对应一条需求。点开后列出本页需求。字段说明在表格里，不在每个字段上打红点。</p>' +
@@ -544,10 +477,7 @@
   }
 
   function closeLeaveSyncNote() {
-    var panel = document.getElementById("leave-sync-panel");
-    var mask = document.getElementById("leave-sync-mask");
-    if (panel) panel.classList.remove("is-open");
-    if (mask) mask.classList.remove("is-open");
+    window.NoteDock.hide();
   }
 
   function render() {
@@ -579,6 +509,10 @@
     toast: toast,
     render: render,
     aideChief: function () { return !!state.aideChief; },
+    openSignNote: openSignNote,
+    openImprintNote: openImprintNote,
+    openFeedNote: openFeedNote,
+    openAwardNote: openAwardNote,
     closeSignNote: closeSignNote,
     closeImprintNote: closeImprintNote,
     closeFeedNote: closeFeedNote,
@@ -622,7 +556,7 @@
         sessionStorage.setItem("sc-demo-edited", on ? "0" : "1");
       } catch (e) {}
       render();
-      if (document.getElementById("leave-sync-panel").classList.contains("is-open")) openLeaveSyncNote();
+      if (window.NoteDock.isOpen()) openLeaveSyncNote();
       return;
     }
     if (t.hasAttribute("data-ex") || t.hasAttribute("data-note")) {

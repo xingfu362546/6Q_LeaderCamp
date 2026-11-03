@@ -57,23 +57,25 @@
   function mount(root) {
     if (!root) return;
     var host = root;
-    var btn = host.querySelector("#lb-notes-btn");
+    /* 注释面板与「全部注释」按钮放到手机外侧的 .stage 里，不覆盖原型画面。 */
+    var outside = document.querySelector(".stage") || root;
+    var btn = outside.querySelector("#lb-notes-btn");
     if (!btn) {
       btn = document.createElement("button");
       btn.id = "lb-notes-btn";
       btn.className = "lb-notes-btn";
       btn.type = "button";
       btn.textContent = "全部注释";
-      host.appendChild(btn);
+      outside.appendChild(btn);
       btn.addEventListener("click", function () { open(host); });
     }
-    var panel = host.querySelector("#lb-notes-panel");
+    var panel = outside.querySelector("#lb-notes-panel");
     if (!panel) {
       panel = document.createElement("aside");
       panel.id = "lb-notes-panel";
       panel.className = "lb-notes-panel";
       panel.innerHTML = panelHtml();
-      host.appendChild(panel);
+      outside.appendChild(panel);
       panel.addEventListener("click", function (event) {
         if (event.target.getAttribute("data-enroll-note") === "close" || event.target.getAttribute("data-enroll-note") === "mask") {
           panel.classList.remove("is-open");
@@ -93,7 +95,8 @@
   }
 
   function open(host, n) {
-    var panel = host.querySelector("#lb-notes-panel");
+    /* 面板在手机外的 .stage 里，从文档取，不能再从手机内的 host 取。 */
+    var panel = document.getElementById("lb-notes-panel");
     if (!panel) return;
     panel.innerHTML = panelHtml();
     panel.classList.add("is-open");
