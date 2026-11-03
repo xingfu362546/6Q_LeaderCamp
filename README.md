@@ -1,7 +1,13 @@
 # 6Q 领袖营原型 · v3.5.0（2027 冬令营）
 
+![version](https://img.shields.io/badge/version-v3.5.0-blue)
+![scope](https://img.shields.io/badge/scope-63%20requirements-brightgreen)
+
 领袖营需求的原型集合，用于逐条核对「过往逻辑 / 现在的逻辑 / 字段与数据流」。
 纯静态，无需安装依赖，起一个本地静态服务即可打开。
+
+> 当前版本 **v3.5.0**（tag `v3.5.0`）。版本变更见 [CHANGELOG.md](CHANGELOG.md)。
+> 与上一版 v3.4.0（现网）的差别，逐条写在每个页面的红色序号注释里。
 
 ## 目录
 
