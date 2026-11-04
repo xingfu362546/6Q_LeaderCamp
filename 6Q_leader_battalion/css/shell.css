@@ -290,6 +290,20 @@
   gap: 8px;
 }
 
+.lb-field.lb-field--extra {
+  display: none;
+}
+
+.lb-toolbar.is-filter-open .lb-field.lb-field--extra {
+  display: flex;
+}
+
+.lb-btn--link {
+  border: 0;
+  background: transparent;
+  color: var(--lb-primary);
+}
+
 .lb-field label {
   color: var(--lb-text-2);
   white-space: nowrap;

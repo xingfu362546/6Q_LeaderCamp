@@ -32,16 +32,21 @@
     return PAGE === "camp-manage";
   }
 
+  /* 高EQ导师管理 → 档案管理。领袖营授课档案是原页，导师课程档案是第61条所在页。 */
+  function isEqPage() {
+    return PAGE === "mentor-lesson-archive" || PAGE === "mentor-course-archive";
+  }
+
   function topHref(item) {
     if (item.id === "biz-6q") return "camp-implement.html";
     if (item.id === "lingxiu-pay") return "replica.html?p=talent-pool";
-    if (item.id === "eq-mentor") return "replica.html?p=mentor-lesson-archive";
+    if (item.id === "eq-mentor") return "replica.html?p=mentor-course-archive";
     if (item.id === "plan") return "replica.html?p=camp-manage";
     return placeholderHref("top-" + item.id, item.label);
   }
 
   function topCurrent(item) {
-    if (PAGE === "mentor-lesson-archive") return item.id === "eq-mentor";
+    if (isEqPage()) return item.id === "eq-mentor";
     if (isPlanPage()) return item.id === "plan";
     var line = document.body.getAttribute("data-lb-line") || "";
     if (line === "biz") return item.id === "biz-6q";
@@ -49,7 +54,7 @@
   }
 
   function menuTree() {
-    if (PAGE === "mentor-lesson-archive" && window.LB_MENU.eqMenu) return window.LB_MENU.eqMenu;
+    if (isEqPage() && window.LB_MENU.eqMenu) return window.LB_MENU.eqMenu;
     if (isPlanPage() && window.LB_MENU.planMenu) return window.LB_MENU.planMenu;
     var line = document.body.getAttribute("data-lb-line") || "";
     if (line === "biz" && window.LB_MENU.bizMenu) return window.LB_MENU.bizMenu;

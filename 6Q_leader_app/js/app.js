@@ -480,6 +480,47 @@
     window.NoteDock.hide();
   }
 
+  function openLeaveApplyNote() {
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
+    panel.innerHTML =
+      '<div class="ex-notes-head"><h2>助教分组 · 离营方式变更申请</h2><button type="button" class="ex-note-close" data-leave-apply-note="close">关闭</button></div>' +
+      '<article class="ex-note-block"><h3><span class="ex-num">1</span> 助教发起离营方式变更 <span class="ex-ver">清单第 15 条</span></h3>' +
+      '<div class="ex-logic"><h4>提交位置</h4><p>源码里的助教分组只有只读的离营详情，没有申请页。本次按评审第 15 条补上。入口有两处：小组学员卡片右上角「···」里的「发起离营方式变更申请」，以及学员成长里的「离营方式」详情底部按钮。</p></div>' +
+      '<div><h4>现在的逻辑</h4><p>助教填写拟改方式，以及这一方式对应的站点、班次、时间和理由，提交后状态为待审批。申请进后台「薪酬管理 → 离营总表 → 变更申请」。总表通过后才改学员离营方式并标已修改；否决不改。这里不直接改方式。</p></div>' +
+      '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
+      "<tr><td>发起离营方式变更申请</td><td>按钮</td><td>否</td><td>小组学员菜单，和离营详情底部。</td></tr>" +
+      "<tr><td>拟改为</td><td>单选</td><td>是</td><td>机场接离、火车/高铁接离、大巴接离、营地自离、连营。换方式后只留这一类字段。</td></tr>" +
+      "<tr><td>站点 / 班次 / 时间</td><td>选择或输入</td><td>视方式</td><td>机场、火车站要站点和班次、出发抵达时间。大巴要终点。营地自离和连营不填站点。</td></tr>" +
+      "<tr><td>申请理由</td><td>文本</td><td>是</td><td>提交后出现在总表变更申请的理由列。</td></tr>" +
+      "</tbody></table></article>";
+    panel.classList.add("is-open");
+    mask.classList.add("is-open");
+  }
+
+  function openArriveNote() {
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
+    panel.innerHTML =
+      '<div class="ex-notes-head"><h2>迎接 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-arrive-note="close">关闭</button></div>' +
+      '<p class="ex-note-rule">一个红色序号对应一条需求。点开后列出本页需求。字段说明在表格里，不在每个字段上打红点。</p>' +
+      '<article class="ex-note-block"><h3><span class="ex-num">3</span> 迎接总表可改入营方式 <span class="ex-ver">迎接</span></h3>' +
+      '<div class="ex-logic"><h4>过往逻辑</h4><p>迎接页右上角的总表打开的是欢送总表。入营方式不能在迎接端改。后台迎接总表只读。</p></div>' +
+      '<div><h4>现在的逻辑</h4><p>设计已实现。迎接页右上角总表打开迎接总表，按基地汇总应迎接人数和入营方式。副负责人可以改未到达学员的入营方式，保存后立即生效，不走助教提交，也没有审批。已到达不能改。其他身份只能看。后台迎接总表仍然只读，菜单谁能进由系统角色权限决定，页面不写死副负责人。改完的结果在后台同一行显示为已修改。</p></div>' +
+      '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
+      "<tr><td>总表</td><td>按钮</td><td>否</td><td>迎接页右上角。打开迎接总表，不再打开欢送总表。</td></tr>" +
+      "<tr><td>修改入营方式</td><td>按钮</td><td>否</td><td>只给副负责人，且学员未到达。已到达不显示。</td></tr>" +
+      "<tr><td>入营方式</td><td>单选</td><td>是</td><td>机场接送、火车站接送、大巴接送、自行入营、连营。换方式后清掉不适用的旧字段。</td></tr>" +
+      "<tr><td>航站楼 / 车站 / 入营大巴起点</td><td>选择</td><td>是</td><td>只在对应方式下出现。自行入营和连营没有站点。</td></tr>" +
+      "<tr><td>带队老师</td><td>选择</td><td>否</td><td>机场、火车站选了站点后才出现。</td></tr>" +
+      "<tr><td>航班号 / 班次、出发时间</td><td>输入</td><td>是</td><td>只在机场、火车站出现。</td></tr>" +
+      "<tr><td>抵达时间</td><td>输入</td><td>是</td><td>五种方式都要填。</td></tr>" +
+      "<tr><td>是否无人陪伴</td><td>单选</td><td>是</td><td>只在机场接送出现。选是后带出陪伴人。</td></tr>" +
+      "</tbody></table></article>";
+    panel.classList.add("is-open");
+    mask.classList.add("is-open");
+  }
+
   function render() {
     var page = pageOf(state.path);
     var html = "";
@@ -545,6 +586,18 @@
     }
     if (t.getAttribute("data-note") === "10") {
       openLeaveSyncNote();
+      return;
+    }
+    if (t.getAttribute("data-note") === "arrive") {
+      openArriveNote();
+      return;
+    }
+    if (t.getAttribute("data-note") === "leave-apply") {
+      openLeaveApplyNote();
+      return;
+    }
+    if (t.getAttribute("data-arrive-note") === "close") {
+      window.NoteDock.hide();
       return;
     }
     if (window.SICK && (t.getAttribute("data-note") === "44" || t.hasAttribute("data-sick") || t.hasAttribute("data-sick-demo")) && window.SICK.handle(t)) {
@@ -731,6 +784,16 @@ document.body.addEventListener("click", function (e) {
   var leaveNote = e.target.closest("[data-leave-note]");
   if (leaveNote && leaveNote.getAttribute("data-leave-note") === "close") {
     if (window.APP && window.APP.closeLeaveSyncNote) window.APP.closeLeaveSyncNote();
+    return;
+  }
+  var arriveNote = e.target.closest("[data-arrive-note]");
+  if (arriveNote && arriveNote.getAttribute("data-arrive-note") === "close") {
+    if (window.NoteDock) window.NoteDock.hide();
+    return;
+  }
+  var leaveApplyNote = e.target.closest("[data-leave-apply-note]");
+  if (leaveApplyNote && leaveApplyNote.getAttribute("data-leave-apply-note") === "close") {
+    if (window.NoteDock) window.NoteDock.hide();
     return;
   }
   if (!window.EX || e.target.closest("#screen")) return;

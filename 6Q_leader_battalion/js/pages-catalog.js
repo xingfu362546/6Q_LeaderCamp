@@ -5927,6 +5927,11 @@ window.LB_PAGES = {
     "hidden": true,
     "special": "leaveSummary"
   },
+  "arrive-summary": {
+    "title": "迎接总表",
+    "hidden": true,
+    "special": "arriveSummary"
+  },
   "salary-ledger-bills": {
     "title": "基地台账明细",
     "hidden": true,
@@ -5955,13 +5960,73 @@ window.LB_PAGES = {
       { "k": "realCount", "l": "真实授课次数" },
       { "k": "virtualCount", "l": "虚拟授课次数" },
       { "k": "totalCount", "l": "总授课次数" },
-      { "k": "firstTeach", "l": "第一次授课" },
       { "k": "updated", "l": "更新时间" }
     ],
     "ops": [
       { "id": "record", "l": "查看记录" },
       { "id": "edit", "l": "修订" },
       { "id": "editRecord", "l": "修订记录" }
+    ]
+  },
+  "mentor-course-archive": {
+    "title": "导师课程档案",
+    "hasIndex": true,
+    "opsMenu": true,
+    "filtersFoldAfter": 4,
+    "filters": [
+      { "k": "code", "l": "档案ID" },
+      { "k": "mentor", "l": "导师" },
+      { "k": "mid", "l": "会员ID" },
+      { "k": "phone", "l": "手机号码" },
+      { "k": "courseType", "l": "课程类型", "t": "select", "o": ["领袖营", "线下课程"] },
+      { "k": "product", "l": "Q营班级/线下课程" },
+      { "k": "productCode", "l": "班级/模块ID" },
+      { "k": "course", "l": "领袖营课程/线下课程" },
+      { "k": "courseCode", "l": "课程/模块ID" },
+      { "k": "lessonStatus", "l": "授课状态", "t": "select", "o": ["已授课", "未授课"] },
+      { "k": "latest", "l": "最近授课" },
+      { "k": "mokeStatus", "l": "磨课情况", "t": "select", "o": ["已磨课", "未磨课"] },
+      { "k": "latestMoke", "l": "最近磨课" },
+      { "k": "trialStatus", "l": "验收情况", "t": "select", "o": ["未验收", "合格", "需调优", "不合格"] },
+      { "k": "latestTrial", "l": "最近验收" },
+      { "k": "updated", "l": "更新时间", "t": "dateRange" }
+    ],
+    "toolbar": [
+      { "id": "export", "l": "导出" },
+      { "id": "import", "l": "导入档案" }
+    ],
+    "columns": [
+      { "k": "code", "l": "档案ID" },
+      { "k": "mentor", "l": "导师" },
+      { "k": "mid", "l": "会员ID" },
+      { "k": "phone", "l": "手机号码" },
+      { "k": "courseType", "l": "课程类型", "t": "tag" },
+      { "k": "product", "l": "Q营班级/线下课程" },
+      { "k": "productCode", "l": "班级/课程ID" },
+      { "k": "course", "l": "领袖营课程/线下课程模块" },
+      { "k": "courseCode", "l": "课程/模块ID" },
+      { "k": "campsType", "l": "领袖营课程类型" },
+      { "k": "hours", "l": "课时" },
+      { "k": "lessonStatus", "l": "授课状态", "t": "tag" },
+      { "k": "lessonCount", "l": "累计授课次数" },
+      { "k": "lessonHours", "l": "累计授课课时" },
+      { "k": "latest", "l": "最近授课" },
+      { "k": "firstTeach", "l": "第一次授课" },
+      { "k": "speakCount", "l": "课程说课次数" },
+      { "k": "trialCount", "l": "课程试讲次数" },
+      { "k": "mokeStatus", "l": "磨课情况", "t": "tag" },
+      { "k": "mokeCount", "l": "累计磨课次数" },
+      { "k": "latestMoke", "l": "最近磨课" },
+      { "k": "trialStatus", "l": "验收情况", "t": "tag" },
+      { "k": "acceptCount", "l": "累计验收次数" },
+      { "k": "latestTrial", "l": "最近验收" },
+      { "k": "updated", "l": "更新时间" }
+    ],
+    "ops": [
+      { "id": "lesson", "l": "修订授课情况" },
+      { "id": "moke", "l": "修订磨课情况" },
+      { "id": "trial", "l": "修订验收情况" },
+      { "id": "record", "l": "更新记录" }
     ]
   }
 };

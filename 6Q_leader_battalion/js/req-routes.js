@@ -93,7 +93,7 @@
     58: app("pages/work/signInTask/detail", 58),
     59: parent("leave", 59),
     60: page("benchmark", 60),
-    61: page("mentor-lesson-archive", 61),
+    61: page("mentor-course-archive", 61),
     62: "index.html#req-62",
     63: page("camp-staff"),
     64: hold("biz-product", "领袖营产品")

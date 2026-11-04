@@ -19,6 +19,7 @@
     acceptType: 1,
     pickIds: [],
     sheet: null,
+    leaveDraft: null,
     dialog: null,
     statTab: "log",
     statFilter: "",
@@ -65,11 +66,11 @@
   }
 
   var students = [
-    { id: "s1", name: "王小满", sex: "女", age: 12, city: "广州", type: "新训", health: "良好", dress: "130", travel: "家长接送", paper: "已填写", mother: "王敏", mm: "13800001101", father: "王强", fm: "13800002202", team: "t1", status: "已报读", eval: 2, same: true, award: "VV之星" },
-    { id: "s2", name: "李可", sex: "男", age: 11, city: "深圳", type: "复训", health: "花粉过敏", dress: "140", travel: "", paper: "未填写", mother: "-", mm: "-", father: "李海", fm: "13900003303", team: "t1", status: "已报读", eval: 1, same: true, award: "" },
-    { id: "s3", name: "赵欣然", sex: "女", age: 13, city: "杭州", type: "新训", health: "良好", dress: "150", travel: "南站大巴", paper: "已填写", mother: "赵丽", mm: "13700004404", father: "-", fm: "-", team: "", status: "已报读", eval: 2, same: false },
-    { id: "s4", name: "陈启航", sex: "男", age: 12, city: "佛山", type: "新训", health: "良好", dress: "140", travel: "", paper: "未填写", mother: "-", mm: "-", father: "-", fm: "-", team: "", status: "取消", eval: 0, same: false },
-    { id: "s5", name: "孙悦", sex: "女", age: 10, city: "东莞", type: "复训", health: "良好", dress: "120", travel: "", paper: "未填写", mother: "孙兰", mm: "13600005505", father: "-", fm: "-", team: "t2", status: "改期", eval: 2, same: true, award: "VV之星" }
+    { id: "s1", sid: "A10281", name: "王小满", sex: "女", age: 12, city: "广州", type: "新训", health: "良好", dress: "130", leaveWay: 4, travel: "营地自离", paper: "已填写", mother: "王敏", mm: "13800001101", father: "王强", fm: "13800002202", team: "t1", status: "已报读", eval: 2, same: true, award: "VV之星" },
+    { id: "s2", sid: "A10282", name: "李可", sex: "男", age: 11, city: "深圳", type: "复训", health: "花粉过敏", dress: "140", leaveWay: 2, travel: "火车/高铁接离", paper: "已填写", mother: "-", mm: "-", father: "李海", fm: "13900003303", team: "t1", status: "已报读", eval: 1, same: true, award: "" },
+    { id: "s3", sid: "A10284", name: "赵欣然", sex: "女", age: 13, city: "杭州", type: "新训", health: "良好", dress: "150", leaveWay: 3, travel: "大巴接离", paper: "已填写", mother: "赵丽", mm: "13700004404", father: "-", fm: "-", team: "", status: "已报读", eval: 2, same: false },
+    { id: "s4", sid: "A10285", name: "陈启航", sex: "男", age: 12, city: "佛山", type: "新训", health: "良好", dress: "140", leaveWay: 0, travel: "", paper: "未填写", mother: "-", mm: "-", father: "-", fm: "-", team: "", status: "取消", eval: 0, same: false },
+    { id: "s5", sid: "A10283", name: "孙悦", sex: "女", age: 10, city: "东莞", type: "复训", health: "良好", dress: "120", leaveWay: 4, travel: "营地自离", paper: "已填写", mother: "孙兰", mm: "13600005505", father: "-", fm: "-", team: "t2", status: "改期", eval: 2, same: true, award: "VV之星" }
   ];
 
   var teams = [
@@ -316,6 +317,7 @@
       if (student(cc.sheet).eval === 2) html += '<button type="button" data-cc="bench" data-id="' + cc.sheet + '">评为标杆学员</button>';
       if (!student(cc.sheet).award) html += '<button type="button" data-cc="award" data-id="' + cc.sheet + '">学员评优</button>';
       else html += '<button type="button" data-cc="award" data-id="' + cc.sheet + '">重新提交评优</button>';
+      html += '<button type="button" data-cc="leave-apply" data-id="' + cc.sheet + '">发起离营方式变更申请</button>';
       html += '<button type="button" data-cc="move-one" data-id="' + cc.sheet + '">移至其他小组</button>';
       html += '<button type="button" data-cc="close-sheet">取消</button></div></div>';
     }
@@ -533,14 +535,129 @@
     return html;
   }
 
+  var LEAVE_WAYS = { 1: "机场接离", 2: "火车/高铁接离", 3: "大巴接离", 4: "营地自离", 5: "连营" };
+  var LEAVE_PLACES = {
+    1: ["广州白云机场T1航站楼", "广州白云机场T2航站楼", "深圳宝安机场T3航站楼"],
+    2: ["广州南站", "广州东站", "深圳北站"],
+    3: ["广州总部大巴终点", "中山大巴终点"]
+  };
+
+  function leaveApps() {
+    try {
+      var saved = JSON.parse(sessionStorage.getItem("lb-leave-apps-v1") || "null");
+      if (saved && saved.length) return saved;
+    } catch (e) {}
+    return [];
+  }
+
+  function pendingLeaveApp(s) {
+    return leaveApps().filter(function (a) { return a.sid === s.sid && a.status === "待审批"; })[0] || null;
+  }
+
   function leavePage() {
     var s = student();
-    var html = bar("离营详情") + '<div class="body cc"><div class="detail">';
-    [["离营方式", s.travel || "未填写"], ["接离方式", s.travel ? "家长亲自接" : "-"], ["凭证", "-"], ["接待", s.travel === "南站大巴" ? "站点：广州南站" : "航班楼：-"]].forEach(function (row) {
+    var pending = pendingLeaveApp(s);
+    var html = bar("离营详情") + '<div class="body cc"><div class="ex-anchor"><button type="button" class="ex-dot" data-note="leave-apply" title="离营方式变更申请"><span class="ex-num">1</span></button></div><div class="detail">';
+    [["离营方式", s.travel || "未填写"], ["接离方式", s.travel ? "家长亲自接" : "-"], ["凭证", "-"], ["接待", s.leaveWay === 3 ? "站点：" + (s.travel || "-") : "航班楼：-"]].forEach(function (row) {
       html += '<div class="row"><b>' + row[0] + "</b><span>" + esc(row[1]) + "</span></div>";
     });
-    html += "</div></div>";
+    if (pending) html += '<div class="row"><b>变更申请</b><span>待审批：改为' + esc(LEAVE_WAYS[pending.to] || "-") + "</span></div>";
+    html += "</div>";
+    html += '<button type="button" class="btn" data-cc="leave-apply" data-id="' + s.id + '" style="margin:12px">发起离营方式变更申请</button>';
+    html += '<p class="cc-leave-tip">助教在这里提交。申请进后台「薪酬管理 → 离营总表 → 变更申请」，由总表通过或否决。通过后才改学员的离营方式。</p>';
+    html += "</div>";
     return html;
+  }
+
+  function openLeaveDraft(s) {
+    cc.leaveDraft = { way: s.leaveWay || 1, place: "", flight: "", depart: "", arrive: "", reason: "" };
+  }
+
+  function readLeaveDraft() {
+    var d = cc.leaveDraft;
+    if (!d) return null;
+    ["cc-leave-place", "cc-leave-flight", "cc-leave-depart", "cc-leave-arrive", "cc-leave-reason"].forEach(function (id, i) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var key = ["place", "flight", "depart", "arrive", "reason"][i];
+      d[key] = el.value.trim();
+    });
+    return d;
+  }
+
+  function leaveApplyPage() {
+    var s = student();
+    var d = cc.leaveDraft || { way: 1, place: "", flight: "", depart: "", arrive: "", reason: "" };
+    var html = bar("离营方式变更申请") + '<div class="body cc"><div class="ex-anchor"><button type="button" class="ex-dot" data-note="leave-apply" title="离营方式变更申请"><span class="ex-num">1</span></button></div>';
+    html += '<div class="form">';
+    html += '<div class="field"><label>学员</label><div>' + esc(s.name) + " · " + esc(s.sid || "") + "</div></div>";
+    html += '<div class="field"><label>当前离营方式</label><div>' + esc(s.travel || "未填写") + "</div></div>";
+    html += '<div class="field"><label>拟改为</label><div class="cc-ways">';
+    [1, 2, 3, 4, 5].forEach(function (w) {
+      html += '<button type="button" class="cc-way' + (d.way === w ? " is-on" : "") + '" data-cc="leave-way" data-v="' + w + '">' + LEAVE_WAYS[w] + "</button>";
+    });
+    html += "</div></div>";
+    if (d.way === 1 || d.way === 2 || d.way === 3) {
+      var label = d.way === 1 ? "航站楼" : d.way === 2 ? "车站" : "离营大巴终点";
+      html += '<div class="field"><label>' + label + '</label><select id="cc-leave-place">';
+      html += '<option value="">请选择</option>';
+      LEAVE_PLACES[d.way].forEach(function (p) {
+        html += '<option' + (d.place === p ? " selected" : "") + ">" + esc(p) + "</option>";
+      });
+      html += "</select></div>";
+    }
+    if (d.way === 1 || d.way === 2) {
+      html += '<div class="field"><label>' + (d.way === 1 ? "航班号" : "班次") + '</label><input id="cc-leave-flight" value="' + esc(d.flight) + '" placeholder="如：CZ3101" /></div>';
+      html += '<div class="field"><label>出发时间</label><input id="cc-leave-depart" value="' + esc(d.depart) + '" placeholder="如：10-26 06:30" /></div>';
+      html += '<div class="field"><label>抵达时间</label><input id="cc-leave-arrive" value="' + esc(d.arrive) + '" placeholder="如：10-26 08:15" /></div>';
+    }
+    html += '<div class="field"><label>申请理由</label><textarea id="cc-leave-reason" placeholder="说明为什么要改">' + esc(d.reason) + "</textarea></div>";
+    html += "</div></div>";
+    html += '<div class="foot"><button type="button" class="btn" data-cc="leave-submit">提交申请</button></div>';
+    return html;
+  }
+
+  function submitLeaveApply(api) {
+    var s = student();
+    var d = readLeaveDraft();
+    if (!d) return;
+    if ((d.way === 1 || d.way === 2 || d.way === 3) && !d.place) {
+      api.toast(d.way === 3 ? "请选择离营大巴终点" : "请选择站点");
+      return;
+    }
+    if ((d.way === 1 || d.way === 2) && (!d.flight || !d.depart || !d.arrive)) {
+      api.toast("请填写班次和出发、抵达时间");
+      return;
+    }
+    if (!d.reason) {
+      api.toast("请填写申请理由");
+      return;
+    }
+    var now = new Date();
+    var p = function (n) { return ("0" + n).slice(-2); };
+    var at = now.getFullYear() + "-" + p(now.getMonth() + 1) + "-" + p(now.getDate()) + " " + p(now.getHours()) + ":" + p(now.getMinutes());
+    var apps = leaveApps();
+    apps.unshift({
+      id: "AP" + now.getTime(),
+      sid: s.sid,
+      name: s.name,
+      klass: "A1班",
+      plan: "p1",
+      from: s.leaveWay || 0,
+      to: d.way,
+      place: d.place || (d.way === 4 ? "家长接" : d.way === 5 ? "连营" : ""),
+      flight: d.flight || "—",
+      depart: d.depart || "—",
+      arrive: d.arrive || "—",
+      reason: d.reason,
+      by: "林晓雯",
+      at: at,
+      status: "待审批"
+    });
+    try { sessionStorage.setItem("lb-leave-apps-v1", JSON.stringify(apps)); } catch (e) {}
+    cc.leaveDraft = null;
+    api.toast("已提交，等待离营总表审批");
+    api.go(P + "growthJournal/leaveCamp");
   }
 
   function imprintEntrance() {
@@ -598,6 +715,7 @@
     if (path === P + "growthJournal/detail") return journalPage();
     if (path === P + "growthJournal/form") return formPage();
     if (path === P + "growthJournal/leaveCamp") return leavePage();
+    if (path === P + "growthJournal/leaveApply") return leaveApplyPage();
     if (path === P + "growthImprint/entrance") return imprintEntrance();
     if (path === P + "growthImprint/form") return imprintForm();
     if (path === P + "growthImprint/report") return reportPage();
@@ -620,6 +738,26 @@
     if (!act) return false;
     if (act === "role") { cc.leader = !cc.leader; cc.canEdit = cc.leader; api.render(); return true; }
     if (act === "emotion") { api.go("pages/work/emotion/archive"); return true; }
+    if (act === "leave-apply") {
+      cc.studentId = el.getAttribute("data-id") || cc.studentId;
+      cc.sheet = null;
+      openLeaveDraft(student());
+      api.go(P + "growthJournal/leaveApply");
+      return true;
+    }
+    if (act === "leave-way") {
+      readLeaveDraft();
+      cc.leaveDraft.way = Number(el.getAttribute("data-v"));
+      cc.leaveDraft.place = "";
+      if (cc.leaveDraft.way !== 1 && cc.leaveDraft.way !== 2) {
+        cc.leaveDraft.flight = "";
+        cc.leaveDraft.depart = "";
+        cc.leaveDraft.arrive = "";
+      }
+      api.render();
+      return true;
+    }
+    if (act === "leave-submit") { submitLeaveApply(api); return true; }
     if (act === "students") { cc.listType = el.getAttribute("data-filter"); cc.keyword = ""; api.go(P + "studentList"); return true; }
     if (act === "team") { cc.teamId = el.getAttribute("data-id"); api.go(P + "detail"); return true; }
     if (act === "search") { var input = document.getElementById("cc-kw"); cc.keyword = input ? input.value : ""; api.render(); return true; }

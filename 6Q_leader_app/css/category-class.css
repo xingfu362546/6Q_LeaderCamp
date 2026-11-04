@@ -74,6 +74,10 @@
 .cc-sheet, .cc-dialog { background: #fff; }
 .cc-sheet { border-radius: 12px 12px 0 0; padding: 8px 0 16px; }
 .cc-sheet button, .cc-dialog button { display: block; width: 100%; border: 0; background: #fff; padding: 14px; cursor: pointer; font-size: 16px; }
+.cc-ways { display: flex; flex-wrap: wrap; gap: 8px; }
+.cc-way { height: 32px; padding: 0 12px; border: 1px solid #e2e6e2; border-radius: 16px; background: #fff; color: #696c69; font-size: 13px; cursor: pointer; }
+.cc-way.is-on { border-color: #09c382; background: #eefaf4; color: #09c382; font-weight: 600; }
+.cc-leave-tip { margin: 0 12px 16px; color: #8a908a; font-size: 12px; line-height: 1.6; }
 .cc-dialog { align-self: center; margin: 24px; border-radius: 12px; padding: 20px; }
 .cc-dialog p { margin: 0 0 16px; text-align: center; color: #392d2b; }
 .cc-dialog div { display: flex; }

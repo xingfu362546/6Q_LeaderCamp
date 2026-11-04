@@ -22,7 +22,15 @@ window.LB_MENU = {
       id: "eq-archives",
       label: "档案管理",
       children: [
-        { id: "mentor-lesson-archive", label: "领袖营授课档案", href: "replica.html?p=mentor-lesson-archive" }
+        { id: "offline-learning", label: "线下学习档案" },
+        { id: "online-learning", label: "线上学习档案" },
+        { id: "offline-lesson", label: "线下授课档案" },
+        { id: "mentor-lesson-archive", label: "领袖营授课档案", href: "replica.html?p=mentor-lesson-archive" },
+        { id: "offline-assistant", label: "线下课程一办三团档案" },
+        { id: "leader-assistant", label: "领袖营一办三团档案" },
+        { id: "study-active", label: "学习修活动档案" },
+        { id: "guide-archive", label: "指导档案" },
+        { id: "mentor-course-archive", label: "导师课程档案", href: "replica.html?p=mentor-course-archive", badge: "v3.5.0", isNew: true }
       ]
     }
   ],
@@ -93,6 +101,7 @@ window.LB_MENU = {
         { id: "salary-bill", label: "薪酬账单", href: "replica.html?p=salary-bill" },
         { id: "salary-pay", label: "薪酬发放", href: "replica.html?p=salary-pay" },
         { id: "salary-ledger", label: "基地台账", href: "replica.html?p=salary-ledger" },
+        { id: "arrive-summary", label: "迎接总表", href: "replica.html?p=arrive-summary", badge: "v3.5.0" },
         { id: "leave-summary", label: "离营总表", href: "replica.html?p=leave-summary", badge: "v3.5.0" }
       ]
     },

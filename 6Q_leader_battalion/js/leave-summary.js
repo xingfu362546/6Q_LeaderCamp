@@ -89,11 +89,17 @@
   }
 
   function loadApps() {
+    var seeds = APPLICATIONS.map(function (a) { return Object.assign({}, a); });
     try {
       var saved = JSON.parse(sessionStorage.getItem(APPKEY) || "null");
-      if (saved && saved.length) return saved;
+      if (saved && saved.length) {
+        var ids = {};
+        saved.forEach(function (a) { ids[a.id] = 1; });
+        seeds.forEach(function (a) { if (!ids[a.id]) saved.push(a); });
+        return saved;
+      }
     } catch (e) {}
-    return APPLICATIONS.map(function (a) { return Object.assign({}, a); });
+    return seeds;
   }
 
   function saveApps(list) {

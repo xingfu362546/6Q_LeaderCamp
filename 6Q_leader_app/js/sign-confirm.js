@@ -122,10 +122,10 @@
     return String(plan).replace("2026年暑假领袖营", "26暑假").replace("2027年寒假领袖营", "27寒假").replace(/^26暑假/, "26暑假").replace(/【|】/g, "");
   }
 
-  function wayBar(rows) {
-    var total = rows.length || 1;
+  function wayBar(rows, meta) {
+    meta = meta || WAY_META;
     var html = '<div class="sm-bar">';
-    WAY_META.forEach(function (m) {
+    meta.forEach(function (m) {
       var n = wayCount(rows, m.way);
       if (!n) return;
       html += '<i class="sm-bar__seg sm-bar__seg--' + m.cls + '" style="flex:' + n + '" title="' + esc(m.long) + " " + n + '"></i>';
@@ -134,9 +134,10 @@
     return html;
   }
 
-  function wayChips(rows, withZero) {
+  function wayChips(rows, withZero, meta) {
+    meta = meta || WAY_META;
     var html = '<div class="sm-chips">';
-    WAY_META.forEach(function (m) {
+    meta.forEach(function (m) {
       var n = wayCount(rows, m.way);
       if (!n && !withZero) return;
       html += '<span class="sm-chip sm-chip--' + m.cls + '"><i></i>' + esc(m.label) + "<b>" + n + "</b></span>";
@@ -145,7 +146,286 @@
     return html;
   }
 
+  /* 入营方式与后台迎接欢送抽屉一致。第 4 项是自行入营。 */
+  var ARRIVE_WAYS = { 1: "机场接送", 2: "火车站接送", 3: "大巴接送", 4: "自行入营", 5: "连营" };
+  var ARRIVE_META = [
+    { way: 1, label: "机场", long: "机场接送", cls: "air" },
+    { way: 2, label: "车站", long: "火车站接送", cls: "station" },
+    { way: 3, label: "大巴", long: "大巴接送", cls: "bus" },
+    { way: 4, label: "自行", long: "自行入营", cls: "self" },
+    { way: 5, label: "连营", long: "连营", cls: "join" },
+    { way: 0, label: "未填", long: "未填写", cls: "none" }
+  ];
+  var ARRIVE_PLACES = {
+    1: ["广州白云机场T1航站楼", "广州白云机场T2航站楼", "深圳宝安机场T3航站楼", "南宁吴圩机场T2航站楼"],
+    2: ["广州南站", "广州东站", "深圳北站", "南宁东站"],
+    3: ["广州总部大巴起点", "中山大巴起点"]
+  };
+  var ARRIVE_TEACHERS = ["林晓雯", "苏晚"];
+  var ARRIVE = [
+    { base: 0, name: "王小满", sid: "A10281", klass: "A1班", way: 1, place: "广州白云机场T1航站楼", flight: "CZ3101", depart: "10-14 14:10", arrive: "10-14 16:00", teacher: "林晓雯", unaccompanied: false, status: "未到达", updated: "2026-10-14 09:20" },
+    { base: 0, name: "李可", sid: "A10282", klass: "A1班", way: 2, place: "广州南站", flight: "G1002", depart: "10-16 08:00", arrive: "10-16 09:30", teacher: "林晓雯", unaccompanied: false, status: "已到达", updated: "2026-10-16 09:35" },
+    { base: 0, name: "赵欣然", sid: "A10284", klass: "A2班", way: 3, place: "广州总部大巴起点", flight: "", depart: "", arrive: "10-16 13:00", teacher: "", unaccompanied: false, status: "已到达", updated: "2026-10-16 13:10" },
+    { base: 0, name: "孙悦", sid: "A10283", klass: "A2班", way: 4, place: "", flight: "", depart: "", arrive: "10-15 09:10", teacher: "", unaccompanied: false, status: "已到达", updated: "2026-10-15 09:10" },
+    { base: 0, name: "陈启航", sid: "A10285", klass: "A1班", way: 0, place: "", flight: "", depart: "", arrive: "", teacher: "", unaccompanied: false, status: "未到达", updated: "" },
+    { base: 0, name: "郑一诺", sid: "A10288", klass: "A1班", way: 5, place: "", flight: "", depart: "", arrive: "10-14 08:00", teacher: "", unaccompanied: false, status: "未到达", updated: "2026-10-13 18:02" },
+    { base: 1, name: "林小满", sid: "B20101", klass: "B1班", way: 1, place: "深圳宝安机场T3航站楼", flight: "ZH9802", depart: "10-18 13:20", arrive: "10-18 15:10", teacher: "林晓雯", unaccompanied: true, status: "未到达", updated: "2026-10-17 11:40" },
+    { base: 1, name: "何晓波", sid: "B20102", klass: "B1班", way: 2, place: "广州南站", flight: "G6021", depart: "10-18 14:10", arrive: "10-18 16:40", teacher: "苏晚", unaccompanied: false, status: "已到达", updated: "2026-10-18 16:40" },
+    { base: 1, name: "安宇静", sid: "B20103", klass: "B2班", way: 3, place: "中山大巴起点", flight: "", depart: "", arrive: "10-19 09:22", teacher: "", unaccompanied: false, status: "未到达", updated: "2026-10-18 20:11" },
+    { base: 1, name: "苏晚", sid: "B20106", klass: "B2班", way: 0, place: "", flight: "", depart: "", arrive: "", teacher: "", unaccompanied: false, status: "未到达", updated: "" },
+    { base: 2, name: "许宁", sid: "C30101", klass: "C1班", way: 1, place: "广州白云机场T2航站楼", flight: "CA1301", depart: "10-18 08:10", arrive: "10-18 10:02", teacher: "林晓雯", unaccompanied: false, status: "未到达", updated: "2026-10-17 09:18" },
+    { base: 2, name: "何倩", sid: "C30102", klass: "C1班", way: 2, place: "广州南站", flight: "G1010", depart: "10-19 09:40", arrive: "10-19 11:31", teacher: "苏晚", unaccompanied: false, status: "未到达", updated: "2026-10-18 16:02" },
+    { base: 2, name: "钱柏", sid: "C30104", klass: "C2班", way: 5, place: "", flight: "", depart: "", arrive: "10-18 08:00", teacher: "", unaccompanied: false, status: "已到达", updated: "2026-10-18 08:20" },
+    { base: 3, name: "韩朔", sid: "D40101", klass: "D1班", way: 1, place: "南宁吴圩机场T2航站楼", flight: "CZ6301", depart: "10-18 12:40", arrive: "10-18 14:26", teacher: "林晓雯", unaccompanied: false, status: "未到达", updated: "2026-10-17 15:33" },
+    { base: 3, name: "沈予", sid: "D40102", klass: "D1班", way: 2, place: "南宁东站", flight: "G4201", depart: "10-19 14:20", arrive: "10-19 17:03", teacher: "苏晚", unaccompanied: false, status: "已到达", updated: "2026-10-19 17:03" },
+    { base: 3, name: "赵岚", sid: "D40104", klass: "D2班", way: 4, place: "", flight: "", depart: "", arrive: "10-20 08:30", teacher: "", unaccompanied: false, status: "未到达", updated: "2026-10-19 21:15" }
+  ];
+
+  function arriveRows() {
+    if (tv.summaryBase < 0) return ARRIVE.slice();
+    return ARRIVE.filter(function (r) { return r.base === tv.summaryBase; });
+  }
+
+  function arriveList() {
+    return arriveRows().filter(function (r) {
+      if (tv.summaryWay >= 0 && r.way !== tv.summaryWay) return false;
+      if (tv.summaryKw && (r.name + r.sid + r.place + r.flight).indexOf(tv.summaryKw) < 0) return false;
+      return true;
+    });
+  }
+
+  function arriveCanEdit(r) {
+    return r.status !== "已到达";
+  }
+
+  function arriveLine(r) {
+    if (!r.way) return "未填写入营方式";
+    if (r.way === 1 || r.way === 2) {
+      return (r.place || "未选站点") + (r.flight ? " · " + r.flight : "") + (r.arrive ? " · 抵达 " + r.arrive : "");
+    }
+    if (r.way === 3) return (r.place || "未选起点") + (r.arrive ? " · 抵达 " + r.arrive : "");
+    return r.arrive ? "抵达 " + r.arrive : "未填抵达时间";
+  }
+
+  function arriveSummaryPage() {
+    var scoped = arriveRows();
+    var arrived = scoped.filter(function (r) { return r.status === "已到达"; }).length;
+    var html = '<header class="nav nav--sc"><div><button type="button" data-sc="summary-back">返回</button></div><h1>迎接总表</h1><div class="side"></div></header>';
+    html += '<div class="body sc sm">';
+    html += '<div class="ex-anchor"><button type="button" class="ex-dot" data-note="arrive" title="迎接总表"><span class="ex-num">3</span></button></div>';
+    html += '<section class="sm-hero">';
+    html += '<div class="sm-hero__top"><div><p class="sm-hero__eye">' + (tv.summaryBase >= 0 ? "单基地视图" : "全部基地") + '</p><h2>' + esc(tv.summaryBase >= 0 ? shortBase(BASES[tv.summaryBase].plan) : "迎接总览") + "</h2>";
+    html += '<p class="sm-hero__sub">' + (tv.summaryBase >= 0 ? esc(BASES[tv.summaryBase].week) + " · " : "") + "应迎接 " + scoped.length + " 人 · 已到达 " + arrived + " 人</p></div></div>";
+    html += wayBar(scoped, ARRIVE_META);
+    html += wayChips(scoped, true, ARRIVE_META);
+    html += "</section>";
+    html += '<div class="sm-sec"><h3>选择基地</h3><p>基地即计划。点一个基地，下面的名单跟着收窄。</p></div>';
+    html += '<div class="sm-bases">';
+    html += '<button type="button" class="sm-base' + (tv.summaryBase < 0 ? " is-on" : "") + '" data-sc="summary-all"><div class="sm-base__hd"><b>全部基地</b><em>' + ARRIVE.length + "</em></div>" + wayChips(ARRIVE, false, ARRIVE_META) + "</button>";
+    BASES.forEach(function (b, i) {
+      var rows = ARRIVE.filter(function (r) { return r.base === i; });
+      html += '<button type="button" class="sm-base' + (tv.summaryBase === i ? " is-on" : "") + '" data-sc="summary-base" data-idx="' + i + '"><div class="sm-base__hd"><b>' + esc(shortBase(b.plan)) + "</b><em>" + rows.length + "</em></div>";
+      html += '<p class="sm-base__wk">' + esc(b.week) + " · 已到达 " + rows.filter(function (r) { return r.status === "已到达"; }).length + "</p>";
+      html += wayChips(rows, false, ARRIVE_META) + "</button>";
+    });
+    html += "</div>";
+    html += '<div class="sm-sec"><h3>学员名单</h3><p>' + arriveList().length + " 人，按入营方式筛。</p></div>";
+    html += '<div class="sm-search"><input id="tv-sum-kw" placeholder="搜索学员姓名 / 学员ID / 站点" value="' + esc(tv.summaryKw) + '" /><button type="button" data-sc="summary-search">搜索</button></div>';
+    html += '<div class="sm-filter">';
+    html += '<button type="button" class="sm-pill' + (tv.summaryWay < 0 ? " is-on" : "") + '" data-sc="summary-way" data-idx="-1">全部</button>';
+    ARRIVE_META.forEach(function (m) {
+      html += '<button type="button" class="sm-pill sm-pill--' + m.cls + (tv.summaryWay === m.way ? " is-on" : "") + '" data-sc="summary-way" data-idx="' + m.way + '">' + esc(m.label) + "</button>";
+    });
+    html += "</div>";
+    var list = arriveList();
+    if (!list.length) html += '<div class="sm-empty">没有符合条件的学员</div>';
+    else {
+      html += '<div class="sm-list">';
+      list.forEach(function (r) {
+        var meta = ARRIVE_META.filter(function (m) { return m.way === r.way; })[0] || ARRIVE_META[5];
+        var done = r.status === "已到达";
+        html += '<article class="sm-card sm-card--' + meta.cls + '">';
+        html += '<div class="sm-card__hd"><b class="sm-card__name">' + esc(r.name) + "</b>";
+        html += '<span class="sm-card__st' + (done ? " is-done" : "") + '">' + esc(r.status) + "</span></div>";
+        html += '<p class="sm-card__meta">' + esc(r.sid) + " · " + esc(r.klass) + " · " + esc(shortBase(BASES[r.base].plan)) + "</p>";
+        html += '<div class="sm-card__way"><span class="sm-chip sm-chip--' + meta.cls + '"><i></i>' + esc(meta.long) + "</span>";
+        html += '<em class="sm-card__place">' + esc(arriveLine(r)) + "</em></div>";
+        html += '<p class="sm-card__time">' + (r.updated ? "更新于 " + esc(r.updated) : "未填写入营方式") + (r.isEdited ? ' <em class="sm-card__edited">已修改</em>' : "") + "</p>";
+        if (tv.deputy && arriveCanEdit(r)) html += '<button type="button" class="sm-card__edit" data-sc="summary-edit" data-sid="' + esc(r.sid) + '">修改入营方式</button>';
+        html += "</article>";
+      });
+      html += "</div>";
+    }
+    html += '<p class="sc-way__tip">汇总数与下方名单同源。入营方式取自入营问卷。迎接不走助教提交，也没有审批。' +
+      (tv.deputy ? "当前身份是副负责人，未到达的学员可以直接改。已到达不能改。保存后标「已修改」，后台迎接总表只读看到同一份结果。" : "当前身份不是副负责人，只能查看。") +
+      "</p>";
+    if (tv.summaryEdit) html += arriveEditSheet();
+    html += "</div>";
+    return html;
+  }
+
+  function arriveBySid(sid) {
+    return ARRIVE.filter(function (r) { return r.sid === sid; })[0] || null;
+  }
+
+  function openArriveDraft(r) {
+    tv.arriveDraft = {
+      way: r.way || 1,
+      place: r.place || "",
+      flight: r.flight || "",
+      depart: r.depart || "",
+      arrive: r.arrive && r.arrive !== "—" ? r.arrive : "",
+      teacher: r.teacher || "",
+      unaccompanied: !!r.unaccompanied
+    };
+  }
+
+  function readArriveDraft() {
+    var d = tv.arriveDraft;
+    if (!d) return null;
+    var place = document.getElementById("sm-place");
+    var flight = document.getElementById("sm-flight");
+    var depart = document.getElementById("sm-depart");
+    var arrive = document.getElementById("sm-arrive");
+    var teacher = document.getElementById("sm-teacher");
+    if (place) d.place = place.value;
+    if (flight) d.flight = flight.value.trim();
+    if (depart) d.depart = depart.value.trim();
+    if (arrive) d.arrive = arrive.value.trim();
+    if (teacher) d.teacher = teacher.value;
+    return d;
+  }
+
+  function clearArriveDraftForWay(way) {
+    var d = tv.arriveDraft;
+    if (!d) return;
+    var places = ARRIVE_PLACES[way] || [];
+    if (places.indexOf(d.place) < 0) d.place = "";
+    if (way !== 1 && way !== 2) {
+      d.flight = "";
+      d.depart = "";
+      d.teacher = "";
+    }
+    if (way !== 1) d.unaccompanied = false;
+    if (way === 4 || way === 5) d.place = "";
+  }
+
+  function arriveSelect(id, label, value, options, placeholder) {
+    var html = '<div class="sm-sheet__field"><label>' + esc(label) + '</label><select id="' + id + '">';
+    html += '<option value="">' + esc(placeholder) + "</option>";
+    options.forEach(function (opt) {
+      html += '<option value="' + esc(opt) + '"' + (value === opt ? " selected" : "") + ">" + esc(opt) + "</option>";
+    });
+    html += "</select></div>";
+    return html;
+  }
+
+  function arriveEditSheet() {
+    var r = arriveBySid(tv.summaryEdit);
+    var d = tv.arriveDraft;
+    if (!r || !d) return "";
+    var way = d.way;
+    var html = '<div class="sm-sheet-mask"><div class="sm-sheet" data-sc="summary-sheet">';
+    html += '<h3>修改入营方式 · ' + esc(r.name) + "</h3>";
+    html += '<p class="sm-sheet__sub">' + esc(r.sid) + " · " + esc(r.klass) + " · " + esc(r.status) + "</p>";
+    html += '<div class="sm-sheet__field"><label>入营方式</label><div class="sm-ways">';
+    [1, 2, 3, 4, 5].forEach(function (w) {
+      html += '<button type="button" class="sm-way' + (way === w ? " is-on" : "") + '" data-sc="summary-pick-way" data-v="' + w + '">' + esc(ARRIVE_WAYS[w]) + "</button>";
+    });
+    html += "</div></div>";
+    if (way === 1 || way === 2 || way === 3) {
+      var placeLabel = way === 1 ? "航站楼" : way === 2 ? "车站" : "入营大巴起点";
+      html += arriveSelect("sm-place", placeLabel, d.place, ARRIVE_PLACES[way], "请选择" + placeLabel);
+    }
+    if ((way === 1 || way === 2) && d.place) {
+      html += arriveSelect("sm-teacher", "带队老师", d.teacher, ARRIVE_TEACHERS, "该站点可选，不选也可以");
+    }
+    if (way === 1 || way === 2) {
+      html += '<div class="sm-sheet__field"><label>' + (way === 1 ? "航班号" : "班次") + '</label><input id="sm-flight" value="' + esc(d.flight) + '" placeholder="' + (way === 1 ? "如：CZ3101" : "如：G1002") + '" /></div>';
+      html += '<div class="sm-sheet__field"><label>出发时间</label><input id="sm-depart" value="' + esc(d.depart) + '" placeholder="如：10-14 14:10" /></div>';
+    }
+    html += '<div class="sm-sheet__field"><label>抵达时间</label><input id="sm-arrive" value="' + esc(d.arrive) + '" placeholder="如：10-14 16:00" /></div>';
+    if (way === 1) {
+      html += '<div class="sm-sheet__field"><label>是否无人陪伴</label><div class="sm-ways">';
+      html += '<button type="button" class="sm-way' + (d.unaccompanied ? " is-on" : "") + '" data-sc="summary-alone" data-v="1">是</button>';
+      html += '<button type="button" class="sm-way' + (!d.unaccompanied ? " is-on" : "") + '" data-sc="summary-alone" data-v="0">否</button>';
+      html += "</div></div>";
+      if (d.unaccompanied) html += '<p class="sm-sheet__tip">陪伴人：林晓雯 · 女 · 13800008801</p>';
+    }
+    html += '<p class="sm-sheet__tip">副负责人保存后立即生效，不走助教提交，也没有审批。已到达的学员不能改。换方式后，不适用的站点、班次和出发时间会清掉。</p>';
+    html += '<div class="sm-sheet__ops"><button type="button" data-sc="summary-edit-cancel">取消</button><button type="button" data-sc="summary-save" data-sid="' + esc(r.sid) + '">保存</button></div>';
+    html += "</div></div>";
+    return html;
+  }
+
+  function saveArriveEdit(sid) {
+    var r = arriveBySid(sid);
+    var d = readArriveDraft();
+    if (!r || !d || !tv.deputy || !arriveCanEdit(r)) {
+      if (window.APP && window.APP.toast) window.APP.toast("已到达，或当前身份不能修改");
+      return;
+    }
+    if (!d.way) {
+      if (window.APP && window.APP.toast) window.APP.toast("请选择入营方式");
+      return;
+    }
+    if ((d.way === 1 || d.way === 2 || d.way === 3) && !d.place) {
+      if (window.APP && window.APP.toast) window.APP.toast(d.way === 3 ? "请选择入营大巴起点" : "请选择站点");
+      return;
+    }
+    if ((d.way === 1 || d.way === 2) && !d.flight) {
+      if (window.APP && window.APP.toast) window.APP.toast(d.way === 1 ? "请填写航班号" : "请填写班次");
+      return;
+    }
+    if ((d.way === 1 || d.way === 2) && !d.depart) {
+      if (window.APP && window.APP.toast) window.APP.toast("请填写出发时间");
+      return;
+    }
+    if (!d.arrive) {
+      if (window.APP && window.APP.toast) window.APP.toast("请填写抵达时间");
+      return;
+    }
+    var beforeWay = r.way;
+    r.beforeWay = beforeWay;
+    r.way = d.way;
+    r.place = d.place || "";
+    r.flight = d.way === 1 || d.way === 2 ? d.flight : "";
+    r.depart = d.way === 1 || d.way === 2 ? d.depart : "";
+    r.arrive = d.arrive;
+    r.teacher = d.way === 1 || d.way === 2 ? d.teacher : "";
+    r.unaccompanied = d.way === 1 ? !!d.unaccompanied : false;
+    r.isEdited = true;
+    r.editedAt = appNow();
+    r.editedBy = "副负责人（APP）";
+    r.updated = r.editedAt;
+    var person = travelers.filter(function (p) { return p.sid === r.sid; })[0];
+    if (person) {
+      person.place = r.place || (r.way === 4 ? "自行入营" : r.way === 5 ? "连营" : "未填写");
+      person.flight = r.flight || "—";
+      person.arrive = r.arrive;
+      person.arriveWay = r.way;
+      person.arriveEdited = true;
+    }
+    try {
+      var pack = JSON.parse(sessionStorage.getItem("lb-arrive-summary-v1") || "[]");
+      var hit = pack.filter(function (x) { return x.id === r.sid; })[0];
+      var row = {
+        id: r.sid, way: r.way, place: r.place, flight: r.flight || "—", depart: r.depart || "",
+        arrive: r.arrive, teacher: r.teacher || "", unaccompanied: r.unaccompanied,
+        beforeWay: beforeWay, isEdited: true, editedAt: r.editedAt, editedBy: r.editedBy, updated: r.updated
+      };
+      if (hit) Object.keys(row).forEach(function (k) { hit[k] = row[k]; });
+      else pack.unshift(row);
+      sessionStorage.setItem("lb-arrive-summary-v1", JSON.stringify(pack));
+    } catch (e) {}
+    tv.summaryEdit = "";
+    tv.arriveDraft = null;
+    if (window.APP && window.APP.toast) window.APP.toast("已保存，后台迎接总表同步为只读结果");
+    if (window.APP) window.APP.render();
+  }
+
   function summaryPage() {
+    if (tv.type === 1) return arriveSummaryPage();
     var scoped = tv.summaryBase >= 0 ? ROSTER.filter(function (r) { return r.base === tv.summaryBase; }) : ROSTER;
     var signed = scoped.filter(function (r) { return r.status === "已签离"; }).length;
     var pct = scoped.length ? Math.round(signed / scoped.length * 100) : 0;
@@ -227,7 +507,7 @@
   function appEditSheet() {
     var r = appEditRow();
     if (!r) return "";
-    var html = '<div class="sm-sheet-mask" data-sc="summary-edit-cancel"><div class="sm-sheet">';
+    var html = '<div class="sm-sheet-mask"><div class="sm-sheet" data-sc="summary-sheet">';
     html += '<h3>修改离营方式 · ' + esc(r.name) + "</h3>";
     html += '<p class="sm-sheet__sub">' + esc(r.sid) + " · " + esc(r.klass) + " · " + esc(r.status) + "</p>";
     html += '<div class="sm-sheet__field"><label>离营方式</label><div class="sm-ways">';
@@ -246,6 +526,7 @@
   }
 
   function appSaveSummaryEdit(sid) {
+    if (tv.type === 1) return saveArriveEdit(sid);
     var r = ROSTER.filter(function (x) { return x.sid === sid; })[0];
     if (!r || !appSummaryCanEdit(r)) {
       if (window.APP && window.APP.toast) window.APP.toast("已签离，不可修改");
@@ -665,6 +946,8 @@
       '<div class="ex-anchor"><button type="button" class="ex-dot ex-dot--shift" data-note="58" title="需求 58"><span class="ex-num">2</span></button></div>';
     if (tv.type === 2) {
       html += '<div class="ex-anchor"><button type="button" class="ex-dot" data-note="10" title="需求 10"><span class="ex-num">3</span></button></div>';
+    } else {
+      html += '<div class="ex-anchor"><button type="button" class="ex-dot" data-note="arrive" title="迎接总表"><span class="ex-num">3</span></button></div>';
     }
     return html;
   }
@@ -712,8 +995,13 @@
     html += '<em class="sc-tag' + (status === 2 ? " is-on" : "") + '">' + statusText + "</em></div>";
     html += '<div class="sc-sub">' + (person.sex ? esc(person.sex) + "｜" + person.age + "岁" : "") + "</div>";
     if (tv.type === 1) {
-      html += '<div class="sc-meta"><span>' + esc(person.place) + "</span><span>到达时间：" + esc(person.arrive) + "</span></div>";
-      html += '<div class="sc-meta"><span>' + esc(person.flight) + "</span></div>";
+      var arriveRow = arriveBySid(person.sid);
+      var arriveName = arriveRow ? (ARRIVE_WAYS[arriveRow.way] || "未填写") : "未填写";
+      html += '<div class="sc-meta"><span>入营方式：' + esc(arriveName) + "</span>";
+      if (arriveRow && arriveRow.isEdited) html += '<span class="sc-edited">已修改</span>';
+      html += "</div>";
+      html += '<div class="sc-meta"><span>' + esc(person.place || "-") + "</span><span>到达时间：" + esc(person.arrive || "-") + "</span></div>";
+      html += '<div class="sc-meta"><span>' + esc(person.flight || "-") + "</span></div>";
     } else {
       html += '<div class="sc-meta"><span>离营方式：<button type="button" class="sc-waylink" data-sc="way-open" data-id="' + person.id + '">' + esc(leaveWayOf(person)) + "</button></span>";
       if (syncedLeave(person)) html += '<span class="sc-edited">已修改</span>';
@@ -865,12 +1153,33 @@
       api.render();
       return true;
     }
-    if (act === "summary-edit") { tv.summaryEdit = el.getAttribute("data-sid"); api.render(); return true; }
-    if (act === "summary-edit-cancel") { tv.summaryEdit = ""; api.render(); return true; }
+    if (act === "summary-edit") {
+      tv.summaryEdit = el.getAttribute("data-sid");
+      if (tv.type === 1) {
+        var arriveRow = arriveBySid(tv.summaryEdit);
+        if (arriveRow) openArriveDraft(arriveRow);
+      }
+      api.render();
+      return true;
+    }
+    if (act === "summary-edit-cancel") { tv.summaryEdit = ""; tv.arriveDraft = null; api.render(); return true; }
     if (act === "summary-pick-way") {
+      if (tv.type === 1 && tv.arriveDraft) {
+        readArriveDraft();
+        tv.arriveDraft.way = Number(el.getAttribute("data-v"));
+        clearArriveDraftForWay(tv.arriveDraft.way);
+        api.render();
+        return true;
+      }
       var sheet = el.closest(".sm-sheet");
       if (sheet) sheet.querySelectorAll(".sm-way").forEach(function (b) { b.classList.remove("is-on"); });
       el.classList.add("is-on");
+      return true;
+    }
+    if (act === "summary-alone" && tv.arriveDraft) {
+      readArriveDraft();
+      tv.arriveDraft.unaccompanied = el.getAttribute("data-v") === "1";
+      api.render();
       return true;
     }
     if (act === "summary-save") { appSaveSummaryEdit(el.getAttribute("data-sid")); return true; }
@@ -1135,6 +1444,8 @@
       tv.kw = "";
       tv.summary = false;
       tv.wayOpen = "";
+      tv.summaryEdit = "";
+      tv.arriveDraft = null;
     }
   };
 
@@ -1150,5 +1461,18 @@
       tv.summaryKw = e.target.value.trim();
       window.APP.render();
     }
+  });
+
+  document.addEventListener("change", function (e) {
+    if (!tv.arriveDraft || !e.target || e.target.id !== "sm-place" || !window.APP) return;
+    readArriveDraft();
+    window.APP.render();
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!e.target || !e.target.classList || !e.target.classList.contains("sm-sheet-mask") || !window.APP) return;
+    tv.summaryEdit = "";
+    tv.arriveDraft = null;
+    window.APP.render();
   });
 })();

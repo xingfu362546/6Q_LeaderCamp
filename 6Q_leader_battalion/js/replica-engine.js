@@ -40,7 +40,7 @@
   var mount = document.getElementById("lb-replica");
   if (!spec || !mount) return;
 
-  var titleLine = pageId === "mentor-lesson-archive" ? "高EQ导师管理" : pageId === "camp-manage" ? "计划与实施" : "领袖营薪酬板块";
+  var titleLine = pageId === "mentor-lesson-archive" || pageId === "mentor-course-archive" ? "高EQ导师管理" : pageId === "camp-manage" ? "计划与实施" : "领袖营薪酬板块";
   document.title = spec.title + " · " + titleLine;
 
   var SURVEY_PLANS = [
@@ -72,7 +72,8 @@
     rows: [],
     filtered: [],
     selected: {},
-    moreOpen: ""
+    moreOpen: "",
+    filtersOpen: false
   };
 
   function esc(s) {
@@ -703,7 +704,18 @@
     ];
   }
 
+  /* 导师课程档案。列与现网 moke.vue 一致。第一次授课只记时间，最近授课仍是最新一次的班级课表编码。 */
+  function mentorCourseRows() {
+    return [
+      { _id: "c1", code: "AGL2026081711680147002175", mentor: "余炜烽", mid: "14753175", phone: "13800001001", courseType: "领袖营", product: "6Q营（七巧板营）", productCode: "CRJ221016150015815895", course: "亿万富翁创业记", courseCode: "CC2025102410595168343618", campsType: "主题课", hours: 3, lessonStatus: "已授课", lessonCount: 1, lessonHours: 3, latest: "CPTC2026081614010160526", firstTeach: "2026-07-07 09:00", speakCount: 0, trialCount: 0, mokeStatus: "未磨课", mokeCount: 0, latestMoke: "-", trialStatus: "未验收", acceptCount: 0, latestTrial: "-", updated: "2026-10-18 09:12:00" },
+      { _id: "c2", code: "AGL2026081711690147000002", mentor: "林晓雯", mid: "16680003", phone: "13800001101", courseType: "领袖营", product: "6Q营（七巧板营）", productCode: "CRJ221016150015815895", course: "品格课", courseCode: "CC2025102410595168332072", campsType: "品格课", hours: 1, lessonStatus: "已授课", lessonCount: 2, lessonHours: 2, latest: "CPTC2026081614010160527", firstTeach: "2026-07-07 14:00", speakCount: 1, trialCount: 0, mokeStatus: "未磨课", mokeCount: 0, latestMoke: "-", trialStatus: "未验收", acceptCount: 0, latestTrial: "-", updated: "2026-10-17 14:20:00" },
+      { _id: "c3", code: "AGL2026081711888215500003", mentor: "陈启航", mid: "18882155", phone: "13900003303", courseType: "线下课程", product: "情绪管理线下课", productCode: "OFF20251016001", course: "情绪管理", courseCode: "MOD20251016001", campsType: "-", hours: 2, lessonStatus: "已授课", lessonCount: 4, lessonHours: 8, latest: "CPTC2026081614010160528", firstTeach: "2026-06-01 10:30", speakCount: 2, trialCount: 1, mokeStatus: "已磨课", mokeCount: 2, latestMoke: "2026暑假磨课计划", trialStatus: "合格", acceptCount: 1, latestTrial: "2026-08-12 验收", updated: "2026-10-16 11:08:00" },
+      { _id: "c4", code: "AGL2026081711771355700004", mentor: "万红", mid: "17713557", phone: "13700004404", courseType: "领袖营", product: "6Q营（七巧板营）", productCode: "CRJ221016150015815896", course: "主题分享", courseCode: "CC2025102410595168311543", campsType: "主题课", hours: 2, lessonStatus: "未授课", lessonCount: 0, lessonHours: 0, latest: "-", firstTeach: "-", speakCount: 0, trialCount: 0, mokeStatus: "未磨课", mokeCount: 0, latestMoke: "-", trialStatus: "未验收", acceptCount: 0, latestTrial: "-", updated: "2026-10-15 16:40:00" }
+    ];
+  }
+
   function mockRows() {
+    if (pageId === "mentor-course-archive") return mentorCourseRows();
     if (pageId === "mentor-lesson-archive") return mentorArchiveRows();
     if (pageId === "medical-reg") return medicalRows();
     if (pageId === "excellent-honor") return loadHonorApps();
@@ -1069,7 +1081,7 @@
       "salary-calc-detail": { diff: "levelDiff" },
       "salary-bill": { levelStatus: "billLevel" },
       "benchmark": { poster: "posterBanner" },
-      "mentor-lesson-archive": { firstTeach: "firstTeach" },
+      "mentor-course-archive": { firstTeach: "firstTeach" },
       "medical-reg": { name: "sickNotice" }
     };
     var noteKey = (map[pageId] || {})[key];
@@ -1090,13 +1102,15 @@
   function renderFilters() {
     var fs = spec.filters || [];
     if (!fs.length) return "";
+    var foldAfter = spec.filtersFoldAfter || 0;
     return (
-      '<div class="lb-toolbar" id="lb-filters">' +
+      '<div class="lb-toolbar' + (state.filtersOpen ? " is-filter-open" : "") + '" id="lb-filters">' +
       fs
-        .map(function (f) {
+        .map(function (f, idx) {
+          var extra = foldAfter && idx >= foldAfter ? " lb-field--extra" : "";
           if (f.t === "select") {
             return (
-              '<div class="lb-field"><label>' +
+              '<div class="lb-field' + extra + '"><label>' +
               esc(f.l) +
               filterNoteBtn(f.k) +
               '</label><select class="lb-select" data-fk="' +
@@ -1114,7 +1128,7 @@
           }
           if (f.t === "dateRange" || f.t === "numberRange") {
             return (
-              '<div class="lb-field lb-field--range"><label>' +
+              '<div class="lb-field lb-field--range' + extra + '"><label>' +
               esc(f.l) +
               filterNoteBtn(f.k) +
               '</label><input class="lb-input" data-fk="' +
@@ -1129,7 +1143,7 @@
             );
           }
           return (
-            '<div class="lb-field"><label>' +
+            '<div class="lb-field' + extra + '"><label>' +
             esc(f.l) +
             filterNoteBtn(f.k) +
             '</label><input class="lb-input" data-fk="' +
@@ -1141,7 +1155,11 @@
         })
         .join("") +
       '<button type="button" class="lb-btn lb-btn--primary" id="btn-search">查询</button>' +
-      '<button type="button" class="lb-btn" id="btn-reset">重置</button></div>'
+      '<button type="button" class="lb-btn" id="btn-reset">重置</button>' +
+      (foldAfter && fs.length > foldAfter
+        ? '<button type="button" class="lb-btn lb-btn--link" id="btn-filter-fold">' + (state.filtersOpen ? "收起筛选" : "展开筛选") + "</button>"
+        : "") +
+      "</div>"
     );
   }
 
@@ -1186,7 +1204,7 @@
             "emotion-reg": { export: "emotionExport" },
             "salary-calc": { ledger: "ledgerEntry" },
             "benchmark": { posterTpl: "posterBanner" },
-            "mentor-lesson-archive": { recordExport: "firstTeach" },
+            "mentor-course-archive": { export: "firstTeach" },
             "camp-manage": { add: "campTravelMap" },
             "salary-pay": { exportMerge: "payMergeExport" }
           }[pageId] || {})[b.id];
@@ -1260,9 +1278,20 @@
     if (pageId === "mentor-lesson-archive" && col.k === "realCount") {
       return "<div>" + esc(row.realCount) + "</div><div>较上个月：" + esc(row.monthRate) + "%</div>";
     }
-    if (pageId === "mentor-lesson-archive" && col.k === "firstTeach") {
-      /* 原型评审第二轮第4条：第一次授课只记时间，不再跳班级课表。 */
-      return esc(row.firstTeach || "-");
+    if (pageId === "mentor-course-archive" && (col.k === "courseType" || col.k === "lessonStatus" || col.k === "mokeStatus" || col.k === "trialStatus")) {
+      return courseStatusTag(col.k, v);
+    }
+    if (pageId === "mentor-course-archive" && col.k === "latest") {
+      if (!v || v === "-") return "-";
+      return '<a class="lb-link-btn" href="replica.html?p=class-schedule&classCode=' + encodeURIComponent(v) + '">' + esc(v) + "</a>";
+    }
+    if (pageId === "mentor-course-archive" && col.k === "firstTeach") {
+      /* 第61条：第一次授课只记时间，不跳班级课表。最近授课才是最新一次编码。 */
+      return esc(!v || v === "-" ? "-" : v);
+    }
+    if (pageId === "mentor-course-archive" && (col.k === "latestMoke" || col.k === "latestTrial")) {
+      if (!v || v === "-") return "-";
+      return '<button type="button" class="lb-link-btn" data-act="' + col.k + '" data-row="' + esc(row._id) + '">' + esc(v) + "</button>";
     }
     if (col.t === "img") {
       var face = v
@@ -1377,12 +1406,45 @@
     renderTable();
   }
 
+  function opsCell(r) {
+    var list = visibleOps(r);
+    if (spec.opsMenu) {
+      return (
+        '<div class="lb-drop lb-drop--cell" data-drop="op-' + esc(r._id) + '">' +
+        '<button type="button" class="lb-link-btn" data-drop-toggle="op-' + esc(r._id) + '">更多 ▾</button>' +
+        '<div class="lb-drop__menu">' +
+        list
+          .map(function (o) {
+            return '<button type="button" data-row="' + esc(r._id) + '" data-act="' + o.id + '">' + esc(o.l) + "</button>";
+          })
+          .join("") +
+        "</div></div>"
+      );
+    }
+    return list
+      .map(function (o) {
+        return (
+          '<button type="button" class="lb-link-btn' +
+          (o.danger ? " lb-link-btn--danger" : "") +
+          '" data-row="' +
+          esc(r._id) +
+          '" data-act="' +
+          o.id +
+          '">' +
+          esc(o.l) +
+          "</button>"
+        );
+      })
+      .join("");
+  }
+
   function renderTable() {
     var start = (state.page - 1) * state.pageSize;
     var rows = state.filtered.slice(start, start + state.pageSize);
     var head =
       "<tr>" +
       (spec.select ? "<th><input type=\"checkbox\" id=\"chk-all\" /></th>" : "") +
+      (spec.hasIndex ? "<th>序号</th>" : "") +
       (spec.columns || [])
         .map(function (c) {
           return '<th><span class="lb-act">' + esc(c.l) + columnNoteBtn(c.k) + "</span></th>";
@@ -1391,22 +1453,8 @@
       (spec.ops && spec.ops.length ? "<th>操作</th>" : "") +
       "</tr>";
     var body = rows
-      .map(function (r) {
-        var ops = visibleOps(r)
-          .map(function (o) {
-            return (
-              '<button type="button" class="lb-link-btn' +
-              (o.danger ? " lb-link-btn--danger" : "") +
-              '" data-row="' +
-              esc(r._id) +
-              '" data-act="' +
-              o.id +
-              '">' +
-              esc(o.l) +
-              "</button>"
-            );
-          })
-          .join("");
+      .map(function (r, i) {
+        var ops = opsCell(r);
         return (
           "<tr>" +
           (spec.select
@@ -1416,6 +1464,7 @@
               (state.selected[r._id] ? " checked" : "") +
               " /></td>"
             : "") +
+          (spec.hasIndex ? "<td>" + (start + i + 1) + "</td>" : "") +
           (spec.columns || [])
             .map(function (c) {
               return "<td>" + cellHtml(c, r) + "</td>";
@@ -2097,11 +2146,19 @@
     );
   }
 
+  function courseStatusTag(key, value) {
+    if (!value || value === "-" || value === "—") return "-";
+    if (value === "不合格") return '<span class="lb-tag" style="color:#cf1322;background:#fff1f0;border-color:#ffa39e">' + esc(value) + "</span>";
+    var ok = value === "领袖营" || value === "已授课" || value === "已磨课" || value === "合格";
+    var wait = value === "线下课程" || value === "未授课" || value === "未磨课" || value === "需调优";
+    return '<span class="lb-tag' + (ok ? " lb-tag--ok" : wait ? " lb-tag--wait" : "") + '">' + esc(value) + "</span>";
+  }
+
   function exportMentorArchive() {
-    var headers = ["会员ID", "姓名", "电话号码", "所在职级", "所在地区", "所在运营服务单位", "课程ID", "课程名称", "真实授课次数", "虚拟授课次数", "总授课次数", "第一次授课", "更新时间"];
+    var headers = ["会员ID", "姓名", "电话号码", "所在职级", "所在地区", "所在运营服务单位", "课程ID", "课程名称", "真实授课次数", "虚拟授课次数", "总授课次数", "更新时间"];
     var lines = [headers.join(",")];
     state.rows.forEach(function (r) {
-      lines.push([r.mid, r.name, r.phone, r.level, r.area, r.office, r.courseId, r.course, r.realCount, r.virtualCount, r.totalCount, r.firstTeach, r.updated].join(","));
+      lines.push([r.mid, r.name, r.phone, r.level, r.area, r.office, r.courseId, r.course, r.realCount, r.virtualCount, r.totalCount, r.updated].join(","));
     });
     var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
     var a = document.createElement("a");
@@ -2110,7 +2167,23 @@
     document.body.appendChild(a);
     a.click();
     a.remove();
-    window.LB.toast("记录导出已包含第一次授课");
+    window.LB.toast("记录已导出");
+  }
+
+  function exportCourseArchive() {
+    var headers = ["档案ID", "导师", "会员ID", "手机号码", "课程类型", "Q营班级/线下课程", "班级/课程ID", "领袖营课程/线下课程模块", "课程/模块ID", "领袖营课程类型", "课时", "授课状态", "累计授课次数", "累计授课课时", "最近授课", "第一次授课", "课程说课次数", "课程试讲次数", "磨课情况", "累计磨课次数", "最近磨课", "验收情况", "累计验收次数", "最近验收", "更新时间"];
+    var lines = [headers.join(",")];
+    state.rows.forEach(function (r) {
+      lines.push([r.code, r.mentor, r.mid, r.phone, r.courseType, r.product, r.productCode, r.course, r.courseCode, r.campsType, r.hours, r.lessonStatus, r.lessonCount, r.lessonHours, r.latest, r.firstTeach, r.speakCount, r.trialCount, r.mokeStatus, r.mokeCount, r.latestMoke, r.trialStatus, r.acceptCount, r.latestTrial, r.updated].join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "导师课程档案.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.LB.toast("已导出。第一次授课是时间，最近授课是最新一次的班级课表编码");
   }
 
   function openTeachRecords(row) {
@@ -2123,7 +2196,7 @@
     }).join("");
     window.LB.openDrawer(
       "真实授课记录 | " + (row.course || ""),
-      '<p class="lb-hint">最新一次是 ' + esc(row.latestTeach) + "。第一次授课时间是 " + esc(row.firstTeach) + "，只记录时间，不拿来顶替最新记录。</p>" +
+      '<p class="lb-hint">按授课时间从新到旧。最新一次的班级课表编码是 ' + esc(row.latestTeach) + "。</p>" +
         '<div class="lb-table-wrap"><table class="lb-table"><thead><tr><th>计划</th><th>周营</th><th>周营班级</th><th>分班</th><th>期数</th><th>岗位</th><th>开营时间</th><th>开营地点</th><th>状态</th><th>班级课表编码</th></tr></thead><tbody>' +
         body + "</tbody></table></div>",
       { wide: true }
@@ -2199,6 +2272,48 @@
           '<div class="lb-field"><label>修订类型</label><select class="lb-select"><option>增加</option><option>减少</option></select></div><div class="lb-field"><label>修订数量</label><input class="lb-input" placeholder="请输入修订数量" /></div><div class="lb-field"><label>备注</label><textarea class="lb-input" placeholder="请输入备注"></textarea></div><div class="lb-drawer-foot"><button type="button" class="lb-btn" data-close-drawer="1">取消</button><button type="button" class="lb-btn lb-btn--primary" data-close-drawer="1">确定</button></div>',
           { wide: true }
         );
+        return;
+      }
+    }
+    if (pageId === "mentor-course-archive") {
+      if (act === "export") {
+        exportCourseArchive();
+        return;
+      }
+      if (act === "import") {
+        window.LB.toast("按现网导入档案");
+        return;
+      }
+      if (act === "latestMoke" && row) {
+        window.LB.toast("现网打开磨课计划：" + row.latestMoke);
+        return;
+      }
+      if (act === "latestTrial" && row) {
+        window.LB.toast("现网打开验收时段：" + row.latestTrial);
+        return;
+      }
+      if (act === "record" && row) {
+        window.LB.openDrawer(
+          "更新记录 · " + row.mentor,
+          '<div class="lb-table-wrap"><table class="lb-table"><thead><tr><th>修订类型</th><th>修订内容</th><th>修订结果</th><th>修订次数</th><th>关联业务</th><th>备注</th><th>修订人</th><th>修订时间</th></tr></thead><tbody><tr><td>人工修订</td><td>授课情况</td><td>已授课</td><td>+1</td><td>' + esc(row.latest === "-" ? "-" : row.latest) + "</td><td>补记授课次数。第一次授课时间不改成最近一次。</td><td>余炜烽</td><td>" + esc(row.updated) + "</td></tr></tbody></table></div>",
+          { wide: true }
+        );
+        return;
+      }
+      if ((act === "lesson" || act === "moke" || act === "trial") && row) {
+        var revise = {
+          lesson: { title: "修订授课情况", status: "授课情况", opts: ["已授课", "未授课"], count: "授课次数", hour: true },
+          moke: { title: "修订磨课情况", status: "磨课情况", opts: ["已磨课", "未磨课"], count: "磨课次数" },
+          trial: { title: "修订验收情况", status: "验收情况", opts: ["未验收", "合格", "需调优", "不合格"], count: "验收次数" }
+        }[act];
+        var form = '<p class="lb-hint">' + esc(row.mentor) + " · " + esc(row.course) + "</p>";
+        form += '<div class="lb-field"><label>' + revise.status + '</label><select class="lb-select">' + revise.opts.map(function (o) { return "<option>" + esc(o) + "</option>"; }).join("") + "</select></div>";
+        form += '<div class="lb-field"><label>调整类型</label><select class="lb-select"><option>增加</option><option>减少</option></select></div>';
+        form += '<div class="lb-field"><label>' + revise.count + '</label><input class="lb-input" placeholder="请输入" /></div>';
+        if (revise.hour) form += '<div class="lb-field"><label>课时</label><input class="lb-input" placeholder="请输入" /></div>';
+        form += '<div class="lb-field"><label>备注</label><textarea class="lb-input" placeholder="请输入备注"></textarea></div>';
+        form += '<div class="lb-drawer-foot"><button type="button" class="lb-btn" data-close-drawer="1">取消</button><button type="button" class="lb-btn lb-btn--primary" data-close-drawer="1">确定</button></div>';
+        window.LB.openDrawer(revise.title + " · " + row.mentor, form, { wide: true });
         return;
       }
     }
@@ -3910,7 +4025,7 @@
       if (classInput) classInput.value = classCode;
       var classTip = document.createElement("div");
       classTip.className = "lb-jump-tip";
-      classTip.textContent = "来自领袖营授课档案的第一次授课，已按班级课表编码「" + classCode + "」定位。";
+      classTip.textContent = "来自导师课程档案的最近授课，已按班级课表编码「" + classCode + "」定位。这一跳是最新一次，不是第一次授课。";
       var classFilters = document.getElementById("lb-filters");
       if (classFilters && classFilters.parentNode) classFilters.parentNode.insertBefore(classTip, classFilters);
     }
@@ -3922,6 +4037,7 @@
   else if ((spec.special === "ledger" || spec.special === "ledgerBills") && window.LB_LEDGER) window.LB_LEDGER.mount(mount, pageId);
   else if (spec.special === "surveyConfig" && window.LB_SURVEY) window.LB_SURVEY.mount(mount);
   else if (spec.special === "leaveSummary" && window.LB_LEAVE_SUMMARY) window.LB_LEAVE_SUMMARY.mount(mount);
+  else if (spec.special === "arriveSummary" && window.LB_ARRIVE_SUMMARY) window.LB_ARRIVE_SUMMARY.mount(mount);
   else renderList();
 
   document.addEventListener("click", function (e) {
@@ -3972,12 +4088,28 @@
       }
       return;
     }
+    if (t.id === "btn-filter-fold") {
+      var bar = document.getElementById("lb-filters");
+      state.filtersOpen = !state.filtersOpen;
+      if (bar) bar.classList.toggle("is-filter-open", state.filtersOpen);
+      t.textContent = state.filtersOpen ? "收起筛选" : "展开筛选";
+      return;
+    }
     var dropToggle = t.getAttribute && t.getAttribute("data-drop-toggle");
     document.querySelectorAll(".lb-drop").forEach(function (d) {
       if (!dropToggle || d.getAttribute("data-drop") !== dropToggle) d.classList.remove("is-open");
     });
     if (dropToggle) {
-      t.closest(".lb-drop").classList.toggle("is-open");
+      var dropBox = t.closest(".lb-drop");
+      dropBox.classList.toggle("is-open");
+      var dropMenu = dropBox.querySelector(".lb-drop__menu");
+      if (dropBox.classList.contains("is-open") && dropMenu && dropBox.classList.contains("lb-drop--cell")) {
+        var rect = t.getBoundingClientRect();
+        dropMenu.style.position = "fixed";
+        dropMenu.style.top = rect.bottom + 4 + "px";
+        dropMenu.style.left = Math.max(8, rect.right - 148) + "px";
+        dropMenu.style.minWidth = "148px";
+      }
       return;
     }
     var planBox = t.closest(".lb-plan-box");
