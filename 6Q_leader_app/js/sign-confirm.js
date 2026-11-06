@@ -257,7 +257,7 @@
       html += "</div>";
     }
     html += '<p class="sc-way__tip">汇总数与下方名单同源。入营方式取自入营问卷。迎接不走助教提交，也没有审批。' +
-      (tv.deputy ? "当前身份是副负责人，未到达的学员可以直接改。已到达不能改。保存后标「已修改」，后台迎接总表只读看到同一份结果。" : "当前身份不是副负责人，只能查看。") +
+      (tv.deputy ? "当前身份是副负责人，未到达的学员可以直接改。已到达不能改。保存后标「已修改」，并在后台该学员的修正记录里记成操作用户（APP 副负责人）。后台能打开迎接总表的人也可以改未到达学员。" : "当前身份不是副负责人，只能查看。") +
       "</p>";
     if (tv.summaryEdit) html += arriveEditSheet();
     html += "</div>";
@@ -352,7 +352,7 @@
       html += "</div></div>";
       if (d.unaccompanied) html += '<p class="sm-sheet__tip">陪伴人：林晓雯 · 女 · 13800008801</p>';
     }
-    html += '<p class="sm-sheet__tip">副负责人保存后立即生效，不走助教提交，也没有审批。已到达的学员不能改。换方式后，不适用的站点、班次和出发时间会清掉。</p>';
+    html += '<p class="sm-sheet__tip">副负责人保存后立即生效，不走助教提交，也没有审批。已到达的学员不能改。换方式后，不适用的站点、班次和出发时间会清掉。修正记录记成操作用户（APP 副负责人），不记成会员申请。</p>';
     html += '<div class="sm-sheet__ops"><button type="button" data-sc="summary-edit-cancel">取消</button><button type="button" data-sc="summary-save" data-sid="' + esc(r.sid) + '">保存</button></div>';
     html += "</div></div>";
     return html;
@@ -417,10 +417,21 @@
       if (hit) Object.keys(row).forEach(function (k) { hit[k] = row[k]; });
       else pack.unshift(row);
       sessionStorage.setItem("lb-arrive-summary-v1", JSON.stringify(pack));
+      var revMap = JSON.parse(sessionStorage.getItem("lb-arrive-revisions-v1") || "null") || {};
+      revMap[r.sid] = revMap[r.sid] || [];
+      revMap[r.sid].unshift({
+        at: r.editedAt,
+        kind: "backend",
+        via: "app",
+        operator: "林晓雯",
+        action: "直接修改",
+        text: "APP 迎接总表直接修改。入营方式由「" + (ARRIVE_WAYS[beforeWay] || "未填写") + "」改为「" + (ARRIVE_WAYS[r.way] || "未填写") + "」。" + (r.place ? "站点：" + r.place + "。" : "") + "数据已写入。"
+      });
+      sessionStorage.setItem("lb-arrive-revisions-v1", JSON.stringify(revMap));
     } catch (e) {}
     tv.summaryEdit = "";
     tv.arriveDraft = null;
-    if (window.APP && window.APP.toast) window.APP.toast("已保存，后台迎接总表同步为只读结果");
+    if (window.APP && window.APP.toast) window.APP.toast("已保存，并写入修正记录");
     if (window.APP) window.APP.render();
   }
 
@@ -431,6 +442,7 @@
     var pct = scoped.length ? Math.round(signed / scoped.length * 100) : 0;
     var html = '<header class="nav nav--sc"><div><button type="button" data-sc="summary-back">返回</button></div><h1>欢送总表</h1><div class="side"></div></header>';
     html += '<div class="body sc sm">';
+    html += '<div class="ex-anchor"><button type="button" class="ex-dot" data-note="10" title="离营方式与修正记录"><span class="ex-num">3</span></button></div>';
 
     html += '<section class="sm-hero">';
     html += '<div class="sm-hero__top"><div><p class="sm-hero__eye">' + (tv.summaryBase >= 0 ? "单基地视图" : "全部基地") + '</p><h2>' + esc(tv.summaryBase >= 0 ? shortBase(BASES[tv.summaryBase].plan) : "欢送总览") + "</h2>";
@@ -483,7 +495,7 @@
       html += "</div>";
     }
     html += '<p class="sc-way__tip">汇总数与下方名单同源。离营方式取自学员在离营问卷里的填写。' +
-      (tv.deputy ? "当前身份为副负责人，可直接在总表修改；改完与后台离营总表一致：标「已修改」并逐条发送通知。" : "当前身份不是副负责人，只能查看，不能修改。") +
+      (tv.deputy ? "当前身份为副负责人，可直接在总表修改；改完标「已修改」并逐条发送通知。修正记录记成操作用户（APP 副负责人），不记成会员申请。" : "当前身份不是副负责人，只能查看，不能修改。") +
       "</p>";
     if (tv.summaryEdit) html += appEditSheet();
     html += "</div>";
@@ -519,7 +531,7 @@
     html += '<div class="sm-sheet__field"><label>航班号 / 班次</label><input id="sm-flight" value="' + esc(r.flight === "—" ? "" : r.flight) + '" placeholder="如：CZ3101" /></div>';
     html += '<div class="sm-sheet__field"><label>出发时间</label><input id="sm-depart" value="' + esc(r.depart || "") + '" placeholder="如：10-23 08:20" /></div>';
     html += '<div class="sm-sheet__field"><label>抵达时间</label><input id="sm-arrive" value="' + esc(r.arrive || "") + '" placeholder="如：10-23 11:05" /></div>';
-    html += '<p class="sm-sheet__tip">保存后立即生效，与后台离营总表保持同一份数据：该行标「已修改」，并逐条发送通知到家营 / 欢送负责人 / 助教团。</p>';
+    html += '<p class="sm-sheet__tip">保存后立即生效，与后台离营总表保持同一份数据：该行标「已修改」，并逐条发送通知到家营 / 欢送负责人 / 助教团。修正记录记成操作用户（APP 副负责人），不记成会员申请。</p>';
     html += '<div class="sm-sheet__ops"><button type="button" data-sc="summary-edit-cancel">取消</button><button type="button" data-sc="summary-save" data-sid="' + esc(r.sid) + '">保存</button></div>';
     html += "</div></div>";
     return html;
@@ -577,6 +589,17 @@
         to: "家营 / 欢送负责人 / 助教团"
       });
       sessionStorage.setItem("lb-leave-msgs-v1", JSON.stringify(msgs));
+      var leaveRevs = JSON.parse(sessionStorage.getItem("lb-leave-revisions-v1") || "null") || {};
+      leaveRevs[r.sid] = leaveRevs[r.sid] || [];
+      leaveRevs[r.sid].unshift({
+        at: r.editedAt,
+        kind: "backend",
+        via: "app",
+        operator: "林晓雯",
+        action: "直接修改",
+        text: "APP 欢送总表直接修改。离营方式由「" + (LEAVE_WAYS[beforeWay] || "未填写") + "」改为「" + (LEAVE_WAYS[way] || "未填写") + "」。数据已写入。"
+      });
+      sessionStorage.setItem("lb-leave-revisions-v1", JSON.stringify(leaveRevs));
     } catch (e) {}
     tv.summaryEdit = "";
     if (window.APP && window.APP.toast) window.APP.toast("已保存并发送通知");

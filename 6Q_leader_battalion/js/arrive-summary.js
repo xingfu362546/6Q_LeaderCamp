@@ -1,5 +1,5 @@
 /**
- * 迎接总表（后台）。菜单挂在 领袖营薪酬板块 → 薪酬管理 → 迎接总表。
+ * 迎接总表（后台）。菜单挂在 领袖营薪酬板块 → 领袖营数据 → 迎接总表。
  *
  * 能打开这个菜单就能改未到达学员的入营方式。页面不判断副负责人，
  * 菜单权限由系统角色决定。已到达不能改。不走助教提交，也没有审批。
@@ -58,7 +58,13 @@
     3: ["广州总部大巴起点", "中山大巴起点"]
   };
   var TEACHERS = ["林晓雯", "苏晚"];
-  var state = { plan: "", way: -1, kw: "", detail: "", edit: "", draft: null };
+  var state = { plan: "", way: -1, kw: "", detail: "", edit: "", draft: null, revisions: "" };
+  var REVKEY = "lb-arrive-revisions-v1";
+  var REVSEED = {
+    C30101: [
+      { at: "2026-10-17 18:20", kind: "backend", operator: "余炜烽", action: "直接修改", text: "入营方式由「未填写」改为「机场接送」。航站楼：广州白云机场T2航站楼 · CA1301。数据已写入。" }
+    ]
+  };
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -190,6 +196,7 @@
       html += '<td class="as-cell-remark">' + (r.remark ? esc(r.remark) : "-") + "</td>";
       html += '<td><span class="as-state' + (arrived ? " is-done" : "") + '">' + esc(r.status) + "</span></td>";
       html += '<td class="as-cell-ops"><button type="button" class="as-mini" data-as="detail" data-id="' + esc(r.id) + '">详情</button>';
+      html += '<button type="button" class="as-mini" data-as="revs" data-id="' + esc(r.id) + '">修正记录' + (revsOf(r.id).length ? "<em>" + revsOf(r.id).length + "</em>" : "") + "</button>";
       if (!arrived) html += '<button type="button" class="as-mini as-mini--primary" data-as="edit" data-id="' + esc(r.id) + '">修改</button>';
       html += "</td>";
       html += "</tr>";
@@ -229,6 +236,26 @@
     html += '<button type="button" class="as-btn as-btn--primary" data-as="close">关闭</button></div>';
     html += "</div></div>";
     return html;
+  }
+
+  function loadRevs() {
+    try {
+      var saved = JSON.parse(sessionStorage.getItem(REVKEY) || "null");
+      if (saved) return saved;
+    } catch (e) {}
+    return null;
+  }
+
+  function revsOf(sid) {
+    var map = loadRevs() || REVSEED;
+    return (map[sid] || []).slice();
+  }
+
+  function pushRev(sid, entry) {
+    var map = loadRevs() || JSON.parse(JSON.stringify(REVSEED));
+    map[sid] = map[sid] || [];
+    map[sid].unshift(entry);
+    try { sessionStorage.setItem(REVKEY, JSON.stringify(map)); } catch (e) {}
   }
 
   function nowText() {
@@ -361,7 +388,7 @@
       beforeWay: current.way,
       isEdited: true,
       editedAt: nowText(),
-      editedBy: "后台",
+      editedBy: "余炜烽",
       updated: ""
     };
     row.updated = row.editedAt;
@@ -372,9 +399,42 @@
       else pack.unshift(row);
       sessionStorage.setItem("lb-arrive-summary-v1", JSON.stringify(pack));
     } catch (e) {}
+    pushRev(id, {
+      at: row.editedAt,
+      kind: "backend",
+      operator: "余炜烽",
+      action: "直接修改",
+      text: "入营方式由「" + wayMeta(current.way).label + "」改为「" + wayMeta(d.way).label + "」。" + (row.place ? "站点：" + row.place + "。" : "") + "数据已写入。"
+    });
     state.edit = "";
     state.draft = null;
-    if (window.LB && window.LB.toast) window.LB.toast("已保存，并标为已修改");
+    if (window.LB && window.LB.toast) window.LB.toast("已保存，并写入修正记录");
+  }
+
+  function revWho(item) {
+    if (item.kind === "member") return "前端用户 " + (item.memberName || "-") + "（会员ID " + (item.memberId || "-") + "）";
+    if (item.via === "app") return "操作用户 " + (item.operator || "-") + "（APP 副负责人）";
+    return "后台操作用户 " + (item.operator || "-");
+  }
+
+  function revSheet(r) {
+    var list = revsOf(r.id);
+    var html = '<div class="as-mask" data-as="mask"><div class="as-sheet as-sheet--form">';
+    html += "<h3>修正记录 · " + esc(r.name) + "</h3>";
+    html += '<p class="as-sheet__sub">' + esc(r.id) + " · 一次操作一条。后台直接修改写后台操作用户和姓名；APP 副负责人直接改写操作用户（APP 副负责人）。迎接不走助教申请，不记成前端用户和会员ID。</p>";
+    if (!list.length) html += '<p class="as-tip">还没有修正记录。</p>';
+    else {
+      html += '<div class="as-revs">';
+      list.forEach(function (item) {
+        var tag = item.kind === "member" ? "前端申请" : (item.via === "app" ? "APP 副负责人" : "后台修改");
+        html += '<article class="as-rev as-rev--' + (item.kind === "member" ? "member" : "admin") + '">';
+        html += '<div class="as-rev__hd"><b>' + esc(item.at) + "</b><span>" + tag + "</span><em>" + esc(item.action || "") + "</em></div>";
+        html += "<p>" + esc(revWho(item)) + "</p><p>" + esc(item.text || "") + "</p></article>";
+      });
+      html += "</div>";
+    }
+    html += '<div class="as-sheet__ops"><button type="button" class="as-btn as-btn--primary" data-as="rev-close">关闭</button></div></div></div>';
+    return html;
   }
 
   function render(root) {
@@ -393,11 +453,16 @@
     });
     html += '<span class="as-count">' + list.length + " 人</span>";
     html += '<button type="button" class="as-btn" data-as="export">导出</button>';
+    html += '<button type="button" class="lb-num-btn" data-note-key="arriveEdit" title="修改入营方式"></button>';
+    html += '<button type="button" class="lb-num-btn" data-note-key="arriveRevs" title="修正记录"></button>';
     html += "</div>";
     html += table(list);
     html += '<p class="as-tip">能打开本菜单就可以改未到达学员的入营方式，页面不判断副负责人。已到达不能改。不走助教提交，也没有审批。保存后标「已修改」，APP 迎接总表看到同一份结果。</p>';
     html += "</div>";
-    if (state.edit) {
+    if (state.revisions) {
+      var revRow = all.filter(function (r) { return r.id === state.revisions; })[0];
+      if (revRow) html += revSheet(revRow);
+    } else if (state.edit) {
       var editing = all.filter(function (r) { return r.id === state.edit; })[0];
       if (editing) html += editSheet(editing);
     } else if (state.detail) {
@@ -433,16 +498,25 @@
       if (t.classList && t.classList.contains("as-mask")) {
         state.edit = "";
         state.draft = null;
+        state.revisions = "";
         render(page);
       }
       return;
     }
-    if (act === "plan") { state.plan = val || ""; }
+    if (act === "revs") {
+      state.detail = "";
+      state.edit = "";
+      state.draft = null;
+      state.revisions = btn.getAttribute("data-id");
+    } else if (act === "rev-close") {
+      state.revisions = "";
+    } else if (act === "plan") { state.plan = val || ""; state.revisions = ""; }
     else if (act === "way") { state.way = parseInt(val, 10); }
     else if (act === "search") {
       var kw = document.getElementById("as-kw");
       state.kw = kw ? String(kw.value || "").trim() : "";
     } else if (act === "detail") {
+      state.revisions = "";
       state.edit = "";
       state.draft = null;
       state.detail = btn.getAttribute("data-id");

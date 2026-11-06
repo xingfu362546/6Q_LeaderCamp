@@ -1080,7 +1080,7 @@
       "post-salary": { levels: "postLevels" },
       "salary-calc-detail": { diff: "levelDiff" },
       "salary-bill": { levelStatus: "billLevel" },
-      "benchmark": { poster: "posterBanner" },
+      "benchmark": { gloria: "posterBanner" },
       "mentor-course-archive": { firstTeach: "firstTeach" },
       "medical-reg": { name: "sickNotice" }
     };
@@ -1203,7 +1203,7 @@
             "student-archive": { add: "stuArchive", batchLamp: "stuArchive" },
             "emotion-reg": { export: "emotionExport" },
             "salary-calc": { ledger: "ledgerEntry" },
-            "benchmark": { posterTpl: "posterBanner" },
+            "benchmark": { gloria: "posterBanner" },
             "mentor-course-archive": { export: "firstTeach" },
             "camp-manage": { add: "campTravelMap" },
             "salary-pay": { exportMerge: "payMergeExport" }
@@ -1231,7 +1231,7 @@
       html += '<span class="lb-tag lb-tag--wait" title="级别继承">继承</span>';
     }
     if (pageId === "camp-staff" && row.kinSame) {
-      html += '<i class="lb-kin-warn" data-kin-tip="' + esc(kinHoverText(row, row.kinHits || [])) + '">!</i>';
+      html += '<i class="lb-kin-warn" data-kin-tip="' + esc(kinHoverText(row, row.kinHits || [])) + '">!</i><em class="lb-kin-label">同周营</em>';
     }
     return html;
   }
@@ -2218,7 +2218,7 @@
     var txt = row.story || "";
     var html = '<div class="lb-desc"><div><b>' + esc(row.name) + "</b>（" + esc(row.sid) + "）　" + esc(row.week || "") + " · " + esc(row.klass || "") + "</div></div>";
     html += '<div class="lb-field"><label><i class="lb-req">*</i>事迹描述</label><textarea class="lb-textarea" id="bm-story" rows="8" maxlength="1200" placeholder="写这位学员在营里做过的具体事，供光荣墙展示">' + esc(txt) + "</textarea></div>";
-    html += '<p class="lb-hint">当前 <span id="bm-count">' + txt.length + "</span> 字。光荣墙每张卡片可用高度固定：3 列最多 6 行、4 列 5 行、5 列 4 行，超出自动截断加省略号，不溢出画布。灯布同理。</p>";
+    html += '<p class="lb-hint">当前 <span id="bm-count">' + txt.length + "</span> 字。光荣榜每张卡片可用高度固定：3 列最多 6 行、4 列 5 行、5 列 4 行，超出自动截断加省略号，不溢出画布。</p>";
     html += '<div class="lb-drawer-foot"><button type="button" class="lb-btn" data-close-drawer="1">取消</button><button type="button" class="lb-btn lb-btn--primary" data-act="bmStorySave" data-row="' + esc(row._id) + '">确定</button></div>';
     window.LB.openDrawer("修改事迹 · " + row.name, html, { wide: true });
     var box = document.getElementById("bm-story");
@@ -2318,11 +2318,6 @@
       }
     }
     if (pageId === "benchmark" && window.LB_POSTER) {
-      if (act === "posterTpl") {
-        window.LB_POSTER.template();
-        return;
-      }
-      /* 原型评审第二轮第22条：光荣榜是集合榜单，替换原来单张生成的入口。 */
       if (act === "gloria" && window.LB_GLORIA) {
         window.LB_GLORIA.open();
         return;
@@ -2828,48 +2823,38 @@
     return plans[idx] || plans[0];
   }
 
-  /* 原型评审第二轮第18条：原来只判「同班」才提示。
-     现在改为：家长与该工作人员的子女，只要在同一个计划 + 同一个周营内，就抛异常，
-     不管是否同班。原因是不论同班还是同周营，都会出现利益冲突与跟车确认的重复处理。 */
-  function kinHitsOf(name, plan, week) {
+  /* 序号 8：工作人员和报读学员只要在同一个周营，就标异常。
+     只比周营，不比班级，也不要求计划名称逐字相同。 */
+  function kinHitsOf(name, week) {
     return (KIN_CHILDREN[name] || []).filter(function (child) {
-      return child.plan === plan && child.week === week;
+      return child.week && child.week === week;
     });
   }
 
   function stampKin(row) {
-    var hits = kinHitsOf(row.name, row.plan, row.week);
+    var hits = kinHitsOf(row.name, row.week);
     row.kinSame = hits.length > 0;
     row.kinHits = hits;
-    /* 是否与子女同班。同周营但不同班也算异常，只是原因文案不同。 */
-    row.kinSameClass = hits.some(function (child) { return child.klass === row.klass; });
   }
 
   function kinHoverText(row, hits) {
-    var kids = (hits || []).map(function (child) { return child.name + "（" + child.klass + "）"; }).join("、");
-    return row.kinSameClass
-      ? row.name + "与学员" + kids + "同班"
-      : row.name + "与学员" + kids + "同计划周营（不同班）";
+    var kids = (hits || []).map(function (child) { return child.name; }).join("、");
+    return row.name + "与学员" + kids + "在同一周营（" + (row.week || "") + "）";
   }
 
   function kinAlertText(row, hits) {
-    var kids = (hits || []).map(function (child) { return child.name + "（" + child.klass + "）"; }).join("、");
-    var reason = row.kinSameClass
-      ? "同班"
-      : "同一计划周营但不同班";
+    var kids = (hits || []).map(function (child) { return child.name; }).join("、");
     return (
       "异常：" +
       row.name +
       " 与自己的子女 " +
       kids +
-      " 在同一个计划「" +
+      " 在同一个周营「" +
       (row.plan || "") +
       " / " +
       (row.week || "") +
-      "」（" +
-      reason +
-      "）。\n\n" +
-      "规则：家长与该工作人员存在亲子关系时，不论是否同班，只要在同一个计划周营内即视为异常，需要统筹重新分配该工作人员的班级或周营。\n" +
+      "」。\n\n" +
+      "规则：工作人员（家长）和学员在同一个周营就提示该异常，不再按同一个班级才报。班级相同或不同都提示；周营不同不提示。\n" +
       "本次不强制更换，姓名旁保留感叹号，便于后续跟进。"
     );
   }
@@ -2890,7 +2875,7 @@
       } else if (row.name === "郑海") {
         row.plan = plan;
         row.week = "第二周";
-        /* 第18条：郑海班级故意与子女不同，用来演示「不同班但同计划周营也算异常」。 */
+        /* 郑海与子女不同班，仍因同一周营标异常。 */
         row.klass = "A2班";
       } else if (!row.plan) {
         row.plan = plan;
@@ -3259,7 +3244,7 @@
         KIN_CLASSES.map(function (klass) {
           return "<option>" + esc(klass) + "</option>";
         }).join("") +
-        '</select></div><p class="lb-hint">确定后直接写入当前左侧所选计划。默认是马丽写入第二周 A1班，与子女李可同班，会先弹窗，班级仍然保留。</p>' +
+        '</select></div><p class="lb-hint">确定后写入当前计划。默认马丽写入第二周，与子女李可在同一周营，会先弹窗。班级是否相同不影响这次提示，数据仍然保留。</p>' +
         '<div class="lb-drawer-foot"><button type="button" class="lb-btn" data-close-drawer="1">取消</button><button type="button" class="lb-btn lb-btn--primary" data-act="campImportSave">确定导入</button></div>';
     }
     if (kind !== "camp") {

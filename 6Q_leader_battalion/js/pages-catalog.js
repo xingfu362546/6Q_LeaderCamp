@@ -5607,10 +5607,6 @@ window.LB_PAGES = {
         "l": "导出"
       },
       {
-        "id": "posterTpl",
-        "l": "灯布模板"
-      },
-      {
         "id": "gloria",
         "l": "生成光荣榜"
       }
@@ -5680,10 +5676,6 @@ window.LB_PAGES = {
         "l": "事迹描述"
       },
       {
-        "k": "poster",
-        "l": "灯布"
-      },
-      {
         "k": "operator",
         "l": "操作人"
       },
@@ -5697,14 +5689,6 @@ window.LB_PAGES = {
       }
     ],
     "ops": [
-      {
-        "id": "poster",
-        "l": "生成灯布"
-      },
-      {
-        "id": "posterView",
-        "l": "查看灯布"
-      },
       {
         "id": "editStory",
         "l": "修改事迹"

@@ -12,16 +12,17 @@
   var KLASS = "A1班";
 
   var STUDENTS = [
-    { id: "TBK32", name: "夏钟畅", team: "1" },
-    { id: "2K8HH4", name: "郑煜馨", team: "1" },
-    { id: "8P1CKX", name: "王艺萱", team: "2" },
-    { id: "5A7W3D", name: "孙沐宸", team: "2" }
+    { id: "s-wang", name: "王小满", team: "1", bench: "VV之星" },
+    { id: "s-li", name: "李可", team: "1", bench: "" },
+    { id: "s-zhao", name: "赵欣然", team: "", bench: "" },
+    { id: "s-sun", name: "孙悦", team: "2", bench: "VV之星" }
   ];
 
   var em = {
     tab: 2,
     team: "",
     keyword: "",
+    archiveId: "",
     sheet: "",
     menu: "",
     dialog: "",
@@ -40,25 +41,53 @@
   function seed() {
     return [
       {
-        id: "m1", status: 2, memberId: "TBK32", memberName: "夏钟畅", team: "1", klass: KLASS,
+        id: "m1", status: 2, memberId: "s-wang", memberName: "王小满", team: "1", klass: "A1班",
         plan: CURRENT_PLAN, week: CURRENT_WEEK,
         recordedTime: 1, moodDesc: "开营当晚想家，晚饭后哭了十几分钟。", pics: 0,
         registrar: "余炜烽", releaseTime: "2026/07/08 21:10",
-        processes: [{ time: "2026-07-08 21:20", text: "陪他走到宿舍门口，打电话给妈妈后情绪平稳。", pics: 0, supplements: [{ text: "已告知班级导师今晚多看一眼。", time: "2026/07/08 22:05" }] }]
+        processes: [{ time: "2026-07-08 21:20", text: "陪她走到宿舍门口，打电话给妈妈后情绪平稳。", pics: 0, supplements: [{ text: "已告知班级导师今晚多看一眼。", time: "2026/07/08 22:05" }] }]
       },
       {
-        id: "m2", status: 2, memberId: "8P1CKX", memberName: "王艺萱", team: "2", klass: KLASS,
+        id: "m1b", status: 2, memberId: "s-wang", memberName: "王小满", team: "1", klass: "A1班",
+        plan: CURRENT_PLAN, week: "第四周",
+        recordedTime: 3, moodDesc: "小组讨论时和同组争执，把本子推到一边。", pics: 0,
+        registrar: "陈可", releaseTime: "2026/06/26 15:20",
+        processes: [{ time: "2026-06-26 15:40", text: "分开坐了两分钟，她自己把事情说清楚后回到小组。", pics: 0, supplements: [] }]
+      },
+      {
+        id: "m1c", status: 2, memberId: "s-wang", memberName: "王小满", team: "2", klass: "B2班",
+        plan: "2026暑假广州第一期", week: "第二周",
+        recordedTime: 1, moodDesc: "换到新班级第一天不肯进教室，在走廊站了很久。", pics: 1,
+        registrar: "赵岚", releaseTime: "2026/07/14 09:30",
+        processes: [{ time: "2026-07-14 09:45", text: "导师在门口陪了她一会儿，进教室后坐在靠门的位置。", pics: 0, supplements: [] }]
+      },
+      {
+        id: "m2", status: 2, memberId: "s-li", memberName: "李可", team: "1", klass: "A1班",
         plan: CURRENT_PLAN, week: "第五周",
-        recordedTime: 2, moodDesc: "小组讨论时突然不说话，把本子合上。", pics: 1,
-        registrar: "陈可", releaseTime: "2026/07/09 16:40",
-        processes: [{ time: "2026-07-09 16:50", text: "单独问过后，她说是没听清题目。重新讲了一遍，后面能跟上。", pics: 0, supplements: [] }]
+        recordedTime: 2, moodDesc: "课间突然不说话，把帽子拉下来。", pics: 1,
+        registrar: "陈可", releaseTime: "2026/07/02 16:40",
+        processes: [{ time: "2026-07-02 16:50", text: "单独问过后，他说是没听清题目。重新讲了一遍，后面能跟上。", pics: 0, supplements: [] }]
       },
       {
-        id: "m3", status: 1, memberId: "2K8HH4", memberName: "郑煜馨", team: "1", klass: KLASS,
-        plan: "2026暑假广州第二期", week: "第一周",
+        id: "m3", status: 1, memberId: "s-zhao", memberName: "赵欣然", team: "", klass: KLASS,
+        plan: CURRENT_PLAN, week: CURRENT_WEEK,
         recordedTime: 1, moodDesc: "分组时不愿进组，一个人站在教室门口。", pics: 0,
         registrar: "余炜烽", releaseTime: "",
         processes: []
+      },
+      {
+        id: "m4", status: 2, memberId: "s-zhao", memberName: "赵欣然", team: "", klass: "A1班",
+        plan: CURRENT_PLAN, week: "第三周",
+        recordedTime: 4, moodDesc: "点名时没应，低头一直捏衣角。", pics: 0,
+        registrar: "余炜烽", releaseTime: "2026/06/18 08:40",
+        processes: [{ time: "2026-06-18 08:50", text: "蹲下来叫了她的名字，她点头后跟着队伍走了。", pics: 0, supplements: [] }]
+      },
+      {
+        id: "m5", status: 2, memberId: "s-sun", memberName: "孙悦", team: "2", klass: "A2班",
+        plan: "2026暑假广州第二期", week: "第三周",
+        recordedTime: 2, moodDesc: "得知改期后一直问能不能留下，晚饭没怎么吃。", pics: 0,
+        registrar: "孙衡", releaseTime: "2026/07/16 18:20",
+        processes: [{ time: "2026-07-16 18:40", text: "和她说明下一期还是这个班，吃了半碗饭后去找同组伙伴。", pics: 0, supplements: [] }]
       }
     ];
   }
@@ -99,22 +128,108 @@
     html += sheet();
     return html + "</div>";
   }
-  function archivePage() {
+  function planRank(name) {
+    var index = PLANS.indexOf(name);
+    return index < 0 ? 99 : index;
+  }
+  function weekRank(name) {
+    var index = WEEKS.indexOf(name);
+    return index < 0 ? 0 : index;
+  }
+  function byTime(a, b) {
+    var plan = planRank(a.plan) - planRank(b.plan);
+    if (plan) return plan;
+    return weekRank(b.week) - weekRank(a.week);
+  }
+  function publishedRows() {
+    return em.rows.filter(function (item) { return item.status === 2; });
+  }
+  function historyOf(id) {
+    return publishedRows().filter(function (item) { return item.memberId === id; }).sort(byTime);
+  }
+  function distinctCount(rows, field) {
+    var keys = {};
+    rows.forEach(function (row) { keys[row[field]] = 1; });
+    return Object.keys(keys).length;
+  }
+  function spanCount(rows) {
+    var keys = {};
+    rows.forEach(function (row) { keys[row.plan + "|" + row.week] = 1; });
+    return Object.keys(keys).length;
+  }
+  function archiveGroups() {
     var word = em.keyword;
-    var items = em.rows.filter(function (item) {
-      if (item.status !== 2) return false;
-      if (em.team && item.team !== em.team) return false;
-      if (word && item.memberName.indexOf(word) < 0 && item.registrar.indexOf(word) < 0) return false;
-      return true;
+    var map = {};
+    publishedRows().forEach(function (item) {
+      if (em.team && item.team !== em.team) return;
+      if (word && item.memberName.indexOf(word) < 0 && (item.registrar || "").indexOf(word) < 0) return;
+      if (!map[item.memberId]) map[item.memberId] = true;
     });
-    var html = '<div class="em"><div class="em-head">' + bar("情绪处理档案·" + KLASS);
-    html += '<div class="em-search"><input id="em-kw" placeholder="搜索登记人/处理对象" value="' + esc(em.keyword) + '" /><button type="button" data-em="search">搜索</button></div></div>';
+    return Object.keys(map).map(function (id) {
+      var rows = historyOf(id);
+      var stu = student(id) || { id: id, name: rows[0].memberName, team: rows[0].team, bench: "" };
+      return { stu: stu, rows: rows, latest: rows[0] };
+    }).sort(function (a, b) { return byTime(a.latest, b.latest); });
+  }
+  function teamText(team) {
+    return team ? team + "组" : "未分组";
+  }
+  function studentCard(group) {
+    var stu = group.stu;
+    var latest = group.latest;
+    var html = '<button type="button" class="em-stu" data-em="archive" data-id="' + stu.id + '">';
+    html += '<div class="em-stu__top"><i class="em-ava">' + esc((stu.name || "?").slice(0, 1)) + "</i><div>";
+    html += '<div class="em-stu__name">' + esc(stu.name) + "</div>";
+    html += '<div class="em-stu__sub">' + esc(latest.klass || KLASS) + " · " + teamText(stu.team || latest.team) + "</div></div>";
+    html += '<div class="em-stu__count">' + group.rows.length + " 条<br>" + distinctCount(group.rows, "plan") + " 个计划</div></div>";
+    if (stu.bench) html += '<div class="em-chips"><span class="em-chip em-chip--bench">标杆 · ' + esc(stu.bench) + "</span></div>";
+    html += '<p class="em-stu__preview"><b>' + esc(latest.week) + "</b> " + esc(latest.moodDesc) + "</p>";
+    html += '<p class="em-stu__foot">最近登记 ' + esc(latest.plan) + " · " + esc(latest.week) + " · " + esc(latest.registrar) + "</p>";
+    return html + "</button>";
+  }
+  function dossier(id) {
+    var rows = historyOf(id);
+    var stu = student(id) || { id: id, name: rows[0] ? rows[0].memberName : "学员", team: "", bench: "" };
+    var latest = rows[0];
+    var html = '<div class="em em-archive"><div class="em-head">' + bar(stu.name + "的情绪档案");
+    html += '<p class="em-archive-tip">这些记录跟着学员走。换班级、换周营之后仍然留在这份档案里。</p></div>';
+    html += '<div class="em-body">';
+    html += '<section class="em-cover"><div class="em-cover__name">' + esc(stu.name) + "</div>";
+    html += '<div class="em-cover__sub">' + esc(latest ? latest.klass : KLASS) + " · " + teamText(stu.team || (latest && latest.team)) + "</div>";
+    html += '<div class="em-cover__nums"><span><b>' + rows.length + '</b>条登记</span><span><b>' + distinctCount(rows, "plan") + '</b>个计划</span><span><b>' + spanCount(rows) + "</b>个周营</span></div>";
+    html += '<div class="em-chips">' + (stu.bench ? '<span class="em-chip em-chip--bench">本期标杆 · ' + esc(stu.bench) + "</span>" : '<span class="em-chip">本期暂无标杆</span>') + "</div></section>";
+    if (!rows.length) {
+      html += '<p class="em-empty">还没有已提交的情绪登记。以后换到别的周营，旧记录也会出现在这里。</p>';
+      return html + "</div></div>";
+    }
+    var plan = "";
+    rows.forEach(function (item) {
+      if (item.plan !== plan) {
+        plan = item.plan;
+        html += '<h3 class="em-plan">' + esc(plan) + "</h3>";
+      }
+      html += '<button type="button" class="em-tl" data-em="open" data-id="' + item.id + '">';
+      html += '<div class="em-tl__week">' + esc(item.week) + " · 第" + item.recordedTime + "天</div>";
+      html += "<p>" + esc(item.moodDesc) + "</p>";
+      html += '<div class="em-tl__meta">' + esc(item.klass) + " · " + teamText(item.team) + " · 处理 " + (item.processes || []).length + " 次 · " + esc(item.registrar) + "</div>";
+      html += "</button>";
+    });
+    return html + "</div></div>";
+  }
+  function archivePage() {
+    if (em.archiveId) return dossier(em.archiveId);
+    var groups = archiveGroups();
+    var html = '<div class="em em-archive"><div class="em-head">' + bar("情绪档案");
+    html += '<p class="em-archive-tip">档案跟着学员走。下一周的导师打开后，能看到这个孩子以前各周营的情绪登记。</p>';
+    html += '<div class="em-search"><input id="em-kw" placeholder="搜索学员 / 登记人" value="' + esc(em.keyword) + '" /><button type="button" data-em="search">搜索</button></div></div>';
     html += '<div class="em-teams">';
     [{ name: "全部", value: "" }, { name: "1组", value: "1" }, { name: "2组", value: "2" }].forEach(function (tab) {
       html += '<button type="button" data-em="team" data-val="' + tab.value + '" class="' + (em.team === tab.value ? "is-on" : "") + '">' + tab.name + "</button>";
     });
-    html += '</div><div class="em-body">' + list(items, false) + "</div>" + sheet() + "</div>";
-    return html;
+    html += '</div><div class="em-body">';
+    if (!groups.length) html += '<p class="em-empty">这个范围里还没有情绪档案</p>';
+    else html += groups.map(studentCard).join("");
+    return html + "</div>" + sheet() + "</div>";
   }
   function photos(n, key) {
     var html = '<div class="em-photos">';
@@ -268,6 +383,7 @@
       api.render();
       return true;
     }
+    if (act === "archive") { em.archiveId = el.getAttribute("data-id"); api.render(); return true; }
     if (act === "open") { em.view = el.getAttribute("data-id"); api.go(DETAIL); return true; }
     if (act === "add") {
       em.editing = "";
@@ -386,7 +502,19 @@
     }
     return false;
   }
+  function openArchive(name) {
+    em.keyword = "";
+    em.team = "";
+    em.archiveId = "";
+    if (!name) return;
+    var stu = STUDENTS.filter(function (item) { return item.name === name || item.id === name; })[0];
+    if (stu) em.archiveId = stu.id;
+  }
   function leaveForm() {
+    if (window.APP && window.APP.path && window.APP.path() === ARCHIVE && em.archiveId && !em.dialog) {
+      em.archiveId = "";
+      return true;
+    }
     if (!(window.APP && window.APP.path && window.APP.path() === FORM) || em.dialog) return false;
     readForm();
     if (!dirty()) return false;
@@ -394,5 +522,5 @@
     return true;
   }
 
-  window.EM = { has: has, render: render, handle: handle, leaveForm: leaveForm };
+  window.EM = { has: has, render: render, handle: handle, leaveForm: leaveForm, openArchive: openArchive };
 })();

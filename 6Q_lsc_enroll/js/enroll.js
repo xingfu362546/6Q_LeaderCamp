@@ -219,6 +219,16 @@
     }
     if (act === "confirm") {
       if (!state.uniform) { toast("请选择是否需要新的营服"); return; }
+      var chosen = kid();
+      var qty = state.uniform === "one" ? 1 : state.uniform === "two" ? 2 : 0;
+      var choice = state.uniform === "one" ? "需要一件" : state.uniform === "two" ? "需要两件" : "不需要";
+      try {
+        var pack = JSON.parse(sessionStorage.getItem("lb-uniform-qty-v1") || "{}") || {};
+        var record = { qty: qty, choice: choice, name: chosen.name };
+        pack[chosen.name] = record;
+        if (chosen.id) pack[chosen.id] = record;
+        sessionStorage.setItem("lb-uniform-qty-v1", JSON.stringify(pack));
+      } catch (e) {}
       state.step = 3;
       render(root);
       return;

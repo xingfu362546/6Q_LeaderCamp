@@ -11,11 +11,11 @@
     tab: "config",
     dialog: "",
     pendingId: "",
-    form: { name: "", classes: ["A1班"] },
+    form: { name: "" },
     filter: { award: [], klass: [], week: [], status: [] },
     awards: [
-      { id: "vv", name: "VV之星", classes: ["A1班"] },
-      { id: "up", name: "进步之星", classes: ["A1班", "EQ大1班"] }
+      { id: "vv", name: "VV之星" },
+      { id: "up", name: "进步之星" }
     ],
     records: [
       { id: "r1", week: "第六周", klass: "A1班", student: "王小满", award: "VV之星", assistant: "林晓雯", time: "2026-10-18 16:20", status: "生效" },
@@ -56,7 +56,7 @@
     var html = '<div class="aw-cards">';
     state.awards.forEach(function (item) {
       html += '<article class="aw-card"><h3>' + esc(item.name) + "</h3>";
-      html += "<p>生效班级：" + esc(item.classes.join("、")) + "</p></article>";
+      html += "<p>配置后全体学员可选</p></article>";
     });
     return html + "</div>";
   }
@@ -84,12 +84,7 @@
     if (state.dialog === "add") {
       var html = '<div class="aw-dialog"><div class="aw-dialog__box"><h3>新增奖项</h3>';
       html += '<div class="aw-field"><label>奖项名称</label><input id="aw-name" type="text" value="' + esc(state.form.name) + '" placeholder="例如 VV之星" /></div>';
-      html += '<div class="aw-field"><label>生效班级</label>';
-      CLASSES.forEach(function (name) {
-        var on = state.form.classes.indexOf(name) >= 0;
-        html += '<label style="margin-right:12px"><input type="checkbox" data-aw-class="' + esc(name) + '"' + (on ? " checked" : "") + " />" + esc(name) + "</label>";
-      });
-      html += '</div>';
+      html += '<p class="lb-hint">保存后，这个奖项对所有班级开放，助教都可以选用，不再按生效班级限制。</p>';
       html += '<div class="aw-actions"><button type="button" class="lb-btn" data-aw-close="1">取消</button><button type="button" class="lb-btn lb-btn--primary" data-aw-save="1">保存</button></div></div></div>';
       return html;
     }
@@ -116,11 +111,6 @@
   function readForm() {
     var name = document.getElementById("aw-name");
     if (name) state.form.name = name.value.trim();
-    var classes = [];
-    document.querySelectorAll("[data-aw-class]").forEach(function (el) {
-      if (el.checked) classes.push(el.getAttribute("data-aw-class"));
-    });
-    if (document.querySelector("[data-aw-class]")) state.form.classes = classes;
   }
 
   /* 第2条去掉主要事迹列；第3条只导出生效记录。 */
@@ -144,7 +134,7 @@
     var tab = e.target.closest("[data-aw-tab]");
     if (tab) { state.tab = tab.getAttribute("data-aw-tab"); render(); return; }
     if (e.target.closest("[data-aw-add]")) {
-      state.form = { name: "", classes: ["A1班"] };
+      state.form = { name: "" };
       state.dialog = "add";
       render();
       return;
@@ -153,8 +143,7 @@
     if (e.target.closest("[data-aw-save]")) {
       readForm();
       if (!state.form.name) { window.alert("请填写奖项名称"); return; }
-      if (!state.form.classes.length) { window.alert("请选择生效班级"); return; }
-      state.awards.push({ id: "a" + Date.now(), name: state.form.name, classes: state.form.classes.slice() });
+      state.awards.push({ id: "a" + Date.now(), name: state.form.name });
       state.dialog = "";
       render();
       return;

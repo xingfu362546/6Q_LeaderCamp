@@ -455,7 +455,28 @@
     return html;
   }
 
-  /* 学员信息：列按现网 studentInfo/index.vue 抽。操作是编辑、离营核销、核销。 */
+  /* 学员信息：列按现网 studentInfo/index.vue 抽。操作是编辑、离营核销、核销。
+     第31条：尺码右侧增加营服数量，承接报读提交的「需要一件 / 需要两件 / 不需要」。 */
+  var UNIFORM_SEED = { C61001: 2, A10281: 1, A10282: 0, A10283: 2, "33CWCC": 1, F29KZA: 0, RLDUY9: 2 };
+
+  function submittedUniform() {
+    try { return JSON.parse(sessionStorage.getItem("lb-uniform-qty-v1") || "null") || {}; } catch (e) { return {}; }
+  }
+
+  function uniformQtyOf(row) {
+    var pack = submittedUniform();
+    var hit = pack[row.sid] || pack[row.name];
+    if (hit && hit.qty != null && hit.qty !== "") return Number(hit.qty);
+    if (row.uniformQty != null && row.uniformQty !== "") return Number(row.uniformQty);
+    return null;
+  }
+
+  function uniformChoice(n) {
+    if (n === 0) return "不需要";
+    if (n === 1) return "需要一件";
+    if (n === 2) return "需要两件";
+    return "";
+  }
   var LEAVE_REASONS = ["身体原因", "家庭原因", "行程冲突", "其他"];
   var leaveDialog = null;
 
@@ -467,19 +488,22 @@
     var saved = null;
     try { saved = JSON.parse(sessionStorage.getItem(key) || "null"); } catch (e) { saved = null; }
     if (saved && saved.length) {
+      saved.forEach(function (row) {
+        if (row.uniformQty == null && UNIFORM_SEED[row.id] != null) row.uniformQty = UNIFORM_SEED[row.id];
+      });
       studentCache = { key: key, rows: saved };
       return studentCache;
     }
     studentCache = {
       key: key,
       rows: [
-        { id: "C61001", name: "胡铭睿", sid: "C61001", sex: "男", klass: "A1班", team: "1组", rank: "第六周", actual: "2", phone: "13800001101", area: "广东省广州市", birthday: "2014-03-12", age: "11", health: "良好", height: "142", weight: "36", dress: "140", city: "广州天河", mother: "何晓兰", motherPhone: "13824490911", father: "胡阳", fatherPhone: "13377203188", status: "参课中", studyDay: "3/7", verify: "未核销", orderNo: "LD20260706001", leaveRecords: [] },
-        { id: "A10281", name: "王小满", sid: "A10281", sex: "女", klass: "A1班", team: "1组", rank: "第六周", actual: "1", phone: "13800001101", area: "广东省广州市", birthday: "2014-05-08", age: "11", health: "良好", height: "140", weight: "35", dress: "130", city: "广州天河", mother: "王敏", motherPhone: "13800001101", father: "王强", fatherPhone: "13800002202", status: "参课中", studyDay: "5/7", verify: "未核销", orderNo: "LD20260706002", leaveRecords: [] },
-        { id: "A10282", name: "李可", sid: "A10282", sex: "男", klass: "A2班", team: "2组", rank: "第六周", actual: "1", phone: "13900003303", area: "广东省深圳市", birthday: "2015-01-20", age: "10", health: "花粉过敏", height: "138", weight: "33", dress: "140", city: "深圳南山", mother: "", motherPhone: "", father: "李海", fatherPhone: "13900003303", status: "未完课", studyDay: "2/7", verify: "未核销", orderNo: "LD20260706003", leaveRecords: [] },
-        { id: "A10283", name: "孙悦", noOrder: true, sid: "A10283", sex: "女", klass: "A2班", team: "2组", rank: "第六周", actual: "1", phone: "13600005505", area: "广东省东莞市", birthday: "2015-09-02", age: "10", health: "良好", height: "130", weight: "28", dress: "120", city: "东莞南城", mother: "孙兰", motherPhone: "13600005505", father: "", fatherPhone: "", status: "待参课", studyDay: "0/7", verify: "未核销", orderNo: "LD20260706004", leaveRecords: [] },
-        { id: "33CWCC", name: "张沐轩", sid: "33CWCC", sex: "男", klass: "A1班", team: "1组", rank: "第六周", actual: "1", phone: "13824490911", area: "广东省广州市", birthday: "2014-07-19", age: "11", health: "良好", height: "145", weight: "38", dress: "150", city: "广州天河", mother: "何晓兰", motherPhone: "13824490911", father: "", fatherPhone: "", status: "参课中", studyDay: "4/7", verify: "未核销", orderNo: "LD20260706005", leaveRecords: [] },
-        { id: "F29KZA", name: "何晓波", sid: "F29KZA", sex: "男", klass: "A2班", team: "2组", rank: "第六周", actual: "1", phone: "13807722183", area: "广西南宁市", birthday: "2015-03-05", age: "10", health: "良好", height: "136", weight: "31", dress: "140", city: "南宁青秀", mother: "李陈", motherPhone: "13807722183", father: "何阳", fatherPhone: "13377203188", status: "参课中", studyDay: "4/7", verify: "未核销", orderNo: "LD20260706006", leaveRecords: [] },
-        { id: "RLDUY9", name: "安宇静卢", noOrder: true, sid: "RLDUY9", sex: "女", klass: "A1班", team: "1组", rank: "第六周", actual: "1", phone: "13377225331", area: "广西南宁市", birthday: "2015-11-23", age: "10", health: "良好", height: "132", weight: "29", dress: "130", city: "南宁兴宁", mother: "詹霞", motherPhone: "13377225331", father: "农晨", fatherPhone: "13377228206", status: "参课中", studyDay: "3/7", verify: "未核销", orderNo: "LD20260706007", leaveRecords: [] }
+        { id: "C61001", name: "胡铭睿", sid: "C61001", sex: "男", klass: "A1班", team: "1组", rank: "第六周", actual: "2", phone: "13800001101", area: "广东省广州市", birthday: "2014-03-12", age: "11", health: "良好", height: "142", weight: "36", dress: "140", uniformQty: 2, city: "广州天河", mother: "何晓兰", motherPhone: "13824490911", father: "胡阳", fatherPhone: "13377203188", status: "参课中", studyDay: "3/7", verify: "未核销", orderNo: "LD20260706001", leaveRecords: [] },
+        { id: "A10281", name: "王小满", sid: "A10281", sex: "女", klass: "A1班", team: "1组", rank: "第六周", actual: "1", phone: "13800001101", area: "广东省广州市", birthday: "2014-05-08", age: "11", health: "良好", height: "140", weight: "35", dress: "130", uniformQty: 1, city: "广州天河", mother: "王敏", motherPhone: "13800001101", father: "王强", fatherPhone: "13800002202", status: "参课中", studyDay: "5/7", verify: "未核销", orderNo: "LD20260706002", leaveRecords: [] },
+        { id: "A10282", name: "李可", sid: "A10282", sex: "男", klass: "A2班", team: "2组", rank: "第六周", actual: "1", phone: "13900003303", area: "广东省深圳市", birthday: "2015-01-20", age: "10", health: "花粉过敏", height: "138", weight: "33", dress: "140", uniformQty: 0, city: "深圳南山", mother: "", motherPhone: "", father: "李海", fatherPhone: "13900003303", status: "未完课", studyDay: "2/7", verify: "未核销", orderNo: "LD20260706003", leaveRecords: [] },
+        { id: "A10283", name: "孙悦", noOrder: true, sid: "A10283", sex: "女", klass: "A2班", team: "2组", rank: "第六周", actual: "1", phone: "13600005505", area: "广东省东莞市", birthday: "2015-09-02", age: "10", health: "良好", height: "130", weight: "28", dress: "120", uniformQty: 2, city: "东莞南城", mother: "孙兰", motherPhone: "13600005505", father: "", fatherPhone: "", status: "待参课", studyDay: "0/7", verify: "未核销", orderNo: "LD20260706004", leaveRecords: [] },
+        { id: "33CWCC", name: "张沐轩", sid: "33CWCC", sex: "男", klass: "A1班", team: "1组", rank: "第六周", actual: "1", phone: "13824490911", area: "广东省广州市", birthday: "2014-07-19", age: "11", health: "良好", height: "145", weight: "38", dress: "150", uniformQty: 1, city: "广州天河", mother: "何晓兰", motherPhone: "13824490911", father: "", fatherPhone: "", status: "参课中", studyDay: "4/7", verify: "未核销", orderNo: "LD20260706005", leaveRecords: [] },
+        { id: "F29KZA", name: "何晓波", sid: "F29KZA", sex: "男", klass: "A2班", team: "2组", rank: "第六周", actual: "1", phone: "13807722183", area: "广西南宁市", birthday: "2015-03-05", age: "10", health: "良好", height: "136", weight: "31", dress: "140", uniformQty: 0, city: "南宁青秀", mother: "李陈", motherPhone: "13807722183", father: "何阳", fatherPhone: "13377203188", status: "参课中", studyDay: "4/7", verify: "未核销", orderNo: "LD20260706006", leaveRecords: [] },
+        { id: "RLDUY9", name: "安宇静卢", noOrder: true, sid: "RLDUY9", sex: "女", klass: "A1班", team: "1组", rank: "第六周", actual: "1", phone: "13377225331", area: "广西南宁市", birthday: "2015-11-23", age: "10", health: "良好", height: "132", weight: "29", dress: "130", uniformQty: 2, city: "南宁兴宁", mother: "詹霞", motherPhone: "13377225331", father: "农晨", fatherPhone: "13377228206", status: "参课中", studyDay: "3/7", verify: "未核销", orderNo: "LD20260706007", leaveRecords: [] }
       ]
     };
     return studentCache;
@@ -498,14 +522,16 @@
     html += field("学校", '<input class="lb-input" placeholder="请输入学校" />');
     html += field("学员联系电话", '<input class="lb-input" placeholder="请输入学员联系电话" />');
     html += '<div class="cc-actions"><button type="button" class="lb-btn lb-btn--primary">查询</button><button type="button" class="lb-btn">重置</button></div></div>';
-    html += '<div class="cc-tools"><span class="lb-act"><button type="button" class="lb-btn lb-btn--primary" data-stu-batch="1">批量核销</button><button type="button" class="lb-num-btn" data-note-key="leavePlan"></button><button type="button" class="lb-num-btn" data-note-key="leavePartial"></button></span><button type="button" class="lb-btn">生日名单</button><button type="button" class="lb-btn">更新信息</button><button type="button" class="lb-btn">导出结果</button><button type="button" class="lb-btn">下载</button></div>';
+    html += '<div class="cc-tools"><span class="lb-act"><button type="button" class="lb-btn lb-btn--primary" data-stu-batch="1">批量核销</button><button type="button" class="lb-num-btn" data-note-key="leavePlan"></button><button type="button" class="lb-num-btn" data-note-key="leavePartial"></button><button type="button" class="lb-num-btn" data-note-key="uniformQty" title="营服数量"></button></span><button type="button" class="lb-btn">生日名单</button><button type="button" class="lb-btn">更新信息</button><button type="button" class="lb-btn">导出结果</button><button type="button" class="lb-btn">下载</button></div>';
     html += '<p class="lb-hint">学员中途离营或完课时请点击核销。批量核销只处理已勾选的学员，取消勾选的学员本次不核销，可稍后再处理。单条离营核销的处理方案见操作列。</p>';
-    html += '<div class="lb-table-wrap"><table class="lb-table"><thead><tr><th class="cc-check"><input type="checkbox" data-stu-all="1" title="全选 / 取消全选" /></th><th>学员ID</th><th>学员姓名</th><th>资格</th><th>班级</th><th>小组</th><th>性别</th><th>学员联系电话</th><th>所在地区</th><th>年龄</th><th>健康状况</th><th>学习状态</th><th>学习天数</th><th>核销状态</th><th>操作</th></tr></thead><tbody>';
+    html += '<div class="lb-table-wrap"><table class="lb-table"><thead><tr><th class="cc-check"><input type="checkbox" data-stu-all="1" title="全选 / 取消全选" /></th><th>学员ID</th><th>学员姓名</th><th>资格</th><th>班级</th><th>小组</th><th>性别</th><th>学员联系电话</th><th>所在地区</th><th>年龄</th><th>健康状况</th><th>尺码</th><th>营服数量</th><th>学习状态</th><th>学习天数</th><th>核销状态</th><th>操作</th></tr></thead><tbody>';
     pack.rows.forEach(function (row) {
       var state = row.lastPlan ? ' <span class="lb-tag lb-tag--ok">' + esc(row.lastPlan) + "</span>" : "";
       var done = row.verify === "已核销";
       html += '<tr><td class="cc-check"><input type="checkbox" data-stu-pick="' + row.id + '"' + (done ? " disabled" : "") + " /></td>";
-      html += "<td>" + esc(row.sid) + "</td><td>" + esc(row.name) + state + "</td><td>" + esc(row.rank === "第六周" ? "新训" : "复训") + (row.noOrder ? '<em class="lb-hint"> · 无订单</em>' : "") + (row.qualifyStatus ? ' <span class="lb-tag lb-tag--wait">' + esc(row.qualifyStatus) + "</span>" : "") + "</td><td>" + esc(row.klass) + "</td><td>" + esc(row.team) + "</td><td>" + esc(row.sex) + "</td><td>" + esc(row.phone) + "</td><td>" + esc(row.area) + "</td><td>" + esc(row.age) + "</td><td>" + esc(row.health) + "</td><td>" + esc(row.status) + "</td><td>" + esc(row.studyDay) + "</td><td>" + esc(row.verify) + "</td>";
+      var qty = uniformQtyOf(row);
+      var qtyText = qty == null || isNaN(qty) ? "—" : String(qty);
+      html += "<td>" + esc(row.sid) + "</td><td>" + esc(row.name) + state + "</td><td>" + esc(row.rank === "第六周" ? "新训" : "复训") + (row.noOrder ? '<em class="lb-hint"> · 无订单</em>' : "") + (row.qualifyStatus ? ' <span class="lb-tag lb-tag--wait">' + esc(row.qualifyStatus) + "</span>" : "") + "</td><td>" + esc(row.klass) + "</td><td>" + esc(row.team) + "</td><td>" + esc(row.sex) + "</td><td>" + esc(row.phone) + "</td><td>" + esc(row.area) + "</td><td>" + esc(row.age) + "</td><td>" + esc(row.health) + "</td><td>" + esc(row.dress || "—") + "</td><td title=\"" + esc(uniformChoice(qty)) + "\">" + esc(qtyText) + "</td><td>" + esc(row.status) + "</td><td>" + esc(row.studyDay) + "</td><td>" + esc(row.verify) + "</td>";
       html += '<td class="cc-ops"><button type="button" data-stu-edit="' + row.id + '">编辑</button>';
       if (row.verify !== "已核销") html += '<button type="button" data-leave-open="' + row.id + '">离营核销</button><button type="button" data-stu-check="' + row.id + '">核销</button>';
       html += "</td></tr>";
@@ -1099,7 +1125,7 @@
     var stuEdit = e.target.closest("[data-stu-edit]");
     if (stuEdit) {
       var editRow = findStudent(stuEdit.getAttribute("data-stu-edit"));
-      if (editRow) window.LB.openDrawer("修改信息 · " + editRow.name, '<p class="lb-hint">现网同款修改信息抽屉。本页只做离营核销这一处。</p>', { wide: true });
+      if (editRow) window.LB.openDrawer("修改信息 · " + editRow.name, '<p class="lb-hint">现网同款修改信息抽屉。营服数量只在列表展示，这里不提供编辑。</p>', { wide: true });
       return;
     }
     var stuCheck = e.target.closest("[data-stu-check]");

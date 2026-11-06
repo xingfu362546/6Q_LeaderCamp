@@ -472,6 +472,7 @@
   justify-content: center;
   width: 16px;
   height: 16px;
+  margin-right: 4px;
   border-radius: 50%;
   background: #ff4d4f;
   color: #fff;
@@ -480,6 +481,13 @@
   font-weight: 700;
   line-height: 1;
   cursor: default;
+}
+.lb-kin-label {
+  margin-right: 6px;
+  color: #cf1322;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .lb-kin-tip {
@@ -2582,6 +2590,7 @@
 /* 原型评审第二轮第22、23条：光荣榜集合榜单 */
 .gl-wrap { display: grid; grid-template-columns: 320px 1fr; gap: 16px; align-items: start; }
 .gl-left h3 { margin: 0 0 6px; font-size: 14px; color: rgba(0, 0, 0, 0.85); }
+.gl-left textarea { width: 100%; box-sizing: border-box; margin: 0 0 8px; padding: 8px; border: 1px solid #d9d9d9; border-radius: 6px; font: inherit; line-height: 1.5; resize: vertical; }
 .gl-pick { display: flex; flex-direction: column; gap: 6px; max-height: 320px; overflow: auto; }
 .gl-pick__item {
   display: block;

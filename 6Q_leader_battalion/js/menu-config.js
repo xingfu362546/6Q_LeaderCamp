@@ -100,7 +100,14 @@ window.LB_MENU = {
         { id: "salary-calc", label: "薪酬核算", href: "replica.html?p=salary-calc" },
         { id: "salary-bill", label: "薪酬账单", href: "replica.html?p=salary-bill" },
         { id: "salary-pay", label: "薪酬发放", href: "replica.html?p=salary-pay" },
-        { id: "salary-ledger", label: "基地台账", href: "replica.html?p=salary-ledger" },
+        { id: "salary-ledger", label: "基地台账", href: "replica.html?p=salary-ledger" }
+      ]
+    },
+    {
+      id: "camp-data",
+      label: "领袖营数据",
+      children: [
+        { id: "camp-screen", label: "领袖营大屏", href: "replica.html?p=camp-screen" },
         { id: "arrive-summary", label: "迎接总表", href: "replica.html?p=arrive-summary", badge: "v3.5.0" },
         { id: "leave-summary", label: "离营总表", href: "replica.html?p=leave-summary", badge: "v3.5.0" }
       ]
@@ -146,7 +153,6 @@ window.LB_MENU = {
       ]
     },
     { id: "student-award", label: "学员评优", href: "student-award.html" },
-    { id: "camp-screen", label: "领袖营大屏", href: "replica.html?p=camp-screen" },
     { id: "emotion-reg", label: "情绪处理登记", href: "replica.html?p=emotion-reg" },
     { id: "medical-reg", label: "就医记录管理", href: "replica.html?p=medical-reg" }
   ],

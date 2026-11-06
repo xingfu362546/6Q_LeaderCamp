@@ -20,9 +20,13 @@
     { id: "p-vice", name: "陈可", post: "助教副团", key: "vice", corps: "aide", dock: true },
     { id: "p-vtr", name: "周宁", post: "见习副团", key: "vice-trainee", corps: "aide", dock: true },
     { id: "p-chief", name: "李正", post: "助教正团", key: "chief", corps: "aide", dock: true },
+    { id: "p-chief2", name: "周岚", post: "助教正团", key: "chief", corps: "aide", dock: true },
     { id: "p-mtr", name: "赵岚", post: "见习导师", key: "mentor-trainee", corps: "mentor", dock: true },
+    { id: "p-mtr2", name: "钱岚", post: "见习导师", key: "mentor-trainee", corps: "mentor", dock: true },
     { id: "p-mv", name: "孙衡", post: "导师副团", key: "mentor-vice", corps: "mentor", dock: true },
+    { id: "p-mv2", name: "何衡", post: "导师副团", key: "mentor-vice", corps: "mentor", dock: true },
     { id: "p-mentor", name: "吴正", post: "导师正团", key: "mentor", corps: "mentor", dock: true },
+    { id: "p-mentor2", name: "郑衡", post: "导师正团", key: "mentor", corps: "mentor", dock: true },
     { id: "p-office", name: "郑主任", post: "统筹办主任", key: "office", corps: "office", dock: true }
   ];
 
@@ -88,17 +92,69 @@
     return def.bands.some(function (band) { return score >= band[0] && score <= band[1]; });
   }
 
+  function rolePeople(key, app) {
+    return ROLES.filter(function (r) {
+      return r.key === key && (!app || r.id !== app.applicantId);
+    });
+  }
+
+  function nodePeople(app, node) {
+    var at = node || app.node;
+    if (at === "vice") return viceActors(app);
+    if (at === "chief") return rolePeople("chief", app);
+    if (at === "mentor-trainee") return rolePeople("mentor-trainee", app);
+    if (at === "mentor-vice") return rolePeople("mentor-vice", app);
+    if (at === "mentor") return rolePeople("mentor", app);
+    if (at === "office") return rolePeople("office", app);
+    return [];
+  }
+
+  function nodeList(app, node) {
+    if (node === "vice") return app.vice || [];
+    if (node === "chief") return app.chiefList || (app.chief ? [app.chief] : []);
+    if (node === "mentor-trainee") return app.traineeList || (app.mentorTrainee ? [app.mentorTrainee] : []);
+    if (node === "mentor-vice") return app.mentorViceList || (app.mentorVice ? [app.mentorVice] : []);
+    if (node === "mentor") return app.mentorList || (app.mentor ? [app.mentor] : []);
+    return [];
+  }
+
+  function remember(list, row) {
+    var next = (list || []).filter(function (item) { return item.personId !== row.personId; });
+    next.push(row);
+    return next;
+  }
+
+  function allScored(app, node) {
+    var people = nodePeople(app, node);
+    if (!people.length) return true;
+    var list = nodeList(app, node);
+    return people.every(function (p) {
+      return list.some(function (row) { return row.personId === p.id && row.total != null; });
+    });
+  }
+
   function viceActors(app) {
     return ROLES.filter(function (r) {
       return (r.key === "vice" || r.key === "vice-trainee") && r.id !== app.applicantId;
     });
   }
 
+  function avgOf(list, fallback) {
+    var rows = (list || []).filter(function (row) { return row && row.total != null; });
+    if (!rows.length && fallback && fallback.total != null) return fallback.total;
+    if (!rows.length) return null;
+    var sum = rows.reduce(function (n, row) { return n + row.total; }, 0);
+    return Math.round((sum / rows.length) * 10) / 10;
+  }
+
   function aideFinal(app) {
-    if (!app.chief || app.chief.total == null || !app.mentor || app.mentor.total == null) return null;
+    if (!allScored(app, "chief") || !allScored(app, "mentor")) return null;
+    var chief = avgOf(app.chiefList, app.chief);
+    var mentor = avgOf(app.mentorList, app.mentor);
+    if (chief == null || mentor == null) return null;
     var vice = viceAverage(app);
-    if (vice == null) return Math.round((app.mentor.total * 40 / 75 + app.chief.total * 35 / 75) * 10) / 10;
-    return Math.round((app.mentor.total * 0.4 + app.chief.total * 0.35 + vice * 0.25) * 10) / 10;
+    if (vice == null) return Math.round((mentor * 40 / 75 + chief * 35 / 75) * 10) / 10;
+    return Math.round((mentor * 0.4 + chief * 0.35 + vice * 0.25) * 10) / 10;
   }
 
   function viceAverage(app) {
@@ -109,10 +165,19 @@
   }
 
   function leaderFinal(app) {
-    var rows = [app.mentorTrainee, app.mentorVice, app.mentor].filter(function (row) { return row && row.total != null; });
-    if (!rows.length) return null;
-    var sum = rows.reduce(function (n, row) { return n + row.total; }, 0);
-    return Math.round((sum / rows.length) * 10) / 10;
+    var nodes = ["mentor-trainee", "mentor-vice", "mentor"];
+    var ready = nodes.every(function (node) {
+      return !nodePeople(app, node).length || allScored(app, node);
+    });
+    if (!ready) return null;
+    var scores = [
+      avgOf(app.traineeList, app.mentorTrainee),
+      avgOf(app.mentorViceList, app.mentorVice),
+      avgOf(app.mentorList, app.mentor)
+    ].filter(function (n) { return n != null; });
+    if (!scores.length) return null;
+    var sum = scores.reduce(function (n, value) { return n + value; }, 0);
+    return Math.round((sum / scores.length) * 10) / 10;
   }
 
   function statusText(app) {
@@ -137,18 +202,18 @@
   }
 
   function assignees(app) {
-    if (app.node === "vice") return viceActors(app).map(function (r) { return r.id; });
-    if (app.node === "chief") return ["p-chief"];
-    if (app.node === "mentor-trainee") return ["p-mtr"];
-    if (app.node === "mentor-vice") return ["p-mv"];
-    if (app.node === "mentor") return ["p-mentor"];
     if (app.node === "office") return ["p-office"];
-    return [];
+    return nodePeople(app).map(function (role) { return role.id; });
+  }
+
+  function scoredRow(app, id) {
+    return nodeList(app, app.node).some(function (row) {
+      return row.personId === id && (row.total != null || row.decision === "no");
+    });
   }
 
   function doneBy(app, id) {
-    if (app.node === "vice") return (app.vice || []).some(function (row) { return row.personId === id; });
-    return false;
+    return scoredRow(app, id);
   }
 
   function log(app, action) {
@@ -206,9 +271,10 @@
     (app.vice || []).forEach(function (row) {
       if (row.items && row.items[index] != null) bits.push(person(row.personId).name + " " + row.items[index]);
     });
-    ["chief", "mentorTrainee", "mentorVice", "mentor"].forEach(function (key) {
-      var row = app[key];
-      if (row && row.items && row.items[index] != null) bits.push(person(row.personId).name + " " + row.items[index]);
+    ["chief", "mentor-trainee", "mentor-vice", "mentor"].forEach(function (node) {
+      nodeList(app, node).forEach(function (row) {
+        if (row.items && row.items[index] != null) bits.push(person(row.personId).name + " " + row.items[index]);
+      });
     });
     return bits.length ? bits.join("；") : "本节点尚未打分";
   }
@@ -262,16 +328,19 @@
       return viceText || "待打分";
     }
     if (key === "chief") {
-      if (app.chief && app.chief.decision === "no") return person(app.chief.personId).name + " · " + person(app.chief.personId).post + " · 不同意";
-      if (app.chief && app.chief.total != null) return whoLine(app.chief) + " · 同意流转";
-      if (app.node === "chief" && app.status === "审批中") return waitLine(app);
-      return "";
+      var chiefBits = nodeList(app, "chief").map(function (row) {
+        if (row.decision === "no") return person(row.personId).name + " · " + person(row.personId).post + " · 不同意";
+        if (row.total != null) return whoLine(row) + " · 同意流转";
+        return "";
+      }).filter(Boolean);
+      if (app.node === "chief" && app.status === "审批中") return (chiefBits.length ? chiefBits.join("；") + "；" : "") + waitLine(app);
+      return chiefBits.join("；");
     }
-    if (key === "mentor-trainee") return scoredOrWait(app, "mentorTrainee", "mentor-trainee");
-    if (key === "mentor-vice") return scoredOrWait(app, "mentorVice", "mentor-vice");
+    if (key === "mentor-trainee") return scoredOrWait(app, "mentor-trainee");
+    if (key === "mentor-vice") return scoredOrWait(app, "mentor-vice");
     if (key === "mentor") {
       if (app.status === "已驳回" && app.endedAt === "chief") return "未进入";
-      return scoredOrWait(app, "mentor", "mentor");
+      return scoredOrWait(app, "mentor");
     }
     if (key === "office") {
       if (app.office) return person(app.office.personId).name + " · 统筹办主任 · " + (app.office.decision === "yes" ? "同意成为" + typeName(app.type) : "不同意");
@@ -288,18 +357,26 @@
   }
 
   function waitLine(app) {
-    var names = assignees(app).map(function (id) {
-      var who = person(id);
-      return who.name + " · " + who.post;
+    var list = nodeList(app, app.node);
+    var people = nodePeople(app);
+    var pending = people.filter(function (role) {
+      return !list.some(function (row) {
+        return row.personId === role.id && (row.total != null || row.decision === "no");
+      });
     });
-    return "待 " + names.join("、") + " 处理";
+    var done = people.length - pending.length;
+    if (!people.length) return "本节点无人，已跳过";
+    if (!pending.length) return "本节点已全部打完";
+    var names = pending.map(function (role) { return role.name + " · " + role.post; });
+    return "待 " + names.join("、") + " 打分（" + done + "/" + people.length + "）";
   }
 
-  function scoredOrWait(app, field, node) {
-    var row = app[field];
-    if (row && row.total != null) return whoLine(row) + (row.reason ? "。原因：" + row.reason : "");
-    if (app.node === node && app.status === "审批中") return waitLine(app);
-    return "";
+  function scoredOrWait(app, node) {
+    var bits = nodeList(app, node).filter(function (row) { return row.total != null; }).map(function (row) {
+      return whoLine(row) + (row.reason ? "。原因：" + row.reason : "");
+    });
+    if (app.node === node && app.status === "审批中") return (bits.length ? bits.join("；") + "；" : "") + waitLine(app);
+    return bits.join("；");
   }
 
   function endedNote(app) {
@@ -408,8 +485,8 @@
       note("a5", "日期", "只读文本", "是", "提交当天。"),
       note("a6", "入营期数", "数字", "否", "纸质表有此栏。本期不因少于4期拦截提交。"),
       note("a7", "竞选宣言", "多行文本", "是", "申请人填写。结合入营初心、助教经历、优势和成长感悟。申请人不能打分。"),
-      note("a8", "评分", "数字", "审批人必填", "11项按三档区间打分，可按0.5分细分。区间外分数必须填原因。助教副团与见习副团都在这一节点打分，多人取平均，占25%，不能驳回。没有副团和见习副团则跳过，导师正团40与助教正团35按40:35折成百分。助教正团打本列35%，并可不同意结束。导师正团打本列40%，只打分。综合分=导师正团×40%+助教正团×35%+助教副团×25%。≥90自动到统筹办；＜90必须写原因，状态为未通过。"),
-      note("a9", "审批流程", "只读", "是", "申请人提交 → 副团/见习副团打分 → 助教正团打分并决定是否流转 → 导师正团打分 → 综合分≥90自动到统筹办。申请人和审批人都能看到谁已处理、哪个节点审批中、任务状态。"),
+      note("a8", "评分", "数字", "审批人必填", "11项按三档区间打分，可按0.5分细分。区间外分数必须填原因。助教副团与见习副团都在这一节点打分，多人先取平均，占25%，不能驳回。没有副团和见习副团则跳过。助教正团打本列35%，同一节点的正团全部打完才流转，任一人不同意则结束。导师正团打本列40%，同一节点的导师正团全部打完才算综合分。综合分=导师正团均分×40%+助教正团均分×35%+助教副团均分×25%。≥90自动到统筹办；＜90必须写原因，状态为未通过。"),
+      note("a9", "审批流程", "只读", "是", "节点顺序不变：申请人提交 → 副团/见习副团 → 助教正团 → 导师正团 → 综合分≥90到统筹办。优秀助教每个节点上的全部团长打完，才进入下一节点。申请人和审批人都能看到已打分人数和还在等谁。"),
       note("a10", "突出表现", "多行文本", "助教正团必填", "仅助教正团节点填写，按5W2H写该助教的突出表现。"),
       note("a11", "原因", "多行文本", "驳回或未通过时必填", "助教正团不同意、导师正团打完不足90分、统筹办不同意时必填。流程结束，不退回。"),
       note("a12", "统筹办意见", "多行文本", "是", "统筹办主任不打分。同意为已通过，不同意为已驳回。")
@@ -424,8 +501,8 @@
       note("b4", "岗位", "只读文本", "是", "自动带出本期岗位。见习副团、助教副团、助教正团可以进入这张表。"),
       note("b5", "日期", "只读文本", "是", "提交当天。"),
       note("b6", "申请自述", "多行文本", "是", "团长本人填写。团长不能给自己打分。"),
-      note("b7", "评分", "数字", "审批人必填", "10项按各自满分打分，不是助教那套三档区间。见习导师、导师副团、导师正团只打分，不选同意或不同意，打完自动交给下一位。没有见习导师则跳过且不计入人数。综合分=已打分导师的标准分之和÷人数。≥90自动到统筹办；＜90必须写原因，状态为未通过，不进统筹办。"),
-      note("b8", "审批流程", "只读", "是", "申请人提交 → 见习导师 → 导师副团 → 导师正团 → 综合分≥90自动到统筹办。与优秀助教同一门槛。"),
+      note("b7", "评分", "数字", "审批人必填", "10项按各自满分打分，不是助教那套三档区间。见习导师、导师副团、导师正团只打分。同一节点的导师全部打完才进入下一节点，多人先取该节点平均。没有见习导师则跳过且不计入人数。综合分=已出现节点的均分之和÷节点数。≥90自动到统筹办；＜90必须写原因，状态为未通过，不进统筹办。"),
+      note("b8", "审批流程", "只读", "是", "节点顺序不变：申请人提交 → 见习导师 → 导师副团 → 导师正团 → 综合分≥90到统筹办。优秀助教团长每个节点上的全部导师打完，才进入下一节点。"),
       note("b9", "闪光点", "多行文本", "导师正团必填", "仅导师正团节点填写，按5W2H写该团长的闪光点。"),
       note("b10", "统筹办意见", "多行文本", "是", "统筹办主任不打分。同意为已通过，不同意为已驳回。"),
       note("b11", "原因", "多行文本", "未通过或驳回时必填", "综合分＜90，或统筹办不同意时必填。流程结束，不退回。")
@@ -449,8 +526,8 @@
 
   function drawerHtml() {
     var notes = notesFor();
-    var aideRule = "副团与见习副团先打分，多人取平均，占25%，不能驳回。没有这两类人则跳过，导师正团与助教正团按40:35折成百分。助教正团打分并可不同意结束。导师正团只打分。综合分=导师正团×40%+助教正团×35%+助教副团×25%。≥90自动到统筹办；＜90须写原因，状态为未通过。11项按三档区间打分，可按0.5分细分，区间外必须写原因。";
-    var leaderRule = "见习导师、导师副团、导师正团只打分，不选同意或不同意，打完自动交给下一位。没有见习导师则跳过且不计入人数。综合分=已打分导师的标准分之和÷人数。≥90自动到统筹办；＜90须写原因，状态为未通过，不进统筹办。10项按各自满分打分，不是助教那套三档区间。";
+    var aideRule = "节点顺序不变。优秀助教每个节点上的全部团长打完，才流转到下一节点。副团与见习副团先打分，多人取平均，占25%，不能驳回。没有这两类人则跳过。助教正团全部打完才到导师正团，任一人不同意则结束。导师正团全部打完才算综合分。综合分=导师正团均分×40%+助教正团均分×35%+助教副团均分×25%。≥90自动到统筹办；＜90须写原因，状态为未通过。";
+    var leaderRule = "节点顺序不变。优秀助教团长每个节点上的全部导师打完，才流转到下一节点。见习导师、导师副团、导师正团只打分。同一节点多人先取平均。没有见习导师则跳过且不计入人数。综合分=已出现节点的均分之和÷节点数。≥90自动到统筹办；＜90须写原因，状态为未通过，不进统筹办。";
     var html = '<div class="ex-notes-head"><h2>注释</h2><button type="button" class="ex-note-close" data-ex="close-notes">关闭</button></div>';
     html += '<div class="ex-switch">' + switcherHtml() + "</div>";
     html += '<p class="ex-note-rule">下面是字段说明。一个红色序号对应一条需求。</p>';
@@ -543,8 +620,16 @@
     return copy;
   }
 
+  function cloneList(list) {
+    return (list || []).map(cloneScore).filter(Boolean);
+  }
+
   function made(opts) {
     var who = person(opts.who);
+    var chiefRows = opts.chiefList || (opts.chief ? [opts.chief] : []);
+    var traineeRows = opts.traineeList || (opts.mentorTrainee ? [opts.mentorTrainee] : []);
+    var viceRows = opts.mentorViceList || (opts.mentorVice ? [opts.mentorVice] : []);
+    var mentorRows = opts.mentorList || (opts.mentor ? [opts.mentor] : []);
     return {
       id: opts.id,
       type: opts.type,
@@ -559,10 +644,14 @@
       created: opts.created,
       updated: opts.updated,
       vice: (opts.vice || []).map(cloneScore),
-      chief: cloneScore(opts.chief),
-      mentorTrainee: cloneScore(opts.mentorTrainee),
-      mentorVice: cloneScore(opts.mentorVice),
-      mentor: cloneScore(opts.mentor),
+      chiefList: cloneList(chiefRows),
+      chief: cloneScore(opts.chief || chiefRows[chiefRows.length - 1] || null),
+      traineeList: cloneList(traineeRows),
+      mentorTrainee: cloneScore(opts.mentorTrainee || traineeRows[traineeRows.length - 1] || null),
+      mentorViceList: cloneList(viceRows),
+      mentorVice: cloneScore(opts.mentorVice || viceRows[viceRows.length - 1] || null),
+      mentorList: cloneList(mentorRows),
+      mentor: cloneScore(opts.mentor || mentorRows[mentorRows.length - 1] || null),
       office: opts.office || null,
       finalScore: opts.finalScore == null ? null : opts.finalScore,
       logs: [{ who: who.name, post: who.post, action: "提交申请", time: opts.created, node: "submit" }]
@@ -577,31 +666,45 @@
     var leaderC = [5, 5, 5, 15, 9, 14, 10, 10, 9, 15];
     var viceDone = [scored("p-vice", aideHi), scored("p-vtr", aideMid)];
     var chiefDone = scored("p-chief", aideHi, { decision: "yes", w2h: "10月6日在A1班，主动处理两名学员冲突，课后家长正向反馈。", ladder: "仍需观察" });
+    var chiefZhou = scored("p-chief2", aideMid, { decision: "yes", w2h: "10月7日巡堂时补上两名沉默学员。", ladder: "是" });
+    var chiefBoth = [chiefDone, chiefZhou];
     var chiefNo = scored("p-chief", [], { decision: "no", reason: "课堂陪伴不稳定，本期不流转。" });
     chiefNo.total = null;
     chiefNo.items = [];
     var mentorHi = scored("p-mentor", aideHi);
+    var mentorZheng = scored("p-mentor2", aideMid);
+    var mentorBoth = [mentorHi, mentorZheng];
     var aideLow = [6, 4, 4, 6, 5, 5, 5, 5, 5, 4, 3];
+    var chiefLow = scored("p-chief", aideLow, { decision: "yes", w2h: "能完成基础陪伴。", ladder: "仍需观察" });
+    var chiefLowBoth = [chiefLow, scored("p-chief2", aideLow, { decision: "yes", w2h: "基础陪伴稳定，仍需观察。", ladder: "仍需观察" })];
     var mentorLow = scored("p-mentor", aideLow, { reason: "综合分未达90，本期不进入统筹办。" });
+    var mentorLowBoth = [mentorLow, scored("p-mentor2", aideLow)];
     var leaderLow = [3, 3, 3, 8, 5, 8, 5, 5, 5, 8];
+    var traineeBoth = [scored("p-mtr", leaderA), scored("p-mtr2", leaderB)];
+    var traineeLow = [scored("p-mtr", leaderLow), scored("p-mtr2", leaderLow)];
+    var mvBoth = [scored("p-mv", leaderB), scored("p-mv2", leaderA)];
+    var mvLow = [scored("p-mv", leaderLow), scored("p-mv2", leaderLow)];
+    var leadMentor = scored("p-mentor", leaderC, { flash: "10月7日离营前，把两组物资缺口当场补齐。" });
+    var leadBoth = [leadMentor, scored("p-mentor2", leaderB, { flash: "例会跟进连续三天无遗漏。" })];
+    var leadLowBoth = [scored("p-mentor", leaderLow, { reason: "综合分未达90，不进入统筹办。" }), scored("p-mentor2", leaderLow)];
     var officeYes = { personId: "p-office", name: "郑主任", decision: "yes", opinion: "同意推荐。" };
     var officeNo = { personId: "p-office", name: "郑主任", decision: "no", opinion: "本期先不授予。", reason: "现场执行仍不稳定。" };
     return [
       made({ id: "ex-aide-vice", who: "p-aide", type: "aide", node: "vice", created: "10-08 09:10", updated: "10-08 09:10", periods: "6", declaration: "这期我想把带队陪伴留下来，让每个孩子都被看见。" }),
-      made({ id: "ex-aide-chief", who: "p-su", type: "aide", node: "chief", created: "10-07 11:20", updated: "10-08 10:05", periods: "5", declaration: "小班衔接我已经跑顺，希望把家营沟通做得更稳。", vice: viceDone }),
-      made({ id: "ex-aide-mentor", who: "p-xu", type: "aide", node: "mentor", created: "10-06 08:40", updated: "10-08 11:16", periods: "8", declaration: "大班分享会我想交给孩子自己主持，我在旁边补位。", vice: viceDone, chief: chiefDone }),
-      made({ id: "ex-aide-office", who: "p-he", type: "aide", node: "office", created: "10-05 14:02", updated: "10-08 15:20", periods: "7", declaration: "开营到离营我都在A2班，想把异常上报做到零漏报。", vice: viceDone, chief: chiefDone, mentor: mentorHi }),
+      made({ id: "ex-aide-chief", who: "p-su", type: "aide", node: "chief", created: "10-07 11:20", updated: "10-08 10:05", periods: "5", declaration: "小班衔接我已经跑顺，希望把家营沟通做得更稳。", vice: viceDone, chief: chiefDone }),
+      made({ id: "ex-aide-mentor", who: "p-xu", type: "aide", node: "mentor", created: "10-06 08:40", updated: "10-08 11:16", periods: "8", declaration: "大班分享会我想交给孩子自己主持，我在旁边补位。", vice: viceDone, chiefList: chiefBoth, mentor: mentorHi }),
+      made({ id: "ex-aide-office", who: "p-he", type: "aide", node: "office", created: "10-05 14:02", updated: "10-08 15:20", periods: "7", declaration: "开营到离营我都在A2班，想把异常上报做到零漏报。", vice: viceDone, chiefList: chiefBoth, mentorList: mentorBoth }),
       made({ id: "ex-leader-trainee", who: "p-jiang", type: "leader", node: "mentor-trainee", created: "10-08 08:30", updated: "10-08 08:30", declaration: "见习副团这一期我补了班团的会前准备和巡寝。" }),
-      made({ id: "ex-leader-vice", who: "p-qian", type: "leader", node: "mentor-vice", created: "10-07 09:18", updated: "10-08 09:40", declaration: "两组助教的开营岗位我按清单跟完了。", mentorTrainee: scored("p-mtr", leaderA) }),
-      made({ id: "ex-leader-mentor", who: "p-han", type: "leader", node: "mentor", created: "10-06 16:05", updated: "10-08 13:12", declaration: "助教例会的跟进我记成了可复用清单。", mentorTrainee: scored("p-mtr", leaderA), mentorVice: scored("p-mv", leaderB) }),
-      made({ id: "ex-leader-office", who: "p-shen", type: "leader", node: "office", created: "10-05 10:22", updated: "10-08 16:02", declaration: "这期正团岗位我把课前隐患连续三天清完。", mentorTrainee: scored("p-mtr", leaderA), mentorVice: scored("p-mv", leaderB), mentor: scored("p-mentor", leaderC, { flash: "10月7日离营前，把两组物资缺口当场补齐。" }) }),
-      made({ id: "ex-aide-pass", who: "p-aide", type: "aide", status: "已通过", endedAt: "office", created: "10-01 09:00", updated: "10-04 18:20", periods: "6", declaration: "上一期带队的陪伴方法，我想留在班里。", vice: viceDone, chief: chiefDone, mentor: mentorHi, office: officeYes, finalScore: 97.8 }),
-      made({ id: "ex-aide-low", who: "p-aide", type: "aide", status: "未通过", endedAt: "mentor", created: "09-20 10:12", updated: "09-24 16:40", periods: "4", declaration: "这期我先把日常陪伴做稳。", vice: [scored("p-vice", aideLow), scored("p-vtr", aideLow)], chief: scored("p-chief", aideLow, { decision: "yes", w2h: "能完成基础陪伴。", ladder: "仍需观察" }), mentor: mentorLow, finalScore: 52 }),
+      made({ id: "ex-leader-vice", who: "p-qian", type: "leader", node: "mentor-vice", created: "10-07 09:18", updated: "10-08 09:40", declaration: "两组助教的开营岗位我按清单跟完了。", traineeList: traineeBoth }),
+      made({ id: "ex-leader-mentor", who: "p-han", type: "leader", node: "mentor", created: "10-06 16:05", updated: "10-08 13:12", declaration: "助教例会的跟进我记成了可复用清单。", traineeList: traineeBoth, mentorViceList: mvBoth, mentor: leadMentor }),
+      made({ id: "ex-leader-office", who: "p-shen", type: "leader", node: "office", created: "10-05 10:22", updated: "10-08 16:02", declaration: "这期正团岗位我把课前隐患连续三天清完。", traineeList: traineeBoth, mentorViceList: mvBoth, mentorList: leadBoth }),
+      made({ id: "ex-aide-pass", who: "p-aide", type: "aide", status: "已通过", endedAt: "office", created: "10-01 09:00", updated: "10-04 18:20", periods: "6", declaration: "上一期带队的陪伴方法，我想留在班里。", vice: viceDone, chiefList: chiefBoth, mentorList: mentorBoth, office: officeYes, finalScore: 97.8 }),
+      made({ id: "ex-aide-low", who: "p-aide", type: "aide", status: "未通过", endedAt: "mentor", created: "09-20 10:12", updated: "09-24 16:40", periods: "4", declaration: "这期我先把日常陪伴做稳。", vice: [scored("p-vice", aideLow), scored("p-vtr", aideLow)], chiefList: chiefLowBoth, mentorList: mentorLowBoth, finalScore: 52 }),
       made({ id: "ex-aide-reject", who: "p-aide", type: "aide", status: "已驳回", endedAt: "chief", created: "09-12 11:05", updated: "09-15 09:30", periods: "5", declaration: "我想申请优秀助教。", vice: viceDone, chief: chiefNo }),
-      made({ id: "ex-aide-office-no", who: "p-su", type: "aide", status: "已驳回", endedAt: "office", created: "09-02 08:16", updated: "09-06 17:10", periods: "6", declaration: "分数到了统筹办，等待最终意见。", vice: viceDone, chief: chiefDone, mentor: mentorHi, office: officeNo, finalScore: 97.8 }),
-      made({ id: "ex-leader-pass", who: "p-jiang", type: "leader", status: "已通过", endedAt: "office", created: "10-01 14:00", updated: "10-04 19:00", declaration: "上一期副团岗位我把例会跟进做完了。", mentorTrainee: scored("p-mtr", leaderA), mentorVice: scored("p-mv", leaderB), mentor: scored("p-mentor", leaderC, { flash: "离营物资无遗漏。" }), office: officeYes, finalScore: 97.3 }),
-      made({ id: "ex-leader-low", who: "p-qian", type: "leader", status: "未通过", endedAt: "mentor", created: "09-18 09:40", updated: "09-22 15:12", declaration: "这期团长岗位我还在适应。", mentorTrainee: scored("p-mtr", leaderLow), mentorVice: scored("p-mv", leaderLow), mentor: scored("p-mentor", leaderLow, { reason: "综合分未达90，不进入统筹办。" }), finalScore: 53 }),
-      made({ id: "ex-leader-office-no", who: "p-han", type: "leader", status: "已驳回", endedAt: "office", created: "09-08 10:20", updated: "09-12 18:00", declaration: "分数达标后等统筹办意见。", mentorTrainee: scored("p-mtr", leaderA), mentorVice: scored("p-mv", leaderB), mentor: scored("p-mentor", leaderC), office: officeNo, finalScore: 97.3 })
+      made({ id: "ex-aide-office-no", who: "p-su", type: "aide", status: "已驳回", endedAt: "office", created: "09-02 08:16", updated: "09-06 17:10", periods: "6", declaration: "分数到了统筹办，等待最终意见。", vice: viceDone, chiefList: chiefBoth, mentorList: mentorBoth, office: officeNo, finalScore: 97.8 }),
+      made({ id: "ex-leader-pass", who: "p-jiang", type: "leader", status: "已通过", endedAt: "office", created: "10-01 14:00", updated: "10-04 19:00", declaration: "上一期副团岗位我把例会跟进做完了。", traineeList: traineeBoth, mentorViceList: mvBoth, mentorList: leadBoth, office: officeYes, finalScore: 97.3 }),
+      made({ id: "ex-leader-low", who: "p-qian", type: "leader", status: "未通过", endedAt: "mentor", created: "09-18 09:40", updated: "09-22 15:12", declaration: "这期团长岗位我还在适应。", traineeList: traineeLow, mentorViceList: mvLow, mentorList: leadLowBoth, finalScore: 53 }),
+      made({ id: "ex-leader-office-no", who: "p-han", type: "leader", status: "已驳回", endedAt: "office", created: "09-08 10:20", updated: "09-12 18:00", declaration: "分数达标后等统筹办意见。", traineeList: traineeBoth, mentorViceList: mvBoth, mentorList: leadBoth, office: officeNo, finalScore: 97.3 })
     ];
   }
 
@@ -621,18 +724,17 @@
       updated: nowText(),
       vice: [],
       chief: null,
+      chiefList: [],
       mentorTrainee: null,
+      traineeList: [],
       mentorVice: null,
+      mentorViceList: [],
       mentor: null,
+      mentorList: [],
       office: null,
       finalScore: null,
       logs: [{ who: who.name, post: who.post, action: "提交申请", time: nowText(), node: "submit" }]
     };
-  }
-
-  function nextLeader(app) {
-    if (app.node === "mentor-trainee") app.node = "mentor-vice";
-    else if (app.node === "mentor-vice") app.node = "mentor";
   }
 
   function finishMentor(app, api) {
@@ -714,6 +816,31 @@
     if (opinion && !opinion.value) opinion.value = "同意推荐。";
   }
 
+  function othersPending(app, node, personId) {
+    var list = nodeList(app, node);
+    return nodePeople(app, node).filter(function (role) {
+      if (role.id === personId) return false;
+      return !list.some(function (item) { return item.personId === role.id && item.total != null; });
+    });
+  }
+
+  function previewFinal(app, row) {
+    var copy = {
+      type: app.type,
+      applicantId: app.applicantId,
+      vice: app.vice || [],
+      chiefList: app.chiefList,
+      chief: app.chief,
+      traineeList: app.traineeList,
+      mentorTrainee: app.mentorTrainee,
+      mentorViceList: app.mentorViceList,
+      mentorVice: app.mentorVice,
+      mentorList: remember(app.mentorList, row),
+      mentor: row
+    };
+    return app.type === "aide" ? aideFinal(copy) : leaderFinal(copy);
+  }
+
   function saveScore(app, api) {
     var defs = itemsOf(app);
     var values = readList(defs);
@@ -721,27 +848,56 @@
     var total = sumItems(values, defs);
     var row = { personId: me().id, name: me().name, items: values.map(Number), total: total };
     if (app.node === "vice") {
-      app.vice.push(row);
+      app.vice = remember(app.vice, row);
       log(app, "提交副团分数" + total);
-      if (app.vice.length >= viceActors(app).length) app.node = "chief";
-      api.toast("分数已提交");
+      if (allScored(app, "vice")) {
+        app.node = "chief";
+        api.toast("副团已全部打完，流转到助教正团");
+      } else api.toast("已提交，还需其他团长打完");
       api.render();
       return true;
     }
-    if (app.node === "mentor-trainee") { row.node = "mentor-trainee"; app.mentorTrainee = row; log(app, "提交见习导师分数" + total); nextLeader(app); }
-    else if (app.node === "mentor-vice") { app.mentorVice = row; log(app, "提交导师副团分数" + total); nextLeader(app); }
-    else if (app.node === "mentor") {
+    if (app.node === "mentor-trainee" || app.node === "mentor-vice") {
+      var label = app.node === "mentor-trainee" ? "见习导师" : "导师副团";
+      var nextName = app.node === "mentor-trainee" ? "导师副团" : "导师正团";
+      if (app.node === "mentor-trainee") {
+        app.traineeList = remember(app.traineeList, row);
+        app.mentorTrainee = row;
+      } else {
+        app.mentorViceList = remember(app.mentorViceList, row);
+        app.mentorVice = row;
+      }
+      log(app, "提交" + label + "分数" + total);
+      if (allScored(app, app.node)) {
+        app.node = app.node === "mentor-trainee" ? "mentor-vice" : "mentor";
+        api.toast(label + "已全部打完，流转到" + nextName);
+      } else api.toast("已提交，还需其他导师打完");
+      api.render();
+      return true;
+    }
+    if (app.node === "mentor") {
       if (app.type === "leader" && !textOf("ex-w2h")) { api.toast("请填写闪光点"); return true; }
-      app.mentor = row;
-      app.mentor.flash = textOf("ex-w2h");
-      log(app, "提交导师正团分数" + total);
-      if (app.type === "aide" && (!app.chief || app.chief.total == null)) { api.toast("助教正团尚未打分"); return true; }
+      if (app.type === "aide" && !allScored(app, "chief")) { api.toast("助教正团尚未全部打完"); return true; }
+      row.flash = textOf("ex-w2h");
       var reason = textOf("ex-reason");
-      var line = 90;
-      var finalScore = app.type === "aide" ? aideFinal(app) : leaderFinal(app);
-      if (finalScore < line && !reason) { api.toast("未达" + line + "分，请填写原因"); return true; }
-      app.mentor.reason = reason;
-      finishMentor(app, api);
+      var last = !othersPending(app, "mentor", me().id).length;
+      if (last) {
+        var finalScore = previewFinal(app, row);
+        if (finalScore < 90 && !reason) { api.toast("未达90分，请填写原因"); return true; }
+        row.reason = reason;
+        app.mentorList = remember(app.mentorList, row);
+        app.mentor = row;
+        log(app, "提交导师正团分数" + total);
+        finishMentor(app, api);
+        api.render();
+        return true;
+      }
+      app.mentorList = remember(app.mentorList, row);
+      app.mentor = row;
+      log(app, "提交导师正团分数" + total);
+      api.toast("已提交，还需其他导师打完");
+      api.render();
+      return true;
     }
     api.render();
     return true;
@@ -758,12 +914,18 @@
         if (!validateScores(defs, values, api)) return true;
         if (!textOf("ex-w2h")) { api.toast("请填写突出表现"); return true; }
         if (!textOf("ex-ladder")) { api.toast("请选择是否推荐团长梯队"); return true; }
-        app.chief = { personId: me().id, name: me().name, items: values.map(Number), total: sumItems(values, defs), decision: "yes", w2h: textOf("ex-w2h"), ladder: textOf("ex-ladder") };
-        app.node = "mentor";
+        var yesRow = { personId: me().id, name: me().name, items: values.map(Number), total: sumItems(values, defs), decision: "yes", w2h: textOf("ex-w2h"), ladder: textOf("ex-ladder") };
+        app.chiefList = remember(app.chiefList, yesRow);
+        app.chief = yesRow;
         log(app, "同意流转");
-        api.toast("已流转到导师正团");
+        if (allScored(app, "chief")) {
+          app.node = "mentor";
+          api.toast("助教正团已全部打完，流转到导师正团");
+        } else api.toast("已提交，还需其他助教正团打完");
       } else {
-        app.chief = { personId: me().id, name: me().name, items: [], total: null, decision: "no", reason: reason };
+        var noRow = { personId: me().id, name: me().name, items: [], total: null, decision: "no", reason: reason };
+        app.chiefList = remember(app.chiefList, noRow);
+        app.chief = noRow;
       app.status = "已驳回";
       app.endedAt = "chief";
       app.node = "done";

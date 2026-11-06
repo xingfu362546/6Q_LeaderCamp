@@ -266,6 +266,17 @@
 .as-cell-name b {
   font-weight: 600;
 }
+.as-mini em { margin-left: 4px; color: #d46b08; font-style: normal; font-weight: 600; }
+.as-revs { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow: auto; }
+.as-rev { padding: 10px 12px; border-radius: 6px; background: #fafafa; }
+.as-rev--member { border-left: 3px solid #1677ff; }
+.as-rev--admin { border-left: 3px solid #d46b08; }
+.as-rev__hd { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; font-size: 12px; }
+.as-rev__hd b { font-weight: 500; color: rgba(0,0,0,.45); }
+.as-rev__hd span { padding: 0 6px; border-radius: 8px; background: #fff; }
+.as-rev--member .as-rev__hd span { color: #1677ff; }
+.as-rev--admin .as-rev__hd span { color: #d46b08; }
+.as-rev p { margin: 0 0 4px; font-size: 13px; line-height: 1.5; }
 .as-edited {
   display: inline-block;
   margin-left: 6px;

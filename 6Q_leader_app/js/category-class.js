@@ -564,7 +564,7 @@
     if (pending) html += '<div class="row"><b>变更申请</b><span>待审批：改为' + esc(LEAVE_WAYS[pending.to] || "-") + "</span></div>";
     html += "</div>";
     html += '<button type="button" class="btn" data-cc="leave-apply" data-id="' + s.id + '" style="margin:12px">发起离营方式变更申请</button>';
-    html += '<p class="cc-leave-tip">助教在这里提交。申请进后台「薪酬管理 → 离营总表 → 变更申请」，由总表通过或否决。通过后才改学员的离营方式。</p>';
+    html += '<p class="cc-leave-tip">助教在这里提交。申请进后台「领袖营数据 → 离营总表 → 变更申请」，由总表通过或否决。通过后才改学员的离营方式。</p>';
     html += "</div>";
     return html;
   }
@@ -651,10 +651,24 @@
       arrive: d.arrive || "—",
       reason: d.reason,
       by: "林晓雯",
+      memberId: "15168801",
       at: at,
       status: "待审批"
     });
     try { sessionStorage.setItem("lb-leave-apps-v1", JSON.stringify(apps)); } catch (e) {}
+    try {
+      var revMap = JSON.parse(sessionStorage.getItem("lb-leave-revisions-v1") || "null") || {};
+      revMap[s.sid] = revMap[s.sid] || [];
+      revMap[s.sid].unshift({
+        at: at,
+        kind: "member",
+        memberName: "林晓雯",
+        memberId: "15168801",
+        action: "发起申请",
+        text: "申请由「" + (LEAVE_WAYS[s.leaveWay] || "未填写") + "」改为「" + LEAVE_WAYS[d.way] + "」。" + (d.place ? "站点：" + d.place + "。" : "") + "理由：" + d.reason + "。尚未写入学员数据。"
+      });
+      sessionStorage.setItem("lb-leave-revisions-v1", JSON.stringify(revMap));
+    } catch (e2) {}
     cc.leaveDraft = null;
     api.toast("已提交，等待离营总表审批");
     api.go(P + "growthJournal/leaveCamp");
@@ -737,7 +751,12 @@
     var act = el.getAttribute("data-cc");
     if (!act) return false;
     if (act === "role") { cc.leader = !cc.leader; cc.canEdit = cc.leader; api.render(); return true; }
-    if (act === "emotion") { api.go("pages/work/emotion/archive"); return true; }
+    if (act === "emotion") {
+      var focused = api.path && api.path().indexOf("growth") >= 0 ? student().name : "";
+      if (window.EM && window.EM.openArchive) window.EM.openArchive(focused);
+      api.go("pages/work/emotion/archive");
+      return true;
+    }
     if (act === "leave-apply") {
       cc.studentId = el.getAttribute("data-id") || cc.studentId;
       cc.sheet = null;

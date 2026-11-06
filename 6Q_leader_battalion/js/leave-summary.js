@@ -1,5 +1,5 @@
 /**
- * 第10条 离营总表（后台）。菜单挂在 领袖营薪酬板块 → 薪酬管理 → 离营总表。
+ * 第10条 离营总表（后台）。菜单挂在 领袖营薪酬板块 → 领袖营数据 → 离营总表。
  *
  * 数据源（不要另起一套）：
  * - 学员名单与离营方式：conference/camps/member/travel/list
@@ -44,7 +44,7 @@
   var ROSTER = [
     { id: "A10281", plan: "p1", name: "王小满", klass: "A1班", team: "1组", age: 12, city: "广州天河", way: 1, place: "广州白云机场T1航站楼", flight: "CZ3101", depart: "10-23 08:20", arrive: "10-23 11:05", remark: "需提前 2 小时到机场", security: "是", voucher: "已上传", status: "已离开", verify: 1, updated: "2026-10-18 16:20", updater: "林晓雯" },
     { id: "A10282", plan: "p1", name: "李可", klass: "A1班", team: "2组", age: 11, city: "深圳南山", way: 2, place: "广州南站", flight: "G1002", depart: "10-26 08:40", arrive: "10-26 10:02", remark: "", security: "否", voucher: "已上传", status: "未离开", verify: 1, updated: "2026-10-19 10:02", updater: "林晓雯" },
-    { id: "A10284", plan: "p1", name: "赵欣然", klass: "A2班", team: "1组", age: 13, city: "杭州临平", way: 3, place: "广州南站", flight: "南站大巴", depart: "10-26 11:30", arrive: "10-26 13:00", remark: "随大巴统一下车", security: "否", voucher: "未上传", status: "未离开", verify: 1, updated: "2026-10-20 09:41", updater: "苏晚" },
+    { id: "A10284", plan: "p1", name: "赵欣然", klass: "A2班", team: "1组", age: 13, city: "杭州临平", way: 4, place: "家长接", flight: "—", depart: "—", arrive: "—", remark: "随大巴统一下车", security: "否", voucher: "未上传", status: "未离开", verify: 1, updated: "2026-10-23 11:02", updater: "余炜烽", isEdited: true, beforeWay: 3, editedAt: "2026-10-23 11:02", editedBy: "余炜烽" },
     { id: "A10283", plan: "p1", name: "孙悦", klass: "A2班", team: "2组", age: 10, city: "东莞南城", way: 4, place: "家长接", flight: "—", depart: "—", arrive: "—", remark: "妈妈 16:00 到营地门口", security: "否", voucher: "—", status: "未离开", verify: 1, updated: "2026-10-21 18:30", updater: "苏晚" },
     { id: "A10285", plan: "p1", name: "陈启航", klass: "A1班", team: "1组", age: 12, city: "佛山南海", way: 0, place: "未填写", flight: "—", depart: "—", arrive: "—", remark: "", security: "否", voucher: "—", status: "未离开", verify: 1, updated: "", updater: "" },
     { id: "A10288", plan: "p1", name: "郑一诺", klass: "A1班", team: "1组", age: 11, city: "广州越秀", way: 5, place: "连营", flight: "—", depart: "—", arrive: "—", remark: "连营到第七周", security: "否", voucher: "—", status: "未离开", verify: 2, updated: "2026-10-22 11:05", updater: "林晓雯" },
@@ -62,15 +62,29 @@
 
   /* 第15条：助教在 APP 助教分组发起的离营方式变更申请。 */
   var APPLICATIONS = [
-    { id: "AP1", sid: "A10282", name: "李可", klass: "A1班", plan: "p1", from: 2, to: 1, place: "广州白云机场T1航站楼", flight: "CZ3520", depart: "10-26 06:30", arrive: "10-26 08:15", reason: "家长改成坐飞机回深圳", by: "林晓雯", at: "2026-10-24 20:15", status: "待审批" },
-    { id: "AP2", sid: "B20103", name: "安宇静", klass: "B2班", plan: "p2", from: 3, to: 2, place: "广州南站", flight: "G6033", depart: "10-19 08:10", arrive: "10-19 09:40", reason: "大巴临时取消，改为高铁", by: "苏晚", at: "2026-10-18 21:02", status: "待审批" },
-    { id: "AP3", sid: "A10284", name: "赵欣然", klass: "A2班", plan: "p1", from: 3, to: 4, place: "家长接", flight: "—", depart: "—", arrive: "—", reason: "家长临时到营地接", by: "苏晚", at: "2026-10-23 09:30", status: "已通过" }
+    { id: "AP1", sid: "A10282", name: "李可", klass: "A1班", plan: "p1", from: 2, to: 1, place: "广州白云机场T1航站楼", flight: "CZ3520", depart: "10-26 06:30", arrive: "10-26 08:15", reason: "家长改成坐飞机回深圳", by: "林晓雯", memberId: "15168801", at: "2026-10-24 20:15", status: "待审批" },
+    { id: "AP2", sid: "B20103", name: "安宇静", klass: "B2班", plan: "p2", from: 3, to: 2, place: "广州南站", flight: "G6033", depart: "10-19 08:10", arrive: "10-19 09:40", reason: "大巴临时取消，改为高铁", by: "苏晚", memberId: "15168802", at: "2026-10-18 21:02", status: "待审批" },
+    { id: "AP3", sid: "A10284", name: "赵欣然", klass: "A2班", plan: "p1", from: 3, to: 4, place: "家长接", flight: "—", depart: "—", arrive: "—", reason: "家长临时到营地接", by: "苏晚", memberId: "15168802", at: "2026-10-23 09:30", status: "已通过" }
   ];
 
   var KEY = "lb-leave-summary-v2";
   var APPKEY = "lb-leave-apps-v1";
   var MSGKEY = "lb-leave-msgs-v1";
-  var state = { plan: "", way: -1, kw: "", editing: "", tab: "summary", onlyEdited: false, appId: "", msgOpen: false };
+  var state = { plan: "", way: -1, kw: "", editing: "", tab: "summary", onlyEdited: false, appId: "", msgOpen: false, revisions: "" };
+  /* 修正记录。kind=member 是前端会员发起的申请；kind=backend 是后台操作用户直接改或审批。 */
+  var REVKEY = "lb-leave-revisions-v1";
+  var REVSEED = {
+    A10282: [
+      { at: "2026-10-24 20:15", kind: "member", memberName: "林晓雯", memberId: "15168801", action: "发起申请", text: "申请由「火车/高铁接离」改为「机场接离」。站点：广州白云机场T1航站楼 · CZ3520。理由：家长改成坐飞机回深圳。尚未写入学员数据。" }
+    ],
+    A10284: [
+      { at: "2026-10-23 11:02", kind: "backend", operator: "余炜烽", action: "审批通过", text: "按苏晚（会员ID 15168802）的申请，把离营方式由「大巴接离」改为「营地自离」，数据已写入。" },
+      { at: "2026-10-23 09:30", kind: "member", memberName: "苏晚", memberId: "15168802", action: "发起申请", text: "申请由「大巴接离」改为「营地自离」。理由：家长临时到营地接。" }
+    ],
+    B20103: [
+      { at: "2026-10-18 21:02", kind: "member", memberName: "苏晚", memberId: "15168802", action: "发起申请", text: "申请由「大巴接离」改为「火车/高铁接离」。站点：广州南站 · G6033。理由：大巴临时取消。尚未写入学员数据。" }
+    ]
+  };
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -120,6 +134,26 @@
       to: "家营 / 欢送负责人 / 助教团"
     });
     try { sessionStorage.setItem(MSGKEY, JSON.stringify(msgs)); } catch (e) {}
+  }
+
+  function loadRevs() {
+    try {
+      var saved = JSON.parse(sessionStorage.getItem(REVKEY) || "null");
+      if (saved) return saved;
+    } catch (e) {}
+    return null;
+  }
+
+  function revsOf(sid) {
+    var map = loadRevs() || REVSEED;
+    return (map[sid] || []).slice();
+  }
+
+  function pushRev(sid, entry) {
+    var map = loadRevs() || JSON.parse(JSON.stringify(REVSEED));
+    map[sid] = map[sid] || [];
+    map[sid].unshift(entry);
+    try { sessionStorage.setItem(REVKEY, JSON.stringify(map)); } catch (e) {}
   }
 
   function nowStamp() {
@@ -249,6 +283,7 @@
       html += "<td>" + (r.verify === 2 ? "已核销" : "未核销") + "</td>";
       html += "<td>" + (r.updated || "-") + "</td>";
       html += '<td class="ls-cell-ops"><button type="button" class="ls-mini" data-ls="detail" data-id="' + esc(r.id) + '">详情</button>';
+      html += '<button type="button" class="ls-mini" data-ls="revs" data-id="' + esc(r.id) + '">修正记录' + (revsOf(r.id).length ? "<em>" + revsOf(r.id).length + "</em>" : "") + "</button>";
       if (canEdit(r)) html += '<button type="button" class="ls-mini ls-mini--primary" data-ls="edit" data-id="' + esc(r.id) + '">修改</button>';
       html += "</td></tr>";
     });
@@ -348,6 +383,32 @@
     return html;
   }
 
+  function revWho(item) {
+    if (item.kind === "member") return "前端用户 " + (item.memberName || "-") + "（会员ID " + (item.memberId || "-") + "）";
+    if (item.via === "app") return "操作用户 " + (item.operator || "-") + "（APP 副负责人）";
+    return "后台操作用户 " + (item.operator || "-");
+  }
+
+  function revSheet(r) {
+    var list = revsOf(r.id);
+    var html = '<div class="ls-mask"><div class="ls-sheet ls-sheet--wide"><h3>修正记录 · ' + esc(r.name) + "</h3>";
+    html += '<p class="ls-sheet__sub">' + esc(r.id) + " · 一次操作一条。助教申请写前端用户、会员姓名和会员ID，当时不改数据。后台直接修改、审批通过、审批否决写后台操作用户和姓名。APP 副负责人直接改写操作用户（APP 副负责人）。通过或直接保存才写入，否决不改数据。</p>";
+    if (!list.length) html += '<p class="ls-tip">还没有修正记录。</p>';
+    else {
+      html += '<div class="ls-revs">';
+      list.forEach(function (item) {
+        var tag = item.kind === "member" ? "前端申请" : (item.via === "app" ? "APP 副负责人" : "后台修改");
+        html += '<article class="ls-rev ls-rev--' + (item.kind === "member" ? "member" : "admin") + '">';
+        html += '<div class="ls-rev__hd"><b>' + esc(item.at) + '</b><span>' + tag + "</span><em>" + esc(item.action || "") + "</em></div>";
+        html += "<p>" + esc(revWho(item)) + "</p>";
+        html += "<p>" + esc(item.text || "") + "</p></article>";
+      });
+      html += "</div>";
+    }
+    html += '<div class="ls-sheet__ops"><button type="button" class="ls-btn ls-btn--primary" data-ls="cancel">关闭</button></div></div></div>';
+    return html;
+  }
+
   function msgSheet() {
     var msgs = loadMsgs();
     var html = '<div class="ls-mask"><div class="ls-sheet"><h3>已发送的离营方式通知 · ' + msgs.length + " 条</h3>";
@@ -388,11 +449,16 @@
       });
       html += '<span class="ls-count">' + list.length + " 人</span>";
       html += '<button type="button" class="ls-btn ls-msgbtn" data-ls="msgs">已发送通知 ' + msgCount + " 条</button>";
+      html += '<button type="button" class="lb-num-btn" data-note-key="leaveRevs" title="修正记录"></button>';
       html += "</div>";
       html += denseTable(list);
     }
     html += "</div>";
     if (state.msgOpen) html += msgSheet();
+    else if (state.revisions) {
+      var revRow = rows.filter(function (r) { return r.id === state.revisions; })[0];
+      if (revRow) html += revSheet(revRow);
+    }
     else if (state.editing) {
       var target = rows.filter(function (r) { return r.id === state.editing; })[0];
       if (target) html += state.tab === "detail" ? detailSheet(target) : editSheet(target);
@@ -405,6 +471,7 @@
     state.editing = "";
     state.tab = "summary";
     state.msgOpen = false;
+    state.revisions = "";
     render(root);
   }
 
@@ -415,6 +482,7 @@
       if (event.target.closest && event.target.closest(".ls-mask") && !event.target.closest(".ls-sheet")) {
         state.editing = "";
         state.msgOpen = false;
+        state.revisions = "";
         state.tab = "summary";
         render(root);
       }
@@ -426,6 +494,7 @@
       state.tab = t.getAttribute("data-v");
       state.editing = "";
       state.msgOpen = false;
+      state.revisions = "";
       render(root);
       return;
     }
@@ -453,16 +522,26 @@
     if (act === "msgs") {
       state.msgOpen = true;
       state.editing = "";
+      state.revisions = "";
+      render(root);
+      return;
+    }
+    if (act === "revs") {
+      state.revisions = t.getAttribute("data-id");
+      state.editing = "";
+      state.msgOpen = false;
       render(root);
       return;
     }
     if (act === "edit") {
+      state.revisions = "";
       state.editing = t.getAttribute("data-id");
       state.tab = "edit";
       render(root);
       return;
     }
     if (act === "detail") {
+      state.revisions = "";
       state.editing = t.getAttribute("data-id");
       state.tab = "detail";
       render(root);
@@ -471,6 +550,7 @@
     if (act === "cancel") {
       state.editing = "";
       state.msgOpen = false;
+      state.revisions = "";
       state.tab = "summary";
       render(root);
       return;
@@ -513,6 +593,13 @@
       row.updated = row.editedAt;
       row.updater = row.editedBy;
       save(rows);
+      pushRev(row.id, {
+        at: row.editedAt,
+        kind: "backend",
+        operator: "余炜烽",
+        action: "直接修改",
+        text: "离营方式由「" + wayMeta(beforeWay).label + "」改为「" + wayMeta(way).label + "」。站点：" + (row.place || "-") + (row.flight && row.flight !== "—" ? " · " + row.flight : "") + "。"
+      });
       pushMsg(row, beforeWay, way, "人工修改");
       state.editing = "";
       state.tab = "summary";
@@ -528,6 +615,13 @@
         window.LB.confirm("否决【" + app.name + "】的离营方式变更申请？", function () {
           app.status = "已否决";
           saveApps(apps);
+          pushRev(app.sid, {
+            at: nowStamp(),
+            kind: "backend",
+            operator: "余炜烽",
+            action: "审批否决",
+            text: "否决 " + (app.by || "申请人") + "（会员ID " + (app.memberId || "-") + "）的申请，学员离营方式未改。"
+          });
           window.LB.toast("已否决");
           render(root);
         });
@@ -548,10 +642,17 @@
           row.arrive = app.arrive || row.arrive;
           row.isEdited = true;
           row.editedAt = nowStamp();
-          row.editedBy = app.by + "（申请）· 余炜烽 审批";
+          row.editedBy = "余炜烽";
           row.updated = row.editedAt;
           row.updater = "余炜烽";
           save(rows);
+          pushRev(row.id, {
+            at: row.editedAt,
+            kind: "backend",
+            operator: "余炜烽",
+            action: "审批通过",
+            text: "按 " + (app.by || "申请人") + "（会员ID " + (app.memberId || "-") + "）的申请，把离营方式由「" + wayMeta(beforeWay).label + "」改为「" + wayMeta(app.to).label + "」，数据已写入。"
+          });
           pushMsg(row, beforeWay, app.to, "申请通过");
         }
         window.LB.toast("已通过并生效，通知已发送");

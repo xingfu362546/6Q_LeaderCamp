@@ -26,6 +26,8 @@
     4: { name: "4 列", cols: 4, nameSize: 19, metaSize: 13, storySize: 11, storyLines: 5, gap: 16 },
     5: { name: "5 列", cols: 5, nameSize: 17, metaSize: 12, storySize: 10, storyLines: 4, gap: 12 }
   };
+  var DEFAULT_TITLE = "2027年《青少年6Q领袖营》第  期 标杆学员风采展示";
+  var DEFAULT_INTRO = "为了聚焦全体学员在6Q领袖营中的学习与成长，加快从优秀迈向卓越的步伐，真正成为未来社区里、企业里的引路者。领袖人生系列课程将帮助学员在营期中快速提升领袖力，激发6Q领袖特质与潜能。";
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -44,7 +46,13 @@
   function state() {
     var saved = null;
     try { saved = JSON.parse(sessionStorage.getItem(BOARD_KEY) || "null"); } catch (e) { saved = null; }
-    return saved || { picked: [], cols: 4, term: "2027" };
+    var base = { picked: [], cols: 4, title: DEFAULT_TITLE, intro: DEFAULT_INTRO };
+    if (!saved) return base;
+    if (!saved.title) saved.title = DEFAULT_TITLE;
+    if (!saved.intro) saved.intro = DEFAULT_INTRO;
+    saved.picked = saved.picked || [];
+    saved.cols = saved.cols || 4;
+    return saved;
   }
 
   function saveState(st) {
@@ -86,10 +94,12 @@
     ctx.closePath();
   }
 
-  function drawBoard(canvas, picked, layout, term) {
+  function drawBoard(canvas, picked, layout, copy) {
     var ctx = canvas.getContext("2d");
     canvas.width = W;
     canvas.height = H;
+    var title = (copy && copy.title) || DEFAULT_TITLE;
+    var intro = (copy && copy.intro) || DEFAULT_INTRO;
 
     /* 背景：暖橙渐变，与模板一致的品牌色 */
     var bg = ctx.createLinearGradient(0, 0, W, H);
@@ -113,24 +123,21 @@
     ctx.fillText("光荣榜", 56, 232);
 
     ctx.font = "14px 'PingFang SC','Microsoft YaHei',sans-serif";
-    var intro = [
-      "青少年6Q领袖营是专注青少年情商与品格",
-      "培养的营地项目。本期从数百名学员中评选",
-      "出标杆学员，他们在自我管理、同伴支持、",
-      "课堂投入与品格表现上，成为同伴的榜样。"
-    ];
-    intro.forEach(function (line, i) { ctx.fillText(line, 56, 286 + i * 24); });
+    ctx.textAlign = "left";
+    var introLines = fitText(ctx, intro, leftW - 64, 5);
+    introLines.forEach(function (line, i) { ctx.fillText(line, 56, 286 + i * 22); });
 
+    var photoY = 286 + Math.max(introLines.length, 1) * 22 + 18;
     ctx.font = "bold 15px 'PingFang SC','Microsoft YaHei',sans-serif";
-    ctx.fillText("过往获奖照片", 56, 424);
+    ctx.fillText("过往获奖照片", 56, photoY);
     var px = 56;
     [0, 1, 2].forEach(function (i) {
       ctx.fillStyle = "#ffe0c2";
-      roundRect(ctx, px + i * 88, 436, 80, 56, 6);
+      roundRect(ctx, px + i * 88, photoY + 12, 80, 56, 6);
       ctx.fill();
       ctx.fillStyle = "#ff8a3d";
       ctx.font = "11px 'PingFang SC','Microsoft YaHei',sans-serif";
-      ctx.fillText("照片" + (i + 1), px + i * 88 + 26, 468);
+      ctx.fillText("照片" + (i + 1), px + i * 88 + 26, photoY + 44);
       ctx.fillStyle = "#fff";
       ctx.font = "bold 15px 'PingFang SC','Microsoft YaHei',sans-serif";
     });
@@ -152,8 +159,12 @@
 
     /* 标题 */
     ctx.fillStyle = "#e2661c";
-    ctx.font = "bold 26px 'PingFang SC','Microsoft YaHei',sans-serif";
-    ctx.fillText(term + "年《青少年6Q领袖营》标杆学员风采展示", panelX + 28, panelY + 48);
+    ctx.font = "bold 22px 'PingFang SC','Microsoft YaHei',sans-serif";
+    ctx.textAlign = "left";
+    var titleLines = fitText(ctx, title, panelW - 56, 2);
+    titleLines.forEach(function (line, i) {
+      ctx.fillText(line, panelX + 28, panelY + 36 + i * 28);
+    });
 
     if (!picked.length) {
       ctx.fillStyle = "#b98a5c";
@@ -219,6 +230,12 @@
     });
   }
 
+  function copyFields(st) {
+    return '<h3 style="margin-top:16px">榜单标题</h3><textarea id="gl-title" rows="2">' + esc(st.title) + "</textarea>" +
+      "<h3>榜单介绍</h3><textarea id=\"gl-intro\" rows=\"5\">" + esc(st.intro) + "</textarea>" +
+      '<p class="lb-hint">标题对应上方横条，介绍对应左侧说明。文字会变，改这里，预览跟着变。</p>';
+  }
+
   function pickListHtml(st) {
     var list = benchRows();
     if (!list.length) return '<p class="lb-hint">标杆学员档案室还没有记录，先去评选标杆学员。</p>';
@@ -240,6 +257,7 @@
     var html = '<div class="gl-wrap"><div class="gl-left"><h3>选择标杆学员</h3>';
     html += '<p class="lb-hint">最多 ' + MAX_PICK + " 位，已选 " + st.picked.length + " 位。</p>";
     html += pickListHtml(st);
+    html += copyFields(st);
     html += '<h3 style="margin-top:16px">排列方式</h3><div class="gl-cols">';
     [3, 4, 5].forEach(function (n) {
       html += '<button type="button" class="gl-col' + (st.cols === n ? " is-on" : "") + '" data-gloria="cols" data-v="' + n + '">' + LAYOUTS[n].name + "</button>";
@@ -262,7 +280,7 @@
     var list = benchRows().filter(function (p) { return st.picked.indexOf(p._id) >= 0; });
     /* 按选中的顺序排 */
     list.sort(function (a, b) { return st.picked.indexOf(a._id) - st.picked.indexOf(b._id); });
-    drawBoard(canvas, list, LAYOUTS[st.cols], st.term);
+    drawBoard(canvas, list, LAYOUTS[st.cols], { title: st.title, intro: st.intro });
   }
 
   function refreshGloria() {
@@ -272,6 +290,7 @@
     var html = "<h3>选择标杆学员</h3>";
     html += '<p class="lb-hint">最多 ' + MAX_PICK + " 位，已选 " + st.picked.length + " 位。</p>";
     html += pickListHtml(st);
+    html += copyFields(st);
     html += '<h3 style="margin-top:16px">排列方式</h3><div class="gl-cols">';
     [3, 4, 5].forEach(function (n) {
       html += '<button type="button" class="gl-col' + (st.cols === n ? " is-on" : "") + '" data-gloria="cols" data-v="' + n + '">' + LAYOUTS[n].name + "</button>";
@@ -284,6 +303,17 @@
     left.innerHTML = html;
     renderCanvas();
   }
+
+  document.addEventListener("input", function (e) {
+    if (!e.target || (e.target.id !== "gl-title" && e.target.id !== "gl-intro")) return;
+    var st = state();
+    var title = document.getElementById("gl-title");
+    var intro = document.getElementById("gl-intro");
+    if (title) st.title = title.value;
+    if (intro) st.intro = intro.value;
+    saveState(st);
+    renderCanvas();
+  });
 
   document.addEventListener("click", function (e) {
     var t = e.target.closest && e.target.closest("[data-gloria]");

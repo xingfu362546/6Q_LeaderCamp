@@ -159,3 +159,15 @@
 .ls-msg b { display: block; margin-bottom: 4px; color: rgba(0, 0, 0, 0.45); font-size: 12px; font-weight: 400; }
 .ls-msg p { margin: 0 0 4px; color: rgba(0, 0, 0, 0.85); font-size: 13px; }
 .ls-msg em { color: rgba(0, 0, 0, 0.45); font-size: 12px; font-style: normal; }
+.ls-mini em { margin-left: 4px; color: #d46b08; font-style: normal; font-weight: 600; }
+.ls-sheet--wide { width: min(720px, 94vw); }
+.ls-revs { display: flex; flex-direction: column; gap: 8px; max-height: 420px; overflow: auto; }
+.ls-rev { padding: 10px 12px; border-radius: 6px; background: #fafafa; }
+.ls-rev--member { border-left: 3px solid #1677ff; }
+.ls-rev--admin { border-left: 3px solid #d46b08; }
+.ls-rev__hd { display: flex; gap: 8px; align-items: center; margin-bottom: 4px; font-size: 12px; }
+.ls-rev__hd b { font-weight: 500; color: rgba(0,0,0,.45); }
+.ls-rev__hd span { padding: 0 6px; border-radius: 8px; background: #fff; }
+.ls-rev--member .ls-rev__hd span { color: #1677ff; }
+.ls-rev--admin .ls-rev__hd span { color: #d46b08; }
+.ls-rev p { margin: 0 0 4px; font-size: 13px; line-height: 1.5; }
