@@ -123,7 +123,7 @@
     var items = em.rows.filter(function (item) { return item.status === em.tab; });
     var html = '<div class="em">' + bar("情绪处理管理");
     html += '<div class="em-pills"><button type="button" data-em="tab" data-val="2" class="' + (em.tab === 2 ? "is-on" : "") + '">已登记</button><button type="button" data-em="tab" data-val="1" class="' + (em.tab === 1 ? "is-on" : "") + '">草稿</button></div>';
-    html += '<div class="em-body">' + list(items, true) + "</div>";
+    html += '<div class="em-body"><div class="ex-anchor"><button type="button" class="ex-dot" data-em="note" title="需求 26"><span class="ex-num">1</span></button></div>' + list(items, true) + "</div>";
     html += '<button type="button" class="em-add" data-em="add">+</button>';
     html += sheet();
     return html + "</div>";
@@ -226,7 +226,7 @@
     [{ name: "全部", value: "" }, { name: "1组", value: "1" }, { name: "2组", value: "2" }].forEach(function (tab) {
       html += '<button type="button" data-em="team" data-val="' + tab.value + '" class="' + (em.team === tab.value ? "is-on" : "") + '">' + tab.name + "</button>";
     });
-    html += '</div><div class="em-body">';
+    html += '</div><div class="em-body"><div class="ex-anchor"><button type="button" class="ex-dot" data-em="note" title="需求 26"><span class="ex-num">1</span></button></div>';
     if (!groups.length) html += '<p class="em-empty">这个范围里还没有情绪档案</p>';
     else html += groups.map(studentCard).join("");
     return html + "</div>" + sheet() + "</div>";
@@ -383,6 +383,8 @@
       api.render();
       return true;
     }
+    if (act === "close-note") { window.NoteDock.hide(); return true; }
+    if (act === "note") { openNotes(); return true; }
     if (act === "archive") { em.archiveId = el.getAttribute("data-id"); api.render(); return true; }
     if (act === "open") { em.view = el.getAttribute("data-id"); api.go(DETAIL); return true; }
     if (act === "add") {
@@ -502,6 +504,28 @@
     }
     return false;
   }
+  function openNotes() {
+    var panel = window.NoteDock.host();
+    panel.innerHTML =
+      '<div class="ex-notes-head"><h2>情绪档案 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-sign-note="close">关闭</button></div>' +
+      '<article class="ex-note-block"><h3><span class="ex-num">1</span> 情绪档案跟随学员 <span class="ex-ver">清单第 26 条</span></h3>' +
+      '<div class="ex-logic"><h4>现在的逻辑</h4><p>登记、列表和详情都带计划和周营。档案按学员收拢。换班级、换周营之后，下一周导师打开仍能看到以前的登记。草稿不进档案。</p></div>' +
+      '<div class="ex-logic"><h4>UI 要设计的状态</h4><ol>' +
+      "<li>情绪登记列表：已登记</li>" +
+      "<li>情绪登记列表：草稿</li>" +
+      "<li>情绪登记列表：空</li>" +
+      "<li>登记表：选择学员、计划、周营、记录时间</li>" +
+      "<li>登记表：问题表现，以及多次处理过程</li>" +
+      "<li>档案列表：按学员汇总，能看出跨了几个计划</li>" +
+      "<li>档案列表：按小组筛选</li>" +
+      "<li>档案列表：搜索没有结果</li>" +
+      "<li>学员档案：同一学员跨计划和跨周营的时间线</li>" +
+      "<li>学员档案：本期有标杆、本期没有标杆</li>" +
+      "<li>学员档案：还没有已提交记录</li>" +
+      "<li>单条详情：问题表现、每次处理、统筹办补充</li>" +
+      "</ol></div></article>";
+    panel.classList.add("is-open");
+  }
   function openArchive(name) {
     em.keyword = "";
     em.team = "";
@@ -522,5 +546,5 @@
     return true;
   }
 
-  window.EM = { has: has, render: render, handle: handle, leaveForm: leaveForm, openArchive: openArchive };
+  window.EM = { has: has, render: render, handle: handle, leaveForm: leaveForm, openArchive: openArchive, openNotes: openNotes };
 })();

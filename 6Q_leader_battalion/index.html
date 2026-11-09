@@ -74,6 +74,14 @@
     .col-mod { color: #0f172a; font-weight: 600; }
     .col-text { min-width: 360px; }
     .col-plan { min-width: 420px; }
+    .col-ui { min-width: 168px; font-size: 12px; }
+    .col-ui--no { color: #94a3b8; }
+    .ui-tag { display: inline-block; margin-bottom: 4px; padding: 0 6px; border-radius: 4px; background: #e6f4ff; color: #0958d9; font-weight: 600; }
+    .ui-hint { display: block; margin-bottom: 4px; color: #64748b; }
+    .col-ui a { display: block; color: #1677ff; text-decoration: none; line-height: 1.7; }
+    .col-ui a:hover { text-decoration: underline; }
+    .ui-states { margin: 6px 0 0; padding-left: 16px; color: #334155; }
+    .ui-states li { margin: 2px 0; }
 
     tr.scope-group td {
       font-weight: 600;
@@ -105,8 +113,8 @@
       <p class="nav-hero__eye">LEADER BATTALION · v3.5.0</p>
       <h1>2027 冬令营 · 功能清单</h1>
       <p>
-        从《2027年冬令营优化功能报价清单 v1-0917》抽出需求，共 64 条，按本期范围归类，序号仍是原清单序号。单价、人天、税费、UI 设计和系统测试未列入。
-        实现方案按已确认的原型落地方式写入最后一列。本次不做不导出。
+        从《2027年冬令营优化功能报价清单 v1-0917》抽出需求，共 64 条，按本期范围归类，序号仍是原清单序号。单价、人天、税费和系统测试未列入。
+        给开发的规格就在「实现方案」这一列，页面字段和规则在各页注释里，没有另外一份 Word。需要 UI 出稿的见「UI」列，点页面名会打开原型并展开注释，注释里列出要画的状态。本次不做不导出。
       </p>
       <a href="replica.html?p=talent-pool">打开后台复刻</a>
       <span class="nav-label">导师磨课排课 · v3.5.0</span>
@@ -144,7 +152,7 @@
         <a href="../6Q_leader_app/index.html#/pages/work/excellent/index">优秀助教/团长</a>
       </div>
     </header>
-    <p class="scope-legend"><span><b class="do">蓝色 · 要做</b></span><span><b class="eval">黄色 · 评估要做</b></span><span><b class="skip">红色 · 本次不做</b>　不写入导出</span><span>划线为重复项</span></p>
+    <p class="scope-legend"><span><b class="do">蓝色 · 要做</b></span><span><b class="eval">黄色 · 评估要做</b></span><span><b class="skip">红色 · 本次不做</b>　不写入导出</span><span>划线为重复项</span><span><b class="do">需要设计</b>　UI 要出状态稿</span></p>
     <div class="sheet">
       <table>
         <thead>
@@ -157,10 +165,11 @@
             <th>模块</th>
             <th>需求详细描述</th>
             <th>实现方案</th>
+            <th>UI</th>
           </tr>
         </thead>
                 <tbody>
-<tr class="scope-group scope-group--do"><td colspan="8">要做<span class="scope-count">36 条</span></td></tr>
+<tr class="scope-group scope-group--do"><td colspan="9">要做<span class="scope-count">36 条</span></td></tr>
 <tr id="req-1"><td class="col-no">1</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--design">设计已实现</td><td class="col-team">领袖营项目组</td><td class="col-who">邵伟恒</td><td class="col-mod">收费版块</td><td class="col-text">目前学员连营有出现一种特殊情况：学员实际只来1周，但是提前入营，家长想临时支付200元加入连营团队，这种特殊请款情况在系统后台无法正常操作付费，过往都是通过扫营中公益使用的那个六马的收款二维码进行付费；现在期待2027年寒假之前能在系统后台针对这种特殊连营情况生成对应的商品，确保这种特殊的提前入营进入连营团队的情况能在系统后台正常付款</td><td class="col-plan">后台：6Q业务 → 领袖营实施 → Q营详情 → 基础信息<br>1、右上角增加「额外住宿费用收款码」，与核销、报读二维码、修改人数、取消 Q营并排。<br>2、分三步：先选本 Q营已报读学员，再填本次金额和备注，最后生成收款二维码，可截图给家长扫码。<br>3、学员名单与「报读记录 → 已报读」同一份，不另建名单。<br>4、支付成功后写入订单中心 → 销售订单，渠道固定「领袖营-额外住宿费用」。金额以填写值为准，不从薪酬或退款口径推算。<br>5、不改报读状态、连营状态、考勤和薪资。本页不做订单列表，核对订单到销售订单按渠道筛选。</td></tr>
 <tr id="req-3"><td class="col-no">3</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--design">设计已实现</td><td class="col-team">家营</td><td class="col-who">倪塨槟</td><td class="col-mod">连营管理</td><td class="col-text">改期/取消第二期的，即使在系统点击确认了连营，连营费仍然原路退回了（实际上不应该退回）</td><td class="col-plan">后台：连营管理，并联动报读记录的取消报读、改期<br>1、与第 2 条同一口径。已在连营管理点过确认的，后续退费不再退连营费。<br>2、改期或取消第二期时，也以连营管理的确认状态为准，避免系统里已经确认、钱仍然退回。<br>3、未确认的连营，退费规则不变。</td></tr>
 <tr id="req-4"><td class="col-no">4</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--design">设计已实现</td><td class="col-team">家营</td><td class="col-who">倪塨槟</td><td class="col-mod">中途离营</td><td class="col-text">1.系统内有课程资格但是没有课程订单的数据，但发生中途离营时，选择了离营退费，没有系统订单的课程资格也要变成已失效状态<br>2.中途离营政策以及发起中途离营的选项从【离营核销、离营退费】优化为【离营核销、取消报读、离营退费】</td><td class="col-plan">后台：Q营详情 → 学员信息 → 离营核销<br>1、处理方案只保留两项：离营核销、离营退费。不增加「取消报读」。<br>2、离营核销只核销离营，不改报读学习状态，也不改资格状态。<br>3、没有课程订单的资格，发生中途离营后，资格状态直接变为「已退费」，不发起退款流程。<br>4、有课程订单的，仍按扣费明细和优惠券计算应退、实退。<br>5、学员信息的资格列标出「无订单」和当前资格状态，便于核对。</td></tr>
@@ -187,7 +196,7 @@
 <tr id="req-13"><td class="col-no">13</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">导师团</td><td class="col-who">万红</td><td class="col-mod">问卷收集</td><td class="col-text">希望点击对应周营搜索对应问卷后可以直接导出需要的问卷明细、现在导出问卷的操作要先点击对应基地，然后还要选择周营，点击导出之后还要选择问卷题目，接着还要再选择周营，步骤太多了.....</td><td class="col-plan">后台：问卷收集<br>1、左侧上方选计划，下方列出该计划全部周营，默认「全部」。<br>2、点导出时只勾选一份或多份问卷。计划和周营沿用左侧，不再在导出弹窗里重选一遍计划和周营。<br>3、选了某一周，就只导出该周；选「全部」，导出该计划下所有周营。<br>4、未选问卷时提示「请选择问卷」。确认文案带上当前计划和周营、已选问卷。</td></tr>
 <tr id="req-28"><td class="col-no">28</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">领袖营项目组</td><td class="col-who">朱柏润</td><td class="col-mod">工作人员信息</td><td class="col-text">一办三团人员人才库，可以标记黑白灰，以及在招募中加入招募信用，增加临时取消的登记及自动识别；</td><td class="col-plan">后台：人才库<br>1、全员默认白，可标黑、白、灰。照片右上角用对应颜色标出，列表可筛选。<br>2、黑为永久封禁，不设到期。灰从最后一次修改时间起算满一年，自动变为白，并标出变白日期。白为正常。<br>3、在编辑个人信息里修改。导入模板在备注后增加「黑白灰」，只接受黑、灰、白，空着按白，写错的行不导入。同一人导入时以表格值为准。<br><br>后台：领袖营人员管理<br>1、展示人才库里的黑白灰，可筛选，这里不能改标识。<br>2、新增人员时，黑名单要确认「是否要添加至本计划/周营」，取消则不添加。灰和白直接添加。<br>3、导出在姓名后带「黑白灰」列。人员管理导入不改这个标识，修改仍走人才库导入。</td></tr>
 <tr id="req-35"><td class="col-no">35</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">助教团</td><td class="col-who">黄宝欣</td><td class="col-mod">学员评优表</td><td class="col-text">过往是填写电子表格收集，建议利用信息化功能，点击学员信息一键收集。类似于评选标杆按钮，但增设评选vv之星，进入页面后勾选vv之星。带队助教填写，助教团长查看并可以进行导出填写情况（统计），课务/后勤团管理员一键导出名单（不用再线上收集）</td><td class="col-plan">后台：学员评优<br>1、新增学员评优。配置奖项时只填奖项名称，取消生效班级。<br>2、配置出来的奖项对所有班级开放，不按班级限制谁能选。<br>3、不设名额，不填主要事迹。记录可筛选、可禁用。导出只含生效记录。<br><br>APP：助教分组 → 学员评优<br>1、助教看到的是后台已经配置出来的全部奖项，都可以点选。<br>2、一次只能选一个。一名学员同时只有一条生效评优，重新提交后旧记录失效。<br>3、后台禁用后，学员标签去掉，入口恢复。</td></tr>
-<tr id="req-36"><td class="col-no">36</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">助教团</td><td class="col-who">黄宝欣</td><td class="col-mod">优秀助教、优秀助教团长</td><td class="col-text">审批中增加一项提交审批，将过往纸质版的”优秀助教“”优秀助教团长“变为电子申请，助教提交后-助教正团审批作为代表意见（班团团长+导师意见）-统筹办主任审批<br>助教团长提交后-导师正团审批填写评选建议-统筹办主任审批</td><td class="col-plan">APP：优秀助教 / 优秀团长申请<br>1、把纸质申请改为电子申请。助教提交优秀助教，助教团长提交优秀团长。<br>2、助教的单子由助教正团审批，作为班团团长和导师意见；团长的单子由导师正团填写评选建议。<br>3、通过后进入统筹办主任审批。详情可看打分、宣言或自述。<br><br>后台：优秀助教/团长管理<br>1、统筹办查看全量申请。列表有计划、周营、申请类型、岗位，点姓名进详情。<br>2、综合分门槛 90 分。大于等于 90 自动流转统筹办；低于 90 不进统筹办，状态为未通过，但记录仍在，可按「综合分未达标」筛选。<br>3、不达标记录后台仍可一票通过或否决。已通过或已否决后不再显示按钮。<br>4、通过后在人才库档案记下该计划周营被评为优秀助教或优秀团长。</td></tr>
+<tr id="req-36"><td class="col-no">36</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">助教团</td><td class="col-who">黄宝欣</td><td class="col-mod">优秀助教、优秀助教团长</td><td class="col-text">审批中增加一项提交审批，将过往纸质版的”优秀助教“”优秀助教团长“变为电子申请，助教提交后-助教正团审批作为代表意见（班团团长+导师意见）-统筹办主任审批<br>助教团长提交后-导师正团审批填写评选建议-统筹办主任审批</td><td class="col-plan">APP：优秀助教 / 优秀团长申请<br>1、把纸质申请改为电子申请。带队助教提交优秀助教，见习副团、助教副团、助教正团提交优秀团长。<br>2、节点顺序不变。优秀助教：副团和见习副团全部打完才到助教正团；助教正团全部打完才到导师正团，任一人不同意则结束；导师正团全部打完才算综合分。优秀助教团长：见习导师、导师副团、导师正团各自全部打完才进入下一级。<br>3、同一节点有多人时先取这一节点的平均分。综合分大于等于 90 进统筹办；低于 90 为未通过，不进统筹办。<br>4、详情同时给申请人和审批人看：已打分人数、还在等谁、宣言或自述、综合分。<br><br>后台：优秀助教/团长管理<br>1、统筹办查看全量申请。列表有计划、周营、申请类型、岗位，点姓名进详情。<br>2、综合分门槛 90 分。大于等于 90 自动流转统筹办；低于 90 不进统筹办，状态为未通过，但记录仍在，可按「综合分未达标」筛选。<br>3、不达标记录后台仍可一票通过或否决。已通过或已否决后不再显示按钮。<br>4、通过后在人才库档案记下该计划周营被评为优秀助教或优秀团长。</td></tr>
 <tr id="req-39"><td class="col-no">39</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">助教团</td><td class="col-who">黄宝欣</td><td class="col-mod">人才库</td><td class="col-text">导入助教标签”优秀助教“”黄灯助教“”红灯助教“以及营期评价（仅后台可查,前端不可见）</td><td class="col-plan">后台：人才库、领袖营人员管理<br>1、按第 28 条落地，全员使用黑、白、灰，不用红黄绿灯。<br>2、黑是黑名单，加入计划或周营前要确认。灰是需关注、可入营、不拦截。白是正常。<br>3、人才库可编辑标识，人员管理只展示和筛选。<br><br>本期不做：<br>1、不导入「优秀助教」「黄灯助教」「红灯助教」标签。<br>2、不做仅后台可见的营期评价。优秀助教标识走第 36 条的审批结果，不在这里另做一套标签。</td></tr>
 <tr id="req-40"><td class="col-no">40</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">助教团</td><td class="col-who">黄宝欣</td><td class="col-mod">考勤管理</td><td class="col-text">没有入营又没打卡的人是否能删除考勤汇总，以防批量处理时完成打卡-</td><td class="col-plan">后台：考勤管理 → 考勤汇总<br>1、已经进入人员管理、但没有签到记录的人，不流转进考勤汇总。<br>2、考勤汇总列表里不出现这些人，刷新或生成汇总时也过滤掉。<br>3、批量处理、批量完成打卡时，不会把未签到的人一并打上卡。</td></tr>
 <tr id="req-41"><td class="col-no">41</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">助教团</td><td class="col-who">黄宝欣</td><td class="col-mod">学员签到</td><td class="col-text">学员签到权限开放给所有当班（助教正团、副团、见习副团和带队助教，目前只有正团和带队助教有权限）</td><td class="col-plan">APP：迎接欢送 → 学员签到<br>1、迎接学员、欢送学员里的确认签到，开放给当班助教团：助教正团、助教副团、见习副团、带队助教。<br>2、这四个岗位都可以确认签到。助教团以外的岗位仍不能操作。<br>3、不新增签到页面，只放宽原确认签到按钮的岗位范围。</td></tr>
@@ -197,7 +206,7 @@
 <tr id="req-46"><td class="col-no">46</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">领袖营项目组</td><td class="col-who">施惠红</td><td class="col-mod">营前绩效</td><td class="col-text">营前绩效分数统一，希望满足仅需要导入一次即可识别同步到七周的绩效分数</td><td class="col-plan">后台：营前绩效、营中绩效、营后绩效<br>1、导入时勾选本计划要写入的周营，默认勾上当前周。按会员ID和岗位写入，三个分项的分数不互通。<br>2、导入当时不在该周的人先跳过，不写空分。<br>3、之后进入已勾选周营，并签到产生绩效时，带上这次导入的分数。<br>4、该周这一项已经有分数的，不覆盖。<br>5、携带产生的分数在分项旁标「过往携带」。绩效考核里按营前、营中、营后分别标来源，总分不打这个标签。</td></tr>
 <tr id="req-54"><td class="col-no">54</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">导师团</td><td class="col-who">万红</td><td class="col-mod">情绪处理导出</td><td class="col-text">数据导出增加填写人ID号的字段，便于快速匹配导师情绪处理个数，有部分导师使用6Q名无法匹配上</td><td class="col-plan">后台：情绪处理登记<br>1、列表在「登记人」后面增加「登记人ID」，取填写人的会员ID。<br>2、导出模板在「登记人名称」后面同样增加「登记人ID」。点导出即按这个模板下载。<br>3、用会员ID匹配导师的情绪处理条数，不再只靠 6Q 名，避免同名或花名对不上。</td></tr>
 <tr id="req-58"><td class="col-no">58</td><td class="col-scope col-scope--do">要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">领袖营项目组</td><td class="col-who">邓茵之</td><td class="col-mod">迎接欢送组</td><td class="col-text">六通信息部虎鲸项目与流程的梳理V1.0 (1)<br><br>把迎接欢送还有大堂班级签到做到每日反馈当中</td><td class="col-plan">APP：学员成长时间轴<br>1、迎接确认签到成功，写一条签到，子类型为迎接。<br>2、大堂签到成功，写一条签到，子类型为大堂签到。<br>3、班级确认成功，写一条签到，子类型为班级确认。班级确认没有撤销。<br>4、欢送确认成功，写一条签离，不再挂子类型。<br>5、迎接、大堂、欢送撤销成功时，删掉对应那一条；再次签到再写一条。<br>6、照片、反馈信息、签到人沿用签到页已有内容。这些记录按日期分组，不计入日志统计里的已反馈。</td></tr>
-<tr class="scope-group scope-group--eval"><td colspan="8">评估要做<span class="scope-count">11 条</span></td></tr>
+<tr class="scope-group scope-group--eval"><td colspan="9">评估要做<span class="scope-count">11 条</span></td></tr>
 <tr id="req-9"><td class="col-no">9</td><td class="col-scope col-scope--eval">评估要做</td><td class="col-status col-status--repro">待复现</td><td class="col-team">家营</td><td class="col-who">倪塨槟</td><td class="col-mod">学员信息</td><td class="col-text">发现4位学员在系统中为男性，实则为女性，给分组及分房间带来影响，已告知信息化对历史数据进行调整，并在家长填写信息时按身份证尾号进行判断且不可修改</td><td class="col-plan">建议方案，待复现后落地。<br><br>后台：学员信息；家长填写学员资料<br>1、家长填写或修改学员信息时，性别按身份证尾号判断：奇数男、偶数女。<br>2、判断结果写入性别字段，页面上不可再手改。<br>3、历史数据里性别与身份证尾号不一致的，按尾号批量校正，并留下校正记录。<br>4、校正后的性别同步到分班、分房间使用的学员性别，避免男女性别录反。</td></tr>
 <tr id="req-25"><td class="col-no">25</td><td class="col-scope col-scope--eval">评估要做</td><td class="col-status col-status--review">待复核</td><td class="col-team">统筹办</td><td class="col-who">施惠红</td><td class="col-mod">考勤确认</td><td class="col-text">权限存在问题，各团确认完考勤后，连续点击两次确认，会直接跳过当基地统筹办确认，直接到项目组</td><td class="col-plan">建议方案，待复核后落地。<br><br>后台：考勤确认<br>1、确认链路保持：各团确认 → 基地统筹办确认 → 项目组。<br>2、各团确认完成后，再点确认不能跳过基地统筹办，直接进入项目组。<br>3、若上一节点未完成，或当前节点已经确认过，第二次点击给出提示并停在当前节点，不推进状态。<br>4、需要能按基地看出卡在哪一个确认节点，便于核对是连点导致跳步。</td></tr>
 <tr id="req-33"><td class="col-no">33</td><td class="col-scope col-scope--eval">评估要做</td><td class="col-status col-status--design">设计已实现</td><td class="col-team">领袖营项目组</td><td class="col-who">朱柏润</td><td class="col-mod">薪酬发放</td><td class="col-text">1.全职员工薪酬核算批量导出（姓名、发放金额、身份证号、手机号）按照基地筛选或者周营筛选，直接导出，利于后续财务部、人才开发部校对薪酬及冲销，否则人工制表工作量较大；<br>2.完成时间27年暑假前务必上线，若27年寒假允许，也可以优先上线测试；</td><td class="col-plan">后台：薪酬核算 → 基地台账 → 导出全职核算<br>1、先选年度和计划类型（寒假/暑假），再按基地或周营筛选。不选基地或周营就是该范围下的全部。<br>2、导出全职员工薪酬核算，列含姓名、应发金额、身份证号、手机号，以及核算详情里的日标准、出勤、工资项、应发、个税、实发。<br>3、发放金额用应发金额。身份证号、手机号取薪酬发放详情，不在导出时重算个税和实发。<br>4、当前筛选没有全职账单时不下载空表。也可下载只有表头的模板。<br>5、完成时间按需求放在 27 年暑假前；若寒假允许，可先上线给财务和人才开发部核对。</td></tr>
@@ -210,7 +219,7 @@
 <tr id="req-60"><td class="col-no">60</td><td class="col-scope col-scope--eval">评估要做</td><td class="col-status col-status--design">设计已实现</td><td class="col-team">统筹办</td><td class="col-who">张丽娟</td><td class="col-mod">品宣组</td><td class="col-text">标杆学员可直接提取关键信息（期数，班级，姓名，头像，事迹说明）直接按底板生成设计图片，输出标杆灯布广告，用于印刷</td><td class="col-plan">后台：标杆学员档案室 → 生成光荣榜<br>1、去掉灯布模板、生成灯布、查看灯布。只保留生成光荣榜。<br>2、光荣榜上方标题、左侧介绍各有一个输入框，对应画面上这两处文字。每期文案会变，直接改输入框，预览和下载一起变。<br>3、默认标题是「2027年《青少年6Q领袖营》第  期 标杆学员风采展示」，期数写在标题里，可改。<br>4、学员卡片仍取期数、班级、姓名、头像和事迹说明。事迹超长按格子截断。<br>5、可修改单条事迹，改完光荣榜卡片跟着变。</td></tr>
 <tr id="req-20"><td class="col-no">20</td><td class="col-scope col-scope--eval">评估要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">领袖营项目组</td><td class="col-who">邓茵之</td><td class="col-mod">迎接欢送组</td><td class="col-text">同一周营入营方式问卷实现一键发放<br>目前每周、每个Q营，都需要填写/修改一遍入营方式信息，工作重复，容易出错。</td><td class="col-plan">后台：Q营详情 → 迎接欢送 → 确认并发送<br>1、入营、离营问卷题目保持现网。离营含机场接离、火车/高铁接离、大巴接离、营地自离和两份责任书；入营是对应接送题，没有营地自离。<br>2、勾选机场或车站后才填带队老师，一个站点可加多名老师。大巴只勾选，不填老师。<br>3、确认并发送时，按当前 Q营的营地列出同营地其他 Q营周营，可多选，整份问卷复制发送。当前这条默认勾上。<br>4、已结营的 Q营不能再设置、不能再发。<br><br>家长端：课程详情 → 待办事项<br>1、同一营地多个周营只生成一条「入营方式问卷」待办。<br>2、家长只填一次，后续周营沿用这份结果，不用每个 Q营、每一周重填。</td></tr>
 <tr id="req-26"><td class="col-no">26</td><td class="col-scope col-scope--eval">评估要做</td><td class="col-status col-status--round1">原型评审第一轮</td><td class="col-team">统筹办</td><td class="col-who">施惠红</td><td class="col-mod">情绪处理</td><td class="col-text">班团情绪处理登记表期待可以跟随学员档案，开放给情绪陪伴老师填写，后面该学员去到其他班级，信息也同步给到下一周营导师</td><td class="col-plan">后台：学员档案、情绪处理登记<br>1、情绪登记挂在学员档案上，每条记录带计划和周营，不只看当前周营。<br>2、列表把计划和周营分成两列。学员换班级、换周营后，原记录仍在，下一周导师打开档案能看到。<br>3、档案里同时可查看该学员的标杆情况。<br>4、登记仍由情绪陪伴老师填写，不另做一套只属于当前班级的表。<br><br>APP：情绪档案<br>1、登记、列表和详情同样带计划、周营。<br>2、换周营后仍按学员能查到以往登记，供下一周导师查看。</td></tr>
-<tr class="scope-group scope-group--skip"><td colspan="8">本次不做<span class="scope-count">16 条</span></td></tr>
+<tr class="scope-group scope-group--skip"><td colspan="9">本次不做<span class="scope-count">16 条</span></td></tr>
 <tr id="req-7"><td class="col-no">7</td><td class="col-scope col-scope--skip">本次不做</td><td class="col-status">未实现</td><td class="col-team">家营</td><td class="col-who">陈文彤</td><td class="col-mod">报读问题</td><td class="col-text">同一家庭组，父亲/母亲可以使用自己账号的Q营资格或对方账号Q营资格，给孩子报读，但仅报读人可以查看代办事项（尤其是成长印记），对于购买了Q营但非报读人，无法查看孩子在营成长印记，不合理且体验较差。<br><br>需求：家庭组内，父亲/母亲可以查看孩子营中待办事项（成长印记）</td><td class="col-plan">本期不做。</td></tr>
 <tr id="req-21"><td class="col-no">21</td><td class="col-scope col-scope--skip">本次不做</td><td class="col-status">未实现</td><td class="col-team">领袖营项目组</td><td class="col-who">邓茵之</td><td class="col-mod">迎接欢送组</td><td class="col-text">迎接欢送任务管理<br>同一周的几个基地，希望可以实现一次性配置工作人员信息，无需分开不同基地重复设置几遍。</td><td class="col-plan">本期不做。</td></tr>
 <tr id="req-22"><td class="col-no">22</td><td class="col-scope col-scope--skip">本次不做</td><td class="col-status">未实现</td><td class="col-team">领袖营项目组</td><td class="col-who">邓茵之</td><td class="col-mod">迎接欢送组</td><td class="col-text">学员迎接欢送的签到签离数据需要实时更新最新信息，方能准确地同步至家长端，取代目前纸质名单/电话联系/手动发短信的模式，让家长实时掌握孩子动态，提升家长体验。</td><td class="col-plan">本期不做。</td></tr>
@@ -227,13 +236,13 @@
 <tr id="req-57"><td class="col-no">57</td><td class="col-scope col-scope--skip">本次不做</td><td class="col-status">未实现</td><td class="col-team">领袖营项目组</td><td class="col-who">邓茵之</td><td class="col-mod">项目组</td><td class="col-text">显示学员状态<br>参考外卖平台订单页面，显示学员状态：开营前30天-开营前7天-开营前1天-开营当天……显示每个环节学员的状态，如迎接过程中到达了哪个站点交接给了哪位老师，便于家长掌握学员情况、快速联系到对应的人，同时这样要求一办三团四组的最新工作人员名单需要登记在信息化平台上</td><td class="col-plan">本期不做。</td></tr>
 <tr id="req-59"><td class="col-no">59</td><td class="col-scope col-scope--skip">本次不做</td><td class="col-status">未实现</td><td class="col-team">领袖营项目组</td><td class="col-who">邓茵之</td><td class="col-mod">迎接欢送组</td><td class="col-text">前端入离营问卷的截止时间应与发布到家长群的时间一致，超过时间不可继续填写修改，否则迎接欢送组难以掌握最新的学员入离营方式，也就无法全面实现信息化签到签离</td><td class="col-plan">本期不做。</td></tr>
 <tr id="req-64"><td class="col-no">64</td><td class="col-scope col-scope--skip">本次不做</td><td class="col-status">未实现</td><td class="col-team">招生报读组</td><td class="col-who">李凌云</td><td class="col-mod">招生报读</td><td class="col-text">“初升高营”产品不支持复训功能</td><td class="col-plan">本期不做。</td></tr>
-<tr class="scope-group scope-group--other"><td colspan="8">其他<span class="scope-count">1 条</span></td></tr>
+<tr class="scope-group scope-group--other"><td colspan="9">其他<span class="scope-count">1 条</span></td></tr>
 <tr id="req-5" class="is-dup"><td class="col-no">5</td><td class="col-scope col-scope--dup">重复</td><td class="col-status">未实现</td><td class="col-team">家营</td><td class="col-who">陈冬敏</td><td class="col-mod">连营管理</td><td class="col-text">在办理中途离营的时候，发现已经点击确认了连营，发起之后连营费还是自动退回去了180，出现了已退费，已确认的状态。</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="nav-foot">序号和模块可以点开。有注释的需求会直接展开对应注释。第 14 到 19 条进入导师磨课排课门户。第 23 条本次不做，点开是保留占位页。</p>
+    <p class="nav-foot">序号和模块可以点开。有注释的需求会直接展开对应注释。UI 列的页面名同样会打开原型。第 14 到 19 条进入导师磨课排课门户。第 23 条本次不做，点开是保留占位页。</p>
   </div>
-  <script src="js/req-routes.js?v=20261103c"></script>
+  <script src="js/req-routes.js?v=20261109ui"></script>
 </body>
 </html>

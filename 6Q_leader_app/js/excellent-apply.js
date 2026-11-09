@@ -535,6 +535,25 @@
     html += '<div class="ex-logic"><h4>过往逻辑</h4><p>纸质评价表。优秀助教由班团与导师打分后上报；优秀助教团长由导师团打分后上报。</p></div>';
     html += '<div class="ex-logic"><h4>现在的逻辑 · 优秀助教</h4><p>' + esc(aideRule) + "</p></div>";
     html += '<div class="ex-logic"><h4>现在的逻辑 · 优秀助教团长</h4><p>' + esc(leaderRule) + "</p></div>";
+    html += '<div class="ex-logic"><h4>UI 要设计的状态</h4><ol>' +
+      [
+        "选择申请类型：岗位符合、岗位不符合",
+        "填写优秀助教：竞选宣言、入营期数",
+        "填写优秀团长：申请自述",
+        "审批中：本节点还没人打",
+        "审批中：已有人打完，还在等其他人，标出已完成人数和总数",
+        "助教打分：11 项三档区间，区间外要写原因",
+        "团长打分：10 项按满分打",
+        "助教正团：同意流转，但还要等另一位正团",
+        "助教正团：两位都同意，进入导师正团",
+        "助教正团：任一人不同意，流程结束",
+        "导师正团未齐：不计算最终综合分",
+        "综合分达到 90：进入统筹办",
+        "综合分低于 90：未通过，要填原因",
+        "统筹办：同意成为、不同意",
+        "申请人查看：审批中、已通过、已驳回、未通过"
+      ].map(function (text) { return "<li>" + esc(text) + "</li>"; }).join("") +
+      "</ol></div>";
     html += '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>';
     notes.forEach(function (item) {
       html += "<tr><td>" + esc(item.name) + "</td><td>" + esc(item.type) + "</td><td>" + esc(item.required) + "</td><td>" + esc(item.desc) + "</td></tr>";

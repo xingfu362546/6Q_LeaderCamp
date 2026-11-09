@@ -1269,6 +1269,15 @@
   font-size: 13px;
 }
 
+.lb-logic ol {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.lb-logic li {
+  margin: 2px 0;
+}
+
 .lb-logic + .lb-logic {
   margin-top: 0;
 }

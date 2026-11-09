@@ -6,8 +6,8 @@
 (function () {
   "use strict";
 
-  function marker(n, key, kind, name, req, past, now, rows, bug) {
-    return { n: n, key: key, kind: kind, name: name, req: req, past: past, now: now, rows: rows, bug: !!bug };
+  function marker(n, key, kind, name, req, past, now, rows, bug, ui) {
+    return { n: n, key: key, kind: kind, name: name, req: req, past: past, now: now, rows: rows, bug: !!bug, ui: ui || [] };
   }
 
   function row(name, control, required, notes, marked, href) {
@@ -839,6 +839,19 @@
             row("入营方式", "单选", "是", "机场接送、火车站接送、大巴接送、自行入营、连营。换方式后清掉不适用的旧站点、班次和出发时间。", true),
             row("带队老师", "选择", "否", "机场、火车站选了站点后才出现。不选也可以保存。大巴、自行入营、连营没有这一项。", true),
             row("权限", "规则", "是", "后台不写死副负责人。APP 迎接总表仍然只有副负责人能直接改。")
+          ],
+          false,
+          [
+            "总表默认：未到达和已到达的学员在同一张表",
+            "未到达：行上有修改，点开后按入营方式切换字段",
+            "机场接送：航站楼、带队老师、航班号、出发时间、抵达时间、是否无人陪伴",
+            "火车站接送：车站、带队老师、班次、出发时间、抵达时间",
+            "大巴接送：起点、抵达时间",
+            "自行入营、连营：只填抵达时间",
+            "已到达：没有修改，只能看详情",
+            "修正记录为空",
+            "修正记录里有后台直接修改",
+            "修正记录里有 APP 副负责人直接修改"
           ]
         ),
         marker(
@@ -890,6 +903,20 @@
             row("问卷备注", "列", "是", "第13条新增。取家长在离营问卷填的其它需求。", true),
             row("是否送进安检", "列", "否", "第13条新增。是 / 否。「待确认」口径按评审保留，先按家营填写的实际值展示。", true),
             row("凭证", "列", "否", "第13条新增。已上传 / 未上传，取自离营问卷的代接委托书与安全责任书附件。", true)
+          ],
+          false,
+          [
+            "总览：应离营人数、已签离比例、各离营方式人数、已修改人数、待审批条数",
+            "计划切换：全部，以及每个基地一张",
+            "学员表默认：一行一人，未改和已修改混排",
+            "已修改：行高亮，姓名后有标记，可只筛这一类",
+            "修改弹窗：五种离营方式各自只留对应的站点、班次和时间",
+            "已签离或已核销：不能改，只显示锁定",
+            "变更申请：待审批列表，含原方式、申请改为、站点、申请人、理由",
+            "审批通过：学员变为已修改",
+            "审批否决：学员数据保持原样",
+            "已发送通知：逐条明细",
+            "修正记录：前端申请、后台直接修改、审批通过、审批否决、APP 副负责人"
           ]
         ),
         marker(
@@ -1218,6 +1245,13 @@
     return html + "</tbody></table>";
   }
 
+  function uiHtml(list) {
+    if (!list || !list.length) return "";
+    var html = '<div class="lb-logic"><h4>UI 要设计的状态</h4><ol>';
+    list.forEach(function (item) { html += "<li>" + esc(item) + "</li>"; });
+    return html + "</ol></div>";
+  }
+
   function markerHtml(block) {
     return (
       '<article class="lb-note-block" id="note-' +
@@ -1237,6 +1271,7 @@
       '<div class="lb-logic"><h4>现在的逻辑 · v3.5.0</h4><p>' +
       esc(block.now) +
       "</p></div>" +
+      uiHtml(block.ui) +
       tableHtml(block) +
       "</article>"
     );

@@ -357,6 +357,48 @@
     return html;
   }
 
+  function openRemindNote() {
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
+    panel.innerHTML =
+      '<div class="ex-notes-head"><h2>问卷催办 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-sign-note="close">关闭</button></div>' +
+      '<article class="ex-note-block"><h3><span class="ex-num">1</span> 催办、续填和待办弹窗 <span class="ex-ver">清单第 37 条</span></h3>' +
+      '<div class="ex-logic"><h4>现在的逻辑</h4><p>建议方案。原型目前只覆盖消息里的催办入口。未完成问卷可催办，点消息进入对应问卷。以前填过的题带入，只补未填项。进入工作台时，有未完成审批或未签到才弹窗。</p></div>' +
+      uiBlock([
+        "消息里的问卷催办：未完成，点进去进入对应问卷",
+        "问卷续填：已填题目带入，只补未填项",
+        "工作台弹窗：有未完成审批",
+        "工作台弹窗：有未签到",
+        "没有这些待办时不弹"
+      ]) +
+      "</article>";
+    panel.classList.add("is-open");
+    mask.classList.add("is-open");
+  }
+
+  function openCompatNote() {
+    var panel = window.NoteDock.host();
+    var mask = window.NoteDock.noMask;
+    panel.innerHTML =
+      '<div class="ex-notes-head"><h2>APP 兼容 · 本页 1 条需求</h2><button type="button" class="ex-note-close" data-sign-note="close">关闭</button></div>' +
+      '<article class="ex-note-block"><h3><span class="ex-num">1</span> 机型兼容 <span class="ex-ver">清单第 43 条</span></h3>' +
+      '<div class="ex-logic"><h4>现在的逻辑</h4><p>不新增业务页面。小米打不开工作台、苹果每日反馈读不到相册、小米问卷显示不全，按这三个状态出对照稿，开发按稿修兼容。</p></div>' +
+      uiBlock([
+        "工作台能打开，不再停在加载",
+        "每日反馈能从相册选到自己拍的照片",
+        "问卷长页面可以滚到最后一题并提交"
+      ]) +
+      "</article>";
+    panel.classList.add("is-open");
+    mask.classList.add("is-open");
+  }
+
+  function uiBlock(items) {
+    return '<div class="ex-logic"><h4>UI 要设计的状态</h4><ol>' +
+      items.map(function (text) { return "<li>" + esc(text) + "</li>"; }).join("") +
+      "</ol></div>";
+  }
+
   function openSignNote() {
     var panel = window.NoteDock.host();
     var mask = window.NoteDock.noMask;
@@ -366,6 +408,12 @@
       '<article class="ex-note-block"><h3><span class="ex-num">1</span> 学员签到权限 <span class="ex-ver">清单第 41 条</span></h3>' +
       '<div class="ex-logic"><h4>过往逻辑</h4><p>迎接欢送里的学员签到，只开放给助教正团和带队助教。助教副团、见习副团没有权限。</p></div>' +
       '<div class="ex-logic"><h4>现在的逻辑</h4><p>设计已实现。迎接学员、欢送学员进入的学员签到，开放给当班助教团相关岗位：助教正团、助教副团、见习副团、带队助教。这些岗位都可以确认签到。助教团以外的岗位仍不能操作。</p></div>' +
+      uiBlock([
+        "迎接学员：有权限，确认签到可点",
+        "欢送学员：有权限，确认签到可点",
+        "助教正团、助教副团、见习副团、带队助教看到的是同一种可操作",
+        "助教团以外的岗位：不能确认签到"
+      ]) +
       '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
       "<tr><td>确认签到</td><td>按钮</td><td>是</td><td>原按钮。助教正团、助教副团、见习副团、带队助教都可以操作。</td></tr>" +
       "<tr><td>可操作岗位</td><td>说明</td><td>是</td><td>助教正团、助教副团、见习副团、带队助教。</td></tr>" +
@@ -388,6 +436,16 @@
       '<article class="ex-note-block"><h3><span class="ex-num">1</span> 班级填写进度 <span class="ex-ver">清单第 42 条</span></h3>' +
       '<div class="ex-logic"><h4>过往逻辑</h4><p>班级成长印记填写进度，以及按谁填了、谁没填进行筛选，在 3.3.0 已经实现，但没有上线。</p></div>' +
       '<div class="ex-logic"><h4>现在的逻辑</h4><p>本次版本主要将这套功能校验上线。上线后，班级可以看到填写进度，并按已填、未填筛选学员。</p></div>' +
+      uiBlock([
+        "印记统计：全部学员",
+        "印记统计：只看已填",
+        "印记统计：只看未填",
+        "印记统计：筛选后没有人",
+        "单个学员未填写：显示完型成长印记",
+        "四步填写：出勤、Q营特征、生活情况、欣赏和变化",
+        "提交成功",
+        "该学员已填写：入口不再当作未填"
+      ]) +
       '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
       "<tr><td>日志/印记统计</td><td>页面</td><td>是</td><td>班级填写进度所在页。印记统计列出每名学员是已完善还是未完善。3.3.0 已实现，未上线，本次校验上线。</td></tr>" +
       "<tr><td>是否完善</td><td>筛选</td><td>否</td><td>按已填、未填收窄名单。3.3.0 已实现，本次校验上线。</td></tr>" +
@@ -412,6 +470,17 @@
       '<article class="ex-note-block"><h3><span class="ex-num">1</span> 签到签离写入每日反馈 <span class="ex-ver">清单第 58 条</span></h3>' +
       '<div class="ex-logic"><h4>过往逻辑</h4><p>学员成长时间轴只有每日反馈和班级简报。迎接、欢送、大堂签到、班级确认成功后，不往学员成长写记录。日志统计只看手写的每日反馈。</p></div>' +
       '<div class="ex-logic"><h4>现在的逻辑</h4><p>设计已实现。签到成功后，给对应学员在学员成长时间轴各写一条。迎接、大堂签到、班级确认的类型是签到，子类型分别是迎接、大堂签到、班级确认。欢送成功写签离，不再挂子类型。每完成一步新写一条。撤销成功删掉对应那一条，再次签到再写一条。班级确认没有撤销。创建日期早于开营日期，标题为距离开营还有X天；营期内为第N天；晚于结营日期为结营已过X天。开营当天是第1天，结营当天仍是最后一天。这些记录不计入日志统计的已反馈。</p></div>' +
+      uiBlock([
+        "开营前：日期标题是距离开营还有 X 天",
+        "营期内：日期标题是第 N 天",
+        "结营后：日期标题是结营已过 X 天",
+        "签到卡：迎接",
+        "签到卡：大堂签到",
+        "签到卡：班级确认",
+        "签离卡：欢送，不带子类型",
+        "撤销后：对应那一条从时间轴消失",
+        "日志统计：这些记录不计入已反馈"
+      ]) +
       '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
       "<tr><td>签到</td><td>记录类型</td><td>是</td><td>迎接、大堂签到、班级确认各写一条。子类型沿用这三个名称。</td></tr>" +
       "<tr><td>签离</td><td>记录类型</td><td>是</td><td>只在欢送确认签到成功时写一条。不挂子类型。</td></tr>" +
@@ -435,6 +504,14 @@
       '<article class="ex-note-block"><h3><span class="ex-num">1</span> 学员评优 <span class="ex-ver">清单第 35 条</span></h3>' +
       '<div class="ex-logic"><h4>过往逻辑</h4><p>学员评优靠电子表格收集。标杆学员是另一套流程，点学员可以评为标杆学员，填写主要事迹和学员照片。</p></div>' +
       '<div class="ex-logic"><h4>现在的逻辑</h4><p>设计已实现。后台配置出来的奖项，所有助教都可以选用，不按班级限制，也不设名额。一次只能选一个奖项，不填主要事迹。一名学员同时只有一个生效评优。重新提交后旧记录失效。后台禁用后，标签去掉，入口才恢复。</p></div>' +
+      uiBlock([
+        "学员列表：还没有评优，菜单里是学员评优",
+        "选奖项：后台配置的奖项都能点，一次只能选一个",
+        "未选奖项就提交：提示先选择",
+        "已有评优：列表带奖项标签，菜单变成重新提交",
+        "重新提交：写明旧记录会失效",
+        "后台禁用后：标签去掉，入口恢复成第一次提交"
+      ]) +
       '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
       "<tr><td>评优标签</td><td>标签</td><td>否</td><td>学员列表展示当前生效评优。能进入助教分组的人都能看到。失效后去掉。</td></tr>" +
       "<tr><td>学员评优</td><td>操作</td><td>否</td><td>在评为标杆学员之外。已有生效评优时不出现。</td></tr>" +
@@ -465,6 +542,16 @@
       '<div class="ex-logic"><h4>修正记录</h4><p>副负责人在欢送总表直接保存时，后台该学员的修正记录写一条：操作用户 林晓雯（APP 副负责人）。这是直接修改，数据当时写入，不记成会员申请。助教在助教分组发起的变更申请另记一条：前端用户 林晓雯（会员ID 15168801），当时不改学员数据。总表通过或否决再各记一条，通过才写入，否决不改数据。后台在离营总表直接保存的，记成后台操作用户和姓名。</p></div>' +
       '<div class="ex-logic"><h4>数据流（与后台离营总表打通）</h4><p>① 家长在离营问卷填离营方式与站点，写入 travelWay、campsPlacePickupId，这是原值。<br>② 后台「领袖营数据 → 离营总表」读同一份 travel/list（type=2）数据，按计划汇总。<br>③ 后台在总表点「修改离营方式」，仅在未核销 + 未签离时可用，提交 PUT conference/camps/member/travel/leave/modify，追加一条人工调整（原方式、新方式、时间、人）。<br>④ 本页读同一份数据，离营方式显示新值并标「已修改」；离营详情多一行「本次人工调整：由 X 改为 Y」和最后修改时间。<br>⑤ 已签离或已核销后不再允许改。改动不覆盖问卷原值。</p></div>' +
       '<div class="ex-logic"><h4>演示开关</h4><p>本演示分两个端口，跨端口读不到同一份存储。下面可以切换「已修改」示例，用来预览欢送端如何标记。真实环境由后端下发。</p><p><button type="button" data-sc="demo-edited" class="sc-demo-btn">切换「已修改」示例</button></p></div>' +
+      uiBlock([
+        "学员卡片：离营方式只展示，未填写是一种状态",
+        "离营详情：方式、站点、凭证、接待、陪伴员、其他需求、最后修改时间",
+        "欢送总表：按基地汇总各离营方式人数",
+        "点进一个基地：学员名单，可筛选、可搜索",
+        "副负责人，学员未签离：可以改离营方式",
+        "已签离：不能改",
+        "保存后：卡片和名单标已修改",
+        "非副负责人：只能看总表和名单"
+      ]) +
       '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
       "<tr><td>离营方式</td><td>卡片行</td><td>否</td><td>欢送页每张学员卡片新增。取离营问卷的值：机场接离、火车/高铁接离、大巴接离、营地自离、连营。没填显示未填写。只读。</td></tr>" +
       "<tr><td>离营详情</td><td>上浮弹窗</td><td>否</td><td>点离营方式打开。沿用助教分组那套离营详情字段。最后一行是最后修改时间。</td></tr>" +
@@ -491,6 +578,14 @@
       '<article class="ex-note-block"><h3><span class="ex-num">1</span> 助教发起离营方式变更 <span class="ex-ver">清单第 15 条</span></h3>' +
       '<div class="ex-logic"><h4>提交位置</h4><p>源码里的助教分组只有只读的离营详情，没有申请页。本次按评审第 15 条补上。入口有两处：小组学员卡片右上角「···」里的「发起离营方式变更申请」，以及学员成长里的「离营方式」详情底部按钮。</p></div>' +
       '<div><h4>现在的逻辑</h4><p>助教填写拟改方式，以及这一方式对应的站点、班次、时间和理由，提交后状态为待审批。申请进后台「领袖营数据 → 离营总表 → 变更申请」。总表通过后才改学员离营方式并标已修改；否决不改。这里不直接改方式。</p></div>' +
+      uiBlock([
+        "入口：小组学员菜单，以及离营详情底部",
+        "申请表：五种离营方式切换后，只留下该方式要填的站点、班次和时间",
+        "未填理由：不能提交",
+        "提交后：待审批，学员离营方式还是原值",
+        "后台通过后：学员变为已修改",
+        "后台否决后：仍是原来的离营方式"
+      ]) +
       '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
       "<tr><td>发起离营方式变更申请</td><td>按钮</td><td>否</td><td>小组学员菜单，和离营详情底部。</td></tr>" +
       "<tr><td>拟改为</td><td>单选</td><td>是</td><td>机场接离、火车/高铁接离、大巴接离、营地自离、连营。换方式后只留这一类字段。</td></tr>" +
@@ -512,6 +607,15 @@
       '<div class="ex-logic"><h4>过往逻辑</h4><p>迎接页右上角的总表打开的是欢送总表。入营方式不能在迎接端改。后台迎接总表只读。</p></div>' +
       '<div><h4>现在的逻辑</h4><p>设计已实现。迎接页右上角总表打开迎接总表，按基地汇总应迎接人数和入营方式。副负责人可以改未到达学员的入营方式，保存后立即生效，不走助教提交，也没有审批。已到达不能改。其他身份只能看。后台「领袖营数据 → 迎接总表」里，能打开这个菜单的人也可以改未到达学员，页面不写死副负责人。改完的结果在后台同一行显示为已修改。</p></div>' +
       '<div class="ex-logic"><h4>修正记录</h4><p>每次保存都在后台该学员的修正记录里留一条。APP 副负责人直接改，写操作用户 林晓雯（APP 副负责人）。后台直接改，写后台操作用户和姓名。两类都是当时写入数据。迎接不走助教申请，不记成前端用户和会员ID。</p></div>' +
+      uiBlock([
+        "迎接总表：按基地汇总应迎接人数和入营方式",
+        "点进一个基地：学员名单",
+        "副负责人，学员未到达：可以改入营方式",
+        "五种方式各自的字段：机场、火车站、大巴、自行入营、连营",
+        "已到达：不能改",
+        "非副负责人：只能看",
+        "保存后：该学员标已修改"
+      ]) +
       '<table><thead><tr><th>元素名称</th><th>元素类型</th><th>是否必填</th><th>说明</th></tr></thead><tbody>' +
       "<tr><td>总表</td><td>按钮</td><td>否</td><td>迎接页右上角。打开迎接总表，不再打开欢送总表。</td></tr>" +
       "<tr><td>修改入营方式</td><td>按钮</td><td>否</td><td>只给副负责人，且学员未到达。已到达不显示。</td></tr>" +
@@ -764,6 +868,11 @@
   else if (entryNote === "36" && window.EX && window.EX.openNotes) window.EX.openNotes();
   else if (entryNote === "44" && window.SICK) window.SICK.openNotes();
   else if (entryNote === "10") openLeaveSyncNote();
+  else if (entryNote === "arrive") openArriveNote();
+  else if (entryNote === "leave-apply") openLeaveApplyNote();
+  else if (entryNote === "26" && window.EM && window.EM.openNotes) window.EM.openNotes();
+  else if (entryNote === "37") openRemindNote();
+  else if (entryNote === "43") openCompatNote();
 })();
 
 document.body.addEventListener("click", function (e) {

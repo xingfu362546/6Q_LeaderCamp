@@ -99,8 +99,84 @@
     64: hold("biz-product", "领袖营产品")
   };
 
+  /* 需要 UI 出稿的范围：本期要改的 APP 页面，加上后台迎接总表、离营总表。
+     状态明细写在对应页面注释里。没有单独注释的，状态直接列在这一格。 */
+  var UI = {
+    10: [
+      ["后台迎接总表", page("arrive-summary", 1)],
+      ["后台离营总表", page("leave-summary", 1)],
+      ["APP 迎接总表", app("pages/work/signInTask/detail", "arrive")],
+      ["APP 欢送总表", app("pages/work/signInTask/detail", "10")],
+      ["APP 离营申请", app("pages/work/categoryClass/growthJournal/leaveApply", "leave-apply")]
+    ],
+    26: [
+      ["APP 情绪档案", app("pages/work/emotion/archive", "26")],
+      ["APP 情绪登记", app("pages/work/emotion/index", "26")]
+    ],
+    35: [
+      ["APP 学员评优", app("pages/work/categoryClass/studentAward", "35")]
+    ],
+    36: [
+      ["APP 优秀申请", app("pages/work/excellent/index", "36")]
+    ],
+    37: [
+      ["APP 工作台", app("pages/tabBar/work", "37")]
+    ],
+    41: [
+      ["APP 学员签到", app("pages/work/studentSignIn/index", "41")]
+    ],
+    42: [
+      ["APP 印记统计", app("pages/work/categoryClass/growthJournal/statistics", "42")],
+      ["APP 成长印记", app("pages/work/categoryClass/growthImprint/entrance", "42")]
+    ],
+    43: [
+      ["APP 工作台", app("pages/tabBar/work", "43")]
+    ],
+    44: [
+      ["APP 就医通知", "../6Q_leader_app/index.html?note=44&role=chief#/pages/message/mallNotice"]
+    ],
+    58: [
+      ["APP 学员成长", app("pages/work/categoryClass/growthJournal/index", "58")]
+    ]
+  };
+
+  var UI_INLINE = {
+    37: [
+      "消息里的问卷催办：未完成、点进去进入对应问卷",
+      "问卷续填：已填题目带入，只补未填项",
+      "工作台弹窗：有未完成审批",
+      "工作台弹窗：有未签到",
+      "没有待办时不弹"
+    ],
+    43: [
+      "工作台能打开，不再停在加载",
+      "每日反馈能从相册选到自己拍的照片",
+      "问卷长页面可以滚到最后一题并提交"
+    ]
+  };
+
   document.querySelectorAll("tr[id^='req-']").forEach(function (tr) {
     var id = tr.id.replace("req-", "");
+    while (tr.querySelectorAll("td").length < 8) tr.appendChild(document.createElement("td"));
+    var uiCell = document.createElement("td");
+    var pages = UI[id];
+    if (pages) {
+      uiCell.className = "col-ui";
+      var html = '<span class="ui-tag">需要设计</span>';
+      if (UI_INLINE[id]) {
+        html += '<ol class="ui-states">' + UI_INLINE[id].map(function (text) {
+          return "<li>" + text.replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</li>";
+        }).join("") + "</ol>";
+      } else html += '<span class="ui-hint">状态见页面注释</span>';
+      pages.forEach(function (item) {
+        html += '<a href="' + item[1].replace(/"/g, "&quot;") + '">' + item[0] + "</a>";
+      });
+      uiCell.innerHTML = html;
+    } else {
+      uiCell.className = "col-ui col-ui--no";
+      uiCell.textContent = "不需要";
+    }
+    tr.appendChild(uiCell);
     var href = ROUTES[id];
     if (!href) return;
     var titled = href.indexOf("note=") >= 0 ? "打开页面并展开这条注释" : "打开对应页面";

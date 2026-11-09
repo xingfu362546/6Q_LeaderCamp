@@ -160,6 +160,8 @@
 .ex-logic { margin: 12px 0; }
 .ex-logic h4 { margin: 0 0 6px; font-size: 14px; }
 .ex-logic p { margin: 0; font-size: 13px; line-height: 1.6; color: #444c45; }
+.ex-logic ol, .note-dock ol { margin: 6px 0 0; padding-left: 18px; }
+.ex-logic li, .note-dock li { margin: 2px 0; font-size: 13px; line-height: 1.6; color: #444c45; }
 .ex-notes-panel table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
 .ex-notes-panel th, .ex-notes-panel td { border: 1px solid #f0f0f0; padding: 8px 10px; text-align: left; vertical-align: top; }
 .ex-notes-panel th { background: #f6ffed; }
